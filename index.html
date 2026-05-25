@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyra 3.0 — AI Trading Framework</title>
+  <meta name="description" content="Multi-market algorithmic trading framework with ML signal filtering">
+  <meta property="og:title" content="Lyra — AI Trading Framework">
+  <meta property="og:description" content="Multi-market algorithmic trading framework with ML signal filtering">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #050508;
+      --bg-raised:  rgba(12,12,22,0.85);
+      --bg-card:    rgba(18,18,32,0.5);
+      --bg-hover:   rgba(255,255,255,0.03);
+      --border:     rgba(255,255,255,0.04);
+      --border-h:   rgba(255,255,255,0.08);
+      --text:       #e2e8f0;
+      --text-dim:   #64748b;
+      --text-muted: rgba(148,163,184,0.4);
+      --accent:     #8b5cf6;
+      --accent-dim: rgba(139,92,246,0.08);
+      --accent-bd:  rgba(139,92,246,0.15);
+      --green:      #10b981;
+      --green-dim:  rgba(16,185,129,0.08);
+      --green-border: rgba(16,185,129,0.2);
+      --red:        #ef4444;
+      --red-dim:    rgba(239,68,68,0.08);
+      --red-border: rgba(239,68,68,0.2);
+      --orange:     #f59e0b;
+      --orange-dim: rgba(245,158,11,0.08);
+      --orange-border: rgba(245,158,11,0.2);
+      --blue:       #3b82f6;
+      --mono:       'JetBrains Mono', monospace;
+      --sans:       'DM Sans', sans-serif;
+      --radius:     10px;
+      --radius-lg:  14px;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; position: relative; }
+
+    /* ── Layout ── */
+    .app-layout { display: flex; height: 100vh; }
+    .main-content { flex: 1; overflow-y: auto; padding: 28px 36px; }
+    @media (max-width: 768px) { .main-content { padding: 16px; } }
+    @media (min-width: 2000px) { .app-layout { zoom: 1.25; } .main-content { padding: 32px 44px; } }
+    @media (min-width: 2800px) { .app-layout { zoom: 1.45; } }
+    @media (min-width: 3400px) { .app-layout { zoom: 1.65; } }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-bd); border-radius: 10px; }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 56px; min-width: 56px; height: 100vh; background: rgba(8,8,16,0.92); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 12px 0; transition: width 0.25s ease; overflow: hidden; z-index: 20; flex-shrink: 0; backdrop-filter: blur(12px); }
+    .sidebar.expanded { width: 180px; min-width: 180px; }
+    .sb-brand { display: flex; align-items: center; gap: 10px; padding: 4px 17px 16px; }
+    .sb-brand-text { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--accent); white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
+    .sidebar.expanded .sb-brand-text { opacity: 1; }
+    .sb-logo { cursor: pointer; flex-shrink: 0; }
+    .sb-section { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding: 14px 18px 6px; white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
+    .sidebar.expanded .sb-section { opacity: 1; }
+    .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 17px; cursor: pointer; color: var(--text-dim); transition: all 0.2s; border-left: 2px solid transparent; white-space: nowrap; }
+    .sb-item:hover { color: var(--text); background: var(--bg-hover); }
+    .sb-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+    .sb-icon { flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 20px; }
+    .sb-label { font-size: 12px; font-weight: 500; opacity: 0; transition: opacity 0.2s; }
+    .sidebar.expanded .sb-label { opacity: 1; }
+    .sb-badge { font-size: 9px; font-weight: 700; background: var(--accent); color: #fff; border-radius: 8px; padding: 1px 6px; margin-left: auto; opacity: 0; transition: opacity 0.2s; }
+    .sidebar.expanded .sb-badge { opacity: 1; }
+    .sb-divider { height: 1px; background: var(--border); margin: 8px 14px; }
+    .sb-spacer { flex: 1; max-height: 120px; }
+    .sb-toggle { display: flex; align-items: center; justify-content: center; padding: 8px 17px; cursor: pointer; color: var(--text-dim); transition: color 0.2s; }
+    .sb-toggle:hover { color: var(--text); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot-live { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+    /* ── News Ticker ── */
+    .news-ticker { overflow: hidden; background: rgba(10,10,20,0.6); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 16px; margin-bottom: 16px; backdrop-filter: blur(8px); }
+    .news-ticker-inner { display: flex; gap: 28px; animation: ticker-scroll 50s linear infinite; white-space: nowrap; }
+    .news-ticker-item { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+    @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ── Stat Grid (top cards) ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    @media (min-width: 1800px) { .stat-grid { gap: 16px; } }
+    @media (max-width: 900px) { .stat-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .stat-grid { grid-template-columns: 1fr; } }
+
+    /* ── Cards ── */
+    .card { background: rgba(18,18,32,0.45); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; transition: border-color 0.2s; backdrop-filter: blur(8px); }
+    .card:hover { border-color: var(--border-h); }
+    .card-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .card-value { font-family: var(--mono); font-size: 22px; font-weight: 600; }
+    .card-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+    /* ── Badges ── */
+    .badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; display: inline-block; }
+    .badge-green { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+    .badge-accent { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-bd); }
+    .badge-orange { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange-border); }
+    .badge-red { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-border); }
+
+    /* ── Buttons ── */
+    .btn { font-family: var(--sans); font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: var(--radius); border: 1px solid var(--border-h); background: var(--bg-card); color: var(--text); cursor: pointer; transition: all 0.2s; }
+    .btn:hover { border-color: var(--accent-bd); background: var(--accent-dim); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { filter: brightness(0.85); }
+    .btn-danger { background: var(--red-dim); border-color: var(--red-border); color: var(--red); }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+    .btn-ghost { background: transparent; border-color: var(--border-h); color: var(--text-dim); }
+    .btn-ghost:hover { color: var(--text); background: var(--bg-hover); }
+
+    /* ── Page title ── */
+    .page-title { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .panel-title { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+
+    /* ── Metrics grid ── */
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    @media (min-width: 1800px) { .metrics-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; } }
+    .metric-card { background: rgba(18,18,32,0.45); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; backdrop-filter: blur(8px); }
+    .metric-label { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+    .metric-value { font-family: var(--mono); font-size: 17px; font-weight: 600; }
+    .metric-sub { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+
+    /* ── Ticker dot ── */
+    .ticker-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Bot cards grid ── */
+    .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    @media (min-width: 1800px) { .market-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; } }
+    @media (min-width: 2400px) { .market-grid { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 18px; } }
+    .market-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; cursor: pointer; transition: all 0.2s; }
+    .market-card:hover { border-color: var(--accent-bd); transform: translateY(-1px); }
+    .mc-pos-glow { border-color: var(--orange-border); box-shadow: 0 0 20px rgba(245,158,11,0.06); }
+    .mc-pair { font-weight: 600; font-size: 14px; margin-top: 4px; }
+    .mc-price { font-family: var(--mono); font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .mc-meta { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+    .mc-value { font-family: var(--mono); font-size: 18px; font-weight: 600; margin-top: 6px; }
+    .mc-change { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+    .mc-status { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+    .mc-pos-tag { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange-border); text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* ── Section / Position labels ── */
+    .section-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin: 18px 0 10px; }
+
+    /* ── Position banner ── */
+    .pos-banner { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--orange-dim); border: 1px solid var(--orange-border); border-radius: var(--radius); margin-bottom: 14px; font-size: 12px; }
+
+    /* ── Bot header & detail ── */
+    .bot-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .bot-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-dim); border: 1px solid var(--accent-bd); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: var(--accent); flex-shrink: 0; }
+    .bot-actions { display: flex; gap: 6px; margin-left: auto; }
+    .price-big { font-family: var(--mono); font-size: 24px; font-weight: 700; }
+    .back-link { font-size: 12px; color: var(--text-dim); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 12px; background: none; border: 1px solid var(--border-h); padding: 5px 10px; border-radius: var(--radius); }
+    .back-link:hover { color: var(--accent); border-color: var(--accent-bd); }
+    .no-position { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 30px; color: var(--text-muted); font-size: 13px; }
+
+    /* ── Chart/position grid ── */
+    .chart-pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    @media (min-width: 1800px) { .chart-pos-grid { gap: 18px; } }
+    @media (max-width: 900px) { .chart-pos-grid { grid-template-columns: 1fr; } }
+
+    /* ── Tab bar ── */
+    .tab-bar { display: flex; gap: 2px; }
+    .tab-item { font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius); cursor: pointer; color: var(--text-dim); transition: all 0.15s; }
+    .tab-item:hover { color: var(--text); background: var(--bg-hover); }
+    .tab-item.active { color: var(--text); background: var(--bg-card); border: 1px solid var(--border-h); }
+
+    /* ── Panels grid (LLM / trades / logs) ── */
+    .panels-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; }
+    @media (min-width: 1800px) { .panels-grid { gap: 18px; } }
+    @media (max-width: 900px) { .panels-grid { grid-template-columns: 1fr; } }
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
+    .panel-scroll { max-height: 240px; overflow-y: auto; }
+
+    /* ── Trade tags ── */
+    .trade-tag { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .tag-profit { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+    .tag-loss { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-border); }
+    .trade-entry { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
+
+    /* ── Indicators ── */
+    .ind-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .ind-value { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+
+    /* ── LLM entries ── */
+    .llm-entry { padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .llm-time { font-size: 10px; color: var(--text-muted); font-family: var(--mono); }
+    .llm-decision { font-weight: 600; font-size: 13px; margin: 2px 0; }
+    .llm-text { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+
+    /* ── Log entries ── */
+    .log-entry { font-family: var(--mono); font-size: 11px; padding: 4px 0; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+
+    /* ── Colors ── */
+    .t-green { color: var(--green) !important; }
+    .t-red { color: var(--red) !important; }
+    .t-orange { color: var(--orange) !important; }
+    .t-accent { color: var(--accent) !important; }
+    .t-dim { color: var(--text-dim) !important; }
+    .t-muted { color: var(--text-muted) !important; }
+    .t-mono { font-family: var(--mono) !important; }
+
+    /* ── Custom Cursor (desktop only) ── */
+    @media (pointer: fine) { *:not(select):not(option) { cursor: none !important; } select { cursor: pointer !important; } }
+    .cursor-dot {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #e2e8f0; pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .cursor-ring {
+      position: fixed; top: 0; left: 0; z-index: 9998;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid var(--accent-bd);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, border-color 0.2s;
+    }
+    .cursor-hover .cursor-dot { background: var(--accent); transform: translate(-50%, -50%) scale(1.5); }
+    .cursor-hover .cursor-ring { width: 44px; height: 44px; border-color: var(--accent); }
+
+    /* ── Toast Notifications ── */
+    .toast-container { position: fixed; top: 16px; right: 16px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { pointer-events: auto; padding: 12px 18px; border-radius: 8px; font-size: 12px; font-family: var(--sans); color: var(--text); background: var(--bg-raised); border: 1px solid var(--border-h); box-shadow: 0 8px 24px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; display: flex; align-items: center; gap: 8px; max-width: 340px; }
+    .toast-success { border-color: var(--green); }
+    .toast-success::before { content: "\2713"; color: var(--green); font-weight: 700; font-size: 14px; }
+    .toast-error { border-color: var(--red); }
+    .toast-error::before { content: "\2717"; color: var(--red); font-weight: 700; font-size: 14px; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* ── Entry Animation ── */
+    .entry-anim {
+      position: fixed; inset: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: center;
+      animation: entryFade 1.2s ease both;
+      pointer-events: none;
+    }
+    .entry-crypto { background: radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, rgba(3,3,8,0.95) 70%); }
+    .entry-anim-content { text-align: center; animation: entryScale 0.8s cubic-bezier(0.4,0,0.2,1) both; }
+    .entry-anim-icon { font-size: 48px; margin-bottom: 12px; }
+    .entry-anim-text { font-size: 18px; font-weight: 600; letter-spacing: 0.08em; color: #e2e8f0; }
+    @keyframes entryFade { 0% { opacity:1; } 60% { opacity:1; } 100% { opacity:0; } }
+    @keyframes entryScale { 0% { opacity:0; transform:scale(0.8); } 30% { opacity:1; transform:scale(1.05); } 100% { opacity:1; transform:scale(1); } }
+
+    /* ── Animations ── */
+    .page-anim { animation: fadeUp 0.35s ease; }
+    .slide-in { animation: slideIn 0.3s ease; }
+    .stagger > * { animation: fadeUp 0.3s ease both; }
+    .stagger > *:nth-child(1) { animation-delay: 0s; }
+    .stagger > *:nth-child(2) { animation-delay: 0.03s; }
+    .stagger > *:nth-child(3) { animation-delay: 0.04s; }
+    .stagger > *:nth-child(4) { animation-delay: 0.06s; }
+    .stagger > *:nth-child(5) { animation-delay: 0.08s; }
+    .stagger > *:nth-child(6) { animation-delay: 0.10s; }
+    .stagger > *:nth-child(7) { animation-delay: 0.12s; }
+    .stagger > *:nth-child(8) { animation-delay: 0.14s; }
+    .stagger > *:nth-child(9) { animation-delay: 0.16s; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes drawIn { to { stroke-dashoffset: 0; } }
+
+    /* ── Responsive: large monitor (>1800px) ── */
+    @media (min-width: 1800px) {
+      .page-title { font-size: 24px; }
+      .card { padding: 22px; }
+      .card-label { font-size: 12px; }
+      .card-value { font-size: 26px; }
+      .card-sub { font-size: 13px; }
+      .metric-card { padding: 18px 20px; }
+      .metric-value { font-size: 20px; }
+      .metric-label { font-size: 11px; }
+      .metric-sub { font-size: 12px; }
+      .panel { padding: 20px; }
+      .panel-title { font-size: 12px; }
+      .tab-item { font-size: 14px; padding: 9px 20px; }
+      .news-ticker { padding: 10px 20px; }
+      .news-ticker-item { font-size: 13px; }
+      .badge { font-size: 12px; padding: 4px 10px; }
+      .btn { font-size: 13px; padding: 10px 20px; }
+      .section-label { font-size: 12px; }
+      .mc-pair { font-size: 16px; }
+      .mc-meta { font-size: 12px; }
+      .mc-price { font-size: 14px; }
+      .mc-value { font-size: 20px; }
+      .mc-change { font-size: 14px; }
+      .mc-pos-tag { font-size: 11px; }
+      .ind-label { font-size: 12px; }
+      .ind-value { font-size: 14px; }
+      .price-big { font-size: 28px; }
+      .back-link { font-size: 13px; }
+      .trade-tag { font-size: 11px; }
+      .llm-text { font-size: 13px; }
+      .llm-decision { font-size: 15px; }
+      .llm-time { font-size: 12px; }
+      .log-entry { font-size: 13px; }
+      .pos-banner { font-size: 14px; }
+      .sb-label { font-size: 13px; }
+      .sb-section { font-size: 10px; }
+    }
+    /* ── Responsive: ultra-wide (>2400px) ── */
+    @media (min-width: 2400px) {
+      .page-title { font-size: 28px; }
+      .card { padding: 26px; border-radius: 16px; }
+      .card-label { font-size: 13px; }
+      .card-value { font-size: 30px; }
+      .card-sub { font-size: 14px; }
+      .metric-value { font-size: 24px; }
+      .metric-label { font-size: 12px; }
+      .metric-card { padding: 22px 24px; border-radius: 14px; }
+      .tab-item { font-size: 15px; }
+      .mc-pair { font-size: 18px; }
+      .mc-value { font-size: 22px; }
+      .price-big { font-size: 32px; }
+    }
+    /* ── Responsive: tablet (<=768px) ── */
+    @media (max-width: 768px) {
+      body { overflow: auto; }
+      .app-layout { flex-direction: column; height: auto; min-height: 100vh; }
+      .sidebar { width: 100% !important; min-width: 100% !important; height: auto; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); padding: 0; position: fixed; bottom: 0; left: 0; z-index: 50; backdrop-filter: blur(16px); background: rgba(8,8,16,0.96); overflow-x: auto; overflow-y: hidden; }
+      .sidebar.expanded { width: 100% !important; min-width: 100% !important; }
+      .sb-brand { display: none; }
+      .sb-section { display: none; }
+      .sb-divider { display: none; }
+      .sb-spacer { display: none; }
+      .sb-toggle { display: none; }
+      .sb-item { flex-direction: column; gap: 2px; padding: 8px 12px; border-left: none; border-top: 2px solid transparent; min-width: 56px; align-items: center; justify-content: center; }
+      .sb-item.active { border-left-color: transparent; border-top-color: var(--accent); }
+      .sb-label { opacity: 1 !important; font-size: 9px !important; white-space: nowrap; }
+      .sb-icon { width: 18px; }
+      .sb-badge { display: none; }
+      .main-content { padding: 16px 14px 80px !important; overflow-y: auto; min-height: 100vh; }
+      .page-title { font-size: 17px; }
+      .card-value { font-size: 18px; }
+      .card { padding: 14px; }
+      .metric-value { font-size: 15px; }
+      .metric-card { padding: 10px 12px; }
+      .market-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .panels-grid { grid-template-columns: 1fr; }
+      .chart-pos-grid { grid-template-columns: 1fr; }
+      .bot-header { gap: 8px; }
+      .bot-actions { margin-left: 0; width: 100%; justify-content: flex-start; }
+      .price-big { font-size: 20px; }
+      .news-ticker { margin-bottom: 10px; padding: 6px 10px; }
+      .cursor-dot, .cursor-ring { display: none !important; }
+      .pos-banner { flex-wrap: wrap; font-size: 11px; }
+    }
+    /* ── Responsive: mobile (<=480px) ── */
+    @media (max-width: 480px) {
+      .main-content { padding: 12px 10px 80px !important; }
+      .page-title { font-size: 16px; }
+      .market-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr; gap: 8px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .card-value { font-size: 16px; }
+      .mc-pair { font-size: 13px; }
+      .mc-value { font-size: 16px; }
+      .sb-item { padding: 6px 8px; min-width: 48px; }
+      .sb-label { font-size: 8px !important; }
+    }
+    /* ── Touch devices: no custom cursor ── */
+    @media (pointer: coarse) {
+      * { cursor: auto !important; }
+      .cursor-dot, .cursor-ring { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background particles -->
+  <canvas id="bg-particles" style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></canvas>
+  <div id="root" style="position:relative;z-index:1;height:100vh;"></div>
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- Background particles animation -->
+  <script>
+  (function(){
+    var c=document.getElementById('bg-particles'),g=c.getContext('2d'),W,H,pts=[];
+    function sz(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+    sz(); window.addEventListener('resize',sz);
+    for(var i=0;i<120;i++) pts.push({x:Math.random()*2000,y:Math.random()*2000,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2.8+1.2,o:Math.random()*.30+.20});
+    function draw(){
+      g.clearRect(0,0,W,H);
+      for(var i=0;i<pts.length;i++){
+        var p=pts[i]; p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+        g.beginPath(); g.arc(p.x,p.y,p.r,0,6.28);
+        g.fillStyle='rgba(139,92,246,'+p.o+')'; g.fill();
+      }
+      for(var i=0;i<pts.length;i++){
+        for(var j=i+1;j<pts.length;j++){
+          var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+          if(d<200){g.beginPath();g.moveTo(pts[i].x,pts[i].y);g.lineTo(pts[j].x,pts[j].y);
+          g.strokeStyle='rgba(139,92,246,'+(0.30*(1-d/200))+')';g.lineWidth=1.0;g.stroke();}
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+  </script>
+
+  <!-- Custom cursor logic -->
+  <script>
+  (function(){
+    var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
+    var mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+    function lerp(){rx+=(mx-rx)*0.15;ry+=(my-ry)*0.15;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp);}
+    lerp();
+    document.addEventListener('mouseover',function(e){
+      var t=e.target;
+      if(t.tagName==='BUTTON'||t.tagName==='A'||t.classList.contains('sb-item')||t.classList.contains('market-card')||t.classList.contains('tab-item')||t.classList.contains('tf-btn')||t.style.cursor==='pointer'||t.closest('[onclick]')||t.closest('button')||t.closest('a')||t.closest('.sb-item')||t.closest('.market-card'))
+        document.body.classList.add('cursor-hover');
+    });
+    document.addEventListener('mouseout',function(e){
+      var t=e.target;
+      if(t.tagName==='BUTTON'||t.tagName==='A'||t.classList.contains('sb-item')||t.classList.contains('market-card')||t.classList.contains('tab-item')||t.classList.contains('tf-btn')||t.closest('[onclick]')||t.closest('button')||t.closest('a')||t.closest('.sb-item')||t.closest('.market-card'))
+        document.body.classList.remove('cursor-hover');
+    });
+    if('ontouchstart' in window){dot.style.display='none';ring.style.display='none';}
+  })();
+  </script>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+  window.showToast=function(msg,type){var c=document.getElementById("toast-container");if(!c)return;var d=document.createElement("div");d.className="toast toast-"+(type||"success");d.textContent=msg;c.appendChild(d);setTimeout(function(){d.style.opacity="0";d.style.transition="opacity 0.3s";setTimeout(function(){d.remove()},300)},4000)};
+  </script>
+
+  <script type="text/babel">
+  const { useState, useEffect, useRef, useMemo } = React;
+
+  // ═══════════════════════════════════════
+  // DEMO DATA
+  // ═══════════════════════════════════════
+
+  const DEMO_BOTS = [
+    { id:'btc_usdt', pair:'BTC/USDT', tf:'1d', mode:'paper', trades:24, capital:12450.50, change:24.51, price:108534.20, status:'running', has_position:true },
+    { id:'eth_usdt', pair:'ETH/USDT', tf:'4h', mode:'paper', trades:31, capital:10820.30, change:8.20, price:2847.15, status:'running', has_position:false },
+    { id:'sol_usdt', pair:'SOL/USDT', tf:'4h', mode:'paper', trades:18, capital:10340.75, change:3.41, price:178.42, status:'running', has_position:false },
+    { id:'idx_sp500', pair:'SP500', tf:'1d', mode:'paper', trades:15, capital:11250.00, change:12.50, price:5892.30, status:'running', has_position:false },
+    { id:'idx_nikkei', pair:'NIKKEI', tf:'1d', mode:'paper', trades:12, capital:10150.80, change:1.51, price:38452.00, status:'running', has_position:false },
+    { id:'fx_eurusd', pair:'EUR/USD', tf:'4h', mode:'paper', trades:42, capital:10680.20, change:6.80, price:1.0847, status:'running', has_position:true },
+    { id:'fut_gold', pair:'GOLD', tf:'4h', mode:'paper', trades:20, capital:10520.40, change:5.20, price:2412.50, status:'running', has_position:false },
+    { id:'fut_oil', pair:'CRUDE OIL', tf:'1d', mode:'paper', trades:8, capital:10238.00, change:2.38, price:78.45, status:'running', has_position:false },
+  ];
+
+  const DETAIL_DATA = {
+    btc_usdt: {
+      price: 108534.20,
+      indicators: { ma_fast: 106200, ma_200: 98500, rsi: 62, atr_pct: 2.15, volume_ratio: 1.35 },
+      metrics: { total_trades:24, wins:16, losses:8, win_rate:66.7, profit_factor:2.84, total_pnl:2450.50, fees_paid:48.20, best_trade:8.52, worst_trade:-3.21 },
+      equity: [10000,10120,10080,10250,10180,10420,10350,10580,10720,10690,10850,10940,11020,10980,11150,11280,11420,11350,11580,11720,11890,12050,12180,12350,12450],
+      position: { entry:105200, size:850, open_time:'2026-05-24T14:30:00', current_pnl:3.17, max_pnl:4.25 },
+      momentum_up: true, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-23', entry:102500, exit:105200, pnl_pct:2.63, pnl_usdt:263.40, reason:'TP' },
+        { close_time:'2026-05-20', entry:104800, exit:103200, pnl_pct:-1.53, pnl_usdt:-153.00, reason:'SL' },
+        { close_time:'2026-05-18', entry:99800, exit:104200, pnl_pct:4.41, pnl_usdt:441.00, reason:'TP' },
+        { close_time:'2026-05-15', entry:101500, exit:103800, pnl_pct:2.27, pnl_usdt:226.50, reason:'TRAIL' },
+        { close_time:'2026-05-12', entry:98200, exit:97500, pnl_pct:-0.71, pnl_usdt:-71.40, reason:'SL' },
+        { close_time:'2026-05-10', entry:95800, exit:99200, pnl_pct:3.55, pnl_usdt:355.00, reason:'TP' },
+      ],
+      analysis: [
+        { time:'2026-05-25T10:30:00', action:'confirm', confidence:0.82, reasoning:'ML BUY (82% conf, 3 models) | top: rsi, macd_hist, vol_ratio' },
+        { time:'2026-05-24T14:15:00', action:'confirm', confidence:0.76, reasoning:'ML BUY (76% conf, 3 models) | top: dist_ma50, ret_5, bb_pctb' },
+        { time:'2026-05-23T22:00:00', action:'reject', confidence:0.68, reasoning:'ML uncertain (B=32% H=41% S=27%) | top: vol_ratio, rsi_change, atr_norm' },
+        { time:'2026-05-22T18:30:00', action:'confirm', confidence:0.71, reasoning:'ML leans BUY (71%) | top: macd_cross, dist_ma200, weekly_ret' },
+      ],
+      logs: [
+        { time:'2026-05-25T11:00:15', level:'success', message:'BTC/USDT price: $108,534.20 | RSI: 62 | UP' },
+        { time:'2026-05-25T10:30:00', level:'trade', message:'ML CONFIRM: BUY signal validated (82% conf)' },
+        { time:'2026-05-24T14:30:00', level:'trade', message:'ENTRY: BTC/USDT @ $105,200.00 | Size: $850' },
+        { time:'2026-05-24T14:15:00', level:'success', message:'Signal detected: MA cross + RSI momentum' },
+        { time:'2026-05-23T22:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=32%)' },
+      ]
+    },
+    idx_sp500: {
+      price: 5892.30,
+      indicators: { ma_fast: 5840, ma_200: 5420, rsi: 58, atr_pct: 1.05, volume_ratio: 1.12 },
+      metrics: { total_trades:15, wins:10, losses:5, win_rate:66.7, profit_factor:2.41, total_pnl:1250.00, fees_paid:32.50, best_trade:5.80, worst_trade:-2.10 },
+      equity: [10000,10050,10120,10090,10200,10180,10350,10420,10380,10520,10600,10680,10750,10900,10980,11050,11120,11250],
+      position: null,
+      momentum_up: true, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-22', entry:5780, exit:5860, pnl_pct:1.38, pnl_usdt:138.40, reason:'TP' },
+        { close_time:'2026-05-19', entry:5820, exit:5750, pnl_pct:-1.20, pnl_usdt:-120.00, reason:'SL' },
+        { close_time:'2026-05-16', entry:5650, exit:5800, pnl_pct:2.65, pnl_usdt:265.50, reason:'TP' },
+        { close_time:'2026-05-13', entry:5700, exit:5780, pnl_pct:1.40, pnl_usdt:140.00, reason:'TRAIL' },
+        { close_time:'2026-05-09', entry:5600, exit:5550, pnl_pct:-0.89, pnl_usdt:-89.30, reason:'SL' },
+      ],
+      analysis: [
+        { time:'2026-05-25T09:00:00', action:'confirm', confidence:0.74, reasoning:'ML BUY (74% conf, 3 models) | top: dist_ma200, weekly_ret, rsi' },
+        { time:'2026-05-24T15:30:00', action:'reject', confidence:0.55, reasoning:'ML uncertain (B=35% H=38% S=27%) | top: vol_ratio, atr_norm, bb_width' },
+        { time:'2026-05-23T09:00:00', action:'confirm', confidence:0.69, reasoning:'ML leans BUY (69%) | top: macd_cross, dist_ma50, ret_10' },
+      ],
+      logs: [
+        { time:'2026-05-25T09:30:00', level:'success', message:'SP500 price: $5,892.30 | RSI: 58 | UP' },
+        { time:'2026-05-25T09:00:00', level:'trade', message:'ML CONFIRM: BUY signal validated (74% conf)' },
+        { time:'2026-05-24T16:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=35%)' },
+        { time:'2026-05-24T15:30:00', level:'success', message:'Market close scan complete' },
+      ]
+    },
+    fx_eurusd: {
+      price: 1.0847,
+      indicators: { ma_fast: 1.0820, ma_200: 1.0650, rsi: 55, atr_pct: 0.45, volume_ratio: 0.98 },
+      metrics: { total_trades:42, wins:26, losses:16, win_rate:61.9, profit_factor:1.92, total_pnl:680.20, fees_paid:85.40, best_trade:3.20, worst_trade:-1.85 },
+      equity: [10000,10020,10050,10030,10080,10060,10120,10100,10150,10180,10160,10220,10250,10230,10290,10320,10300,10360,10400,10380,10430,10460,10500,10540,10580,10560,10620,10650,10680],
+      position: { entry:1.0810, size:420, open_time:'2026-05-25T08:15:00', current_pnl:0.34, max_pnl:0.52 },
+      momentum_up: true, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-24', entry:1.0780, exit:1.0830, pnl_pct:0.46, pnl_usdt:46.30, reason:'TP' },
+        { close_time:'2026-05-23', entry:1.0850, exit:1.0820, pnl_pct:-0.28, pnl_usdt:-27.60, reason:'SL' },
+        { close_time:'2026-05-22', entry:1.0750, exit:1.0820, pnl_pct:0.65, pnl_usdt:65.10, reason:'TP' },
+        { close_time:'2026-05-21', entry:1.0800, exit:1.0840, pnl_pct:0.37, pnl_usdt:37.00, reason:'TRAIL' },
+        { close_time:'2026-05-20', entry:1.0830, exit:1.0790, pnl_pct:-0.37, pnl_usdt:-36.90, reason:'SL' },
+        { close_time:'2026-05-19', entry:1.0720, exit:1.0790, pnl_pct:0.65, pnl_usdt:65.20, reason:'TP' },
+      ],
+      analysis: [
+        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.71, reasoning:'ML BUY (71% conf, 3 models) | top: dist_ma50, ret_5, rsi' },
+        { time:'2026-05-24T12:00:00', action:'confirm', confidence:0.68, reasoning:'ML leans BUY (68%) | top: macd_hist, bb_pctb, vol_ratio' },
+        { time:'2026-05-23T16:00:00', action:'reject', confidence:0.52, reasoning:'ML uncertain (B=28% H=44% S=28%) | top: atr_norm, rsi_change, dist_ma200' },
+      ],
+      logs: [
+        { time:'2026-05-25T08:30:00', level:'success', message:'EUR/USD price: $1.0847 | RSI: 55 | STABLE' },
+        { time:'2026-05-25T08:15:00', level:'trade', message:'ENTRY: EUR/USD @ $1.0810 | Size: $420' },
+        { time:'2026-05-25T08:00:00', level:'trade', message:'ML CONFIRM: BUY signal validated (71% conf)' },
+        { time:'2026-05-24T12:00:00', level:'success', message:'London session active — scanning pairs' },
+        { time:'2026-05-23T16:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=28%)' },
+      ]
+    },
+    eth_usdt: {
+      price: 2847.15,
+      indicators: { ma_fast: 2790, ma_200: 2450, rsi: 54, atr_pct: 2.80, volume_ratio: 1.18 },
+      metrics: { total_trades:31, wins:18, losses:13, win_rate:58.1, profit_factor:1.76, total_pnl:820.30, fees_paid:62.10, best_trade:6.20, worst_trade:-2.80 },
+      equity: [10000,10040,10010,10080,10050,10130,10100,10180,10220,10190,10270,10310,10280,10360,10400,10380,10450,10490,10520,10560,10600,10640,10680,10720,10780,10820],
+      position: null,
+      momentum_up: false, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-23', entry:2780, exit:2840, pnl_pct:2.16, pnl_usdt:216.00, reason:'TP' },
+        { close_time:'2026-05-21', entry:2810, exit:2750, pnl_pct:-2.14, pnl_usdt:-213.50, reason:'SL' },
+        { close_time:'2026-05-19', entry:2650, exit:2780, pnl_pct:4.91, pnl_usdt:490.60, reason:'TP' },
+        { close_time:'2026-05-17', entry:2700, exit:2730, pnl_pct:1.11, pnl_usdt:111.10, reason:'TRAIL' },
+      ],
+      analysis: [
+        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.58, reasoning:'ML uncertain (B=30% H=42% S=28%) | top: rsi, vol_ratio, atr_norm' },
+        { time:'2026-05-24T09:00:00', action:'confirm', confidence:0.73, reasoning:'ML BUY (73% conf, 3 models) | top: dist_ma200, ret_10, macd_hist' },
+      ],
+      logs: [
+        { time:'2026-05-25T09:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=30%)' },
+        { time:'2026-05-25T08:00:00', level:'success', message:'ETH/USDT price: $2,847.15 | RSI: 54 | NEUTRAL' },
+      ]
+    },
+    sol_usdt: {
+      price: 178.42,
+      indicators: { ma_fast: 172, ma_200: 145, rsi: 48, atr_pct: 3.50, volume_ratio: 1.05 },
+      metrics: { total_trades:18, wins:10, losses:8, win_rate:55.6, profit_factor:1.52, total_pnl:340.75, fees_paid:28.60, best_trade:7.10, worst_trade:-3.80 },
+      equity: [10000,10020,9980,10050,10010,10080,10040,10120,10090,10160,10130,10200,10180,10250,10220,10300,10340],
+      position: null,
+      momentum_up: false, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-22', entry:170, exit:178, pnl_pct:4.71, pnl_usdt:470.60, reason:'TP' },
+        { close_time:'2026-05-20', entry:175, exit:169, pnl_pct:-3.43, pnl_usdt:-342.80, reason:'SL' },
+        { close_time:'2026-05-18', entry:162, exit:172, pnl_pct:6.17, pnl_usdt:617.30, reason:'TP' },
+      ],
+      analysis: [
+        { time:'2026-05-25T10:00:00', action:'reject', confidence:0.55, reasoning:'ML uncertain (B=28% H=45% S=27%) | top: vol_ratio, rsi, bb_width' },
+      ],
+      logs: [
+        { time:'2026-05-25T10:00:00', level:'warning', message:'ML REJECT: uncertain signal' },
+        { time:'2026-05-25T08:00:00', level:'success', message:'SOL/USDT price: $178.42 | RSI: 48 | NEUTRAL' },
+      ]
+    },
+    idx_nikkei: {
+      price: 38452.00,
+      indicators: { ma_fast: 38100, ma_200: 36200, rsi: 51, atr_pct: 1.20, volume_ratio: 0.95 },
+      metrics: { total_trades:12, wins:7, losses:5, win_rate:58.3, profit_factor:1.68, total_pnl:150.80, fees_paid:24.00, best_trade:4.20, worst_trade:-2.50 },
+      equity: [10000,10010,10030,10020,10050,10040,10080,10070,10100,10120,10140,10150],
+      position: null,
+      momentum_up: false, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-21', entry:37800, exit:38200, pnl_pct:1.06, pnl_usdt:105.80, reason:'TP' },
+        { close_time:'2026-05-18', entry:38100, exit:37600, pnl_pct:-1.31, pnl_usdt:-131.20, reason:'SL' },
+        { close_time:'2026-05-15', entry:37200, exit:37900, pnl_pct:1.88, pnl_usdt:188.20, reason:'TP' },
+      ],
+      analysis: [
+        { time:'2026-05-25T02:00:00', action:'confirm', confidence:0.65, reasoning:'ML leans BUY (65%) | top: dist_ma200, weekly_ret, rsi' },
+      ],
+      logs: [
+        { time:'2026-05-25T02:00:00', level:'success', message:'NIKKEI price: 38,452.00 | RSI: 51 | NEUTRAL' },
+      ]
+    },
+    fut_gold: {
+      price: 2412.50,
+      indicators: { ma_fast: 2380, ma_200: 2150, rsi: 60, atr_pct: 1.10, volume_ratio: 1.22 },
+      metrics: { total_trades:20, wins:13, losses:7, win_rate:65.0, profit_factor:2.15, total_pnl:520.40, fees_paid:40.00, best_trade:4.80, worst_trade:-2.10 },
+      equity: [10000,10030,10060,10040,10100,10080,10150,10130,10200,10230,10210,10280,10310,10350,10380,10420,10460,10490,10520],
+      position: null,
+      momentum_up: true, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-23', entry:2370, exit:2410, pnl_pct:1.69, pnl_usdt:168.80, reason:'TP' },
+        { close_time:'2026-05-20', entry:2400, exit:2360, pnl_pct:-1.67, pnl_usdt:-166.80, reason:'SL' },
+        { close_time:'2026-05-17', entry:2320, exit:2380, pnl_pct:2.59, pnl_usdt:258.60, reason:'TP' },
+      ],
+      analysis: [
+        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.78, reasoning:'ML BUY (78% conf, 3 models) | top: dist_ma200, vol_ratio, ret_10' },
+      ],
+      logs: [
+        { time:'2026-05-25T08:00:00', level:'success', message:'GOLD price: $2,412.50 | RSI: 60 | UP' },
+      ]
+    },
+    fut_oil: {
+      price: 78.45,
+      indicators: { ma_fast: 76.80, ma_200: 72.50, rsi: 46, atr_pct: 2.30, volume_ratio: 0.88 },
+      metrics: { total_trades:8, wins:4, losses:4, win_rate:50.0, profit_factor:1.28, total_pnl:238.00, fees_paid:16.00, best_trade:3.80, worst_trade:-2.90 },
+      equity: [10000,10010,9990,10020,10040,10030,10080,10120,10238],
+      position: null,
+      momentum_up: false, above_ma200: true,
+      trades: [
+        { close_time:'2026-05-22', entry:76.50, exit:78.20, pnl_pct:2.22, pnl_usdt:222.20, reason:'TP' },
+        { close_time:'2026-05-18', entry:79.00, exit:77.10, pnl_pct:-2.41, pnl_usdt:-240.50, reason:'SL' },
+      ],
+      analysis: [
+        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.48, reasoning:'ML uncertain (B=24% H=48% S=28%) | too volatile' },
+      ],
+      logs: [
+        { time:'2026-05-25T09:00:00', level:'warning', message:'OIL: volatility elevated — skipping signal' },
+        { time:'2026-05-25T08:00:00', level:'success', message:'CRUDE OIL price: $78.45 | RSI: 46 | NEUTRAL' },
+      ]
+    },
+  };
+
+  // ═══════════════════════════════════════
+  // PROJECTION GENERATOR
+  // ═══════════════════════════════════════
+
+  function generateProjection(currentPrice, horizon) {
+    const config = {
+      '4h': { points: 8, histLen: 8 },
+      '1d': { points: 24, histLen: 24 },
+      '1w': { points: 7, histLen: 7 },
+      '1m': { points: 30, histLen: 30 },
+      '3m': { points: 13, histLen: 13 },
+      '6m': { points: 26, histLen: 26 },
+      '1y': { points: 52, histLen: 52 },
+    };
+    const cfg = config[horizon];
+    const drift = 0.002;
+    const vol = 0.015;
+
+    let hist = [currentPrice];
+    for (let i = 1; i < cfg.histLen; i++) {
+      hist.unshift(hist[0] * (1 - drift + (Math.random()-0.5)*vol*2));
+    }
+
+    let proj = [], upper = [], lower = [];
+    let seed = horizon.charCodeAt(0) * 137;
+    function seededRandom() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+
+    for (let i = 1; i <= cfg.points; i++) {
+      let r = drift * i + (seededRandom()-0.5)*vol*0.5;
+      let p = currentPrice * (1 + r);
+      let width = vol * Math.sqrt(i) * 1.645 * currentPrice;
+      proj.push(p);
+      upper.push(p + width);
+      lower.push(p - width);
+    }
+
+    return { hist, proj, upper, lower };
+  }
+
+  // ═══════════════════════════════════════
+  // SVG ICONS
+  // ═══════════════════════════════════════
+
+  const Ico = {
+    Grid: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
+    Chart: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    Gear: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+    ChevR: () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>,
+    ChevL: () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>,
+    Lyra: () => (
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" style={{filter:'drop-shadow(0 0 8px rgba(139,92,246,0.3))'}}>
+        <circle cx="16" cy="6" r="2" fill="#8b5cf6"/>
+        <circle cx="8" cy="14" r="1.8" fill="#8b5cf6" opacity="0.8"/>
+        <circle cx="24" cy="14" r="1.8" fill="#8b5cf6" opacity="0.8"/>
+        <circle cx="10" cy="24" r="1.5" fill="#8b5cf6" opacity="0.6"/>
+        <circle cx="22" cy="24" r="1.5" fill="#8b5cf6" opacity="0.6"/>
+        <circle cx="16" cy="16" r="2.2" fill="#8b5cf6"/>
+        <line x1="16" y1="6" x2="8" y2="14" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.5"/>
+        <line x1="16" y1="6" x2="24" y2="14" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.5"/>
+        <line x1="8" y1="14" x2="16" y2="16" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.5"/>
+        <line x1="24" y1="14" x2="16" y2="16" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.5"/>
+        <line x1="8" y1="14" x2="10" y2="24" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.4"/>
+        <line x1="24" y1="14" x2="22" y2="24" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.4"/>
+        <line x1="16" y1="16" x2="10" y2="24" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.4"/>
+        <line x1="16" y1="16" x2="22" y2="24" stroke="#8b5cf6" strokeWidth="0.8" opacity="0.4"/>
+      </svg>
+    ),
+  };
+
+  // ═══════════════════════════════════════
+  // SIDEBAR
+  // ═══════════════════════════════════════
+
+  function SbItem({ icon, label, active, onClick, badge }) {
+    return (
+      <div className={`sb-item ${active ? 'active' : ''}`} onClick={onClick} title={label}>
+        <span className="sb-icon">{icon}</span>
+        <span className="sb-label">{label}</span>
+        {badge > 0 && <span className="sb-badge">{badge}</span>}
+      </div>
+    );
+  }
+
+  function Sidebar({ page, onNav }) {
+    const [exp, setExp] = useState(() => {
+      try { return localStorage.getItem('lyra3_demo_sb') === '1'; } catch { return false; }
+    });
+    const toggle = () => { const n = !exp; setExp(n); try { localStorage.setItem('lyra3_demo_sb', n ? '1' : '0'); } catch {} };
+
+    return (
+      <div className={`sidebar ${exp ? 'expanded' : ''}`}>
+        <div className="sb-brand">
+          <div className="sb-logo"><Ico.Lyra /></div>
+          <span className="sb-brand-text">LYRA</span>
+        </div>
+
+        <div className="sb-section">Portfolio</div>
+        <SbItem icon={<Ico.Grid />} label="Portfolio" active={page==='portfolio'} onClick={() => onNav('portfolio')} badge={8} />
+        <SbItem icon={<Ico.Chart />} label="Analytics" active={page==='analytics'} onClick={() => onNav('analytics')} />
+
+        <div className="sb-divider" />
+        <div className="sb-section">System</div>
+        <SbItem icon={<Ico.Gear />} label="Settings" active={page==='settings'} onClick={() => onNav('settings')} />
+
+        <div className="sb-spacer" />
+
+        <div style={{ display:'flex', alignItems:'center', gap:10, padding:'0 17px', marginBottom:8, flexShrink:0 }}>
+          <span className="sb-icon" style={{ display:'flex', alignItems:'center', justifyContent:'center' }}><span className="status-dot status-dot-live" /></span>
+          <span className="sb-label" style={{ fontSize:10, color:'var(--green)' }}>Online</span>
+        </div>
+
+        <div className="sb-divider" />
+        <div className="sb-toggle" onClick={toggle} title={exp ? 'Collapse' : 'Expand'}>
+          {exp ? <Ico.ChevL /> : <Ico.ChevR />}
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // MARKET CARD
+  // ═══════════════════════════════════════
+
+  function MarketCard({ bot, onClick }) {
+    const fmt = v => v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const hasPos = !!bot.has_position;
+    return (
+      <div className={`market-card ${hasPos?'mc-pos-glow':''}`} onClick={()=>onClick(bot)}>
+        {hasPos ? (
+          <div className="mc-status" style={{flexDirection:'column',alignItems:'flex-end',gap:3}}>
+            <span className="mc-pos-tag">&#9650; POSITION</span>
+          </div>
+        ) : (
+          <div className="mc-status" style={{color:'var(--green)'}}>
+            <span className="status-dot status-dot-live" style={{background:'var(--green)'}}/>
+            <span style={{fontSize:10}}>Active</span>
+          </div>
+        )}
+        <div className="mc-pair">{bot.pair}</div>
+        <div className="mc-meta">{bot.tf} &middot; {bot.mode} &middot; {bot.trades} trade{bot.trades!==1?'s':''}</div>
+        <div className="mc-value">${fmt(bot.capital)}</div>
+        <div className={`mc-change ${bot.change>=0?'t-green':'t-red'}`}>
+          {bot.change>=0?'+':''}{bot.change.toFixed(2)}%
+        </div>
+        <div className="mc-price">${bot.price >= 1 ? bot.price.toLocaleString('en-US',{maximumFractionDigits:2}) : bot.price.toFixed(4)}</div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // EQUITY CURVE (SVG)
+  // ═══════════════════════════════════════
+
+  function EquityCurve({ data }) {
+    const [tl, setTl] = useState('all');
+    const [hov, setHov] = useState(null);
+    const full = data && data.length > 1 ? data : [1000, 1000];
+    const tlMap = { '1w': 7, '1m': 30, '3m': 90, '6m': 180, '1y': 365, 'all': Infinity };
+    const n = tlMap[tl] || Infinity;
+    const pts = n >= full.length ? full : full.slice(-n);
+    const W = 600, H = 140, pl = 60, pr = 10, pt = 8, pb = 20;
+    const minV = Math.min(...pts) - 20, maxV = Math.max(...pts) + 20, rng = maxV - minV || 1;
+    const mx = i => pl + (i / (pts.length - 1)) * (W - pl - pr);
+    const my = v => H - pb - ((v - minV) / rng) * (H - pt - pb);
+    const line = pts.map((v, i) => `${i === 0 ? 'M' : 'L'}${mx(i).toFixed(1)},${my(v).toFixed(1)}`).join(' ');
+    const area = line + ` L${mx(pts.length - 1).toFixed(1)},${H - pb} L${mx(0).toFixed(1)},${H - pb} Z`;
+    const yl = Array.from({length: 6}, (_, i) => { const v = minV + rng * i / 5; return {v, y: my(v)}; });
+    const onMove = e => {
+      const svg = e.currentTarget; const rect = svg.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width * W;
+      if (x < pl || x > W - pr) { setHov(null); return; }
+      const idx = Math.round((x - pl) / (W - pl - pr) * (pts.length - 1));
+      const ci = Math.max(0, Math.min(pts.length - 1, idx));
+      setHov({ x: mx(ci), y: my(pts[ci]), val: pts[ci] });
+    };
+    const fmtV = v => v >= 10000 ? '$' + (v/1000).toFixed(1) + 'k' : '$' + v.toLocaleString('en-US',{maximumFractionDigits:0});
+    return (
+      <div>
+        <div style={{display:'flex',gap:2,marginBottom:6}}>
+          {[['1W','1w'],['1M','1m'],['3M','3m'],['6M','6m'],['1Y','1y'],['All','all']].map(([label,k]) => (
+            <span key={k} onClick={()=>setTl(k)} style={{fontSize:9,padding:'2px 6px',borderRadius:3,cursor:'pointer',color:tl===k?'var(--accent)':'var(--text-muted)',background:tl===k?'var(--accent-dim)':'transparent',fontWeight:tl===k?600:400,transition:'all .12s',letterSpacing:'.02em'}}>{label}</span>
+          ))}
+        </div>
+        <svg width="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" style={{display:'block',cursor:'crosshair'}} onMouseMove={onMove} onMouseLeave={()=>setHov(null)}>
+          <defs><linearGradient id="eq3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--accent)" stopOpacity="0.15"/><stop offset="100%" stopColor="var(--accent)" stopOpacity="0"/></linearGradient></defs>
+          {yl.map(({v, y}, i) => <g key={i}><line x1={pl} y1={y} x2={W - pr} y2={y} stroke="var(--border)" strokeWidth="1"/><text x={pl - 5} y={y + 3} fill="var(--text-muted)" fontSize="9" textAnchor="end" fontFamily="var(--mono)">{fmtV(v)}</text></g>)}
+          <path d={area} fill="url(#eq3)"/>
+          <path d={line} fill="none" stroke="var(--accent)" strokeWidth="1.8" style={{strokeDasharray:'8000',strokeDashoffset:'8000',animation:'drawIn 1.5s cubic-bezier(0.4,0,0.2,1) 0.15s forwards'}}/>
+          {!hov&&pts.length>0&&<><circle cx={mx(pts.length-1)} cy={my(pts[pts.length-1])} r="3" fill="var(--accent)"/><circle cx={mx(pts.length-1)} cy={my(pts[pts.length-1])} r="6" fill="var(--accent)" opacity="0.15"/></>}
+          {hov&&<>
+            <line x1={hov.x} y1={pt} x2={hov.x} y2={H-pb} stroke="var(--accent)" strokeWidth="0.6" strokeDasharray="3,2" opacity="0.4"/>
+            <line x1={pl} y1={hov.y} x2={W-pr} y2={hov.y} stroke="var(--accent)" strokeWidth="0.4" strokeDasharray="3,2" opacity="0.25"/>
+            <circle cx={hov.x} cy={hov.y} r="3.5" fill="var(--accent)"/>
+            <circle cx={hov.x} cy={hov.y} r="7" fill="var(--accent)" opacity="0.12"/>
+            <rect x={hov.x-28} y={hov.y-20} width="56" height="15" rx="3" fill="var(--bg-raised)" stroke="var(--border)" strokeWidth="0.5"/>
+            <text x={hov.x} y={hov.y-10} textAnchor="middle" fill="var(--accent)" fontSize="8.5" fontWeight="600" fontFamily="var(--mono)">{fmtV(hov.val)}</text>
+          </>}
+        </svg>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // TRADE HISTORY
+  // ═══════════════════════════════════════
+
+  function TradeHistory({ trades }) {
+    if (!trades || !trades.length) return <div className="t-muted" style={{padding:'10px 0',fontSize:12}}>No trades yet.</div>;
+    const fmtP = v => v >= 100 ? '$' + v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '$' + v.toFixed(4);
+    const fmtDate = iso => { try { const d = new Date(iso); return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`; } catch { return ''; } };
+    return (
+      <div style={{overflowX:'auto',WebkitOverflowScrolling:'touch'}}>
+        <div style={{minWidth:340}}>
+        <div style={{display:'grid',gridTemplateColumns:'16px 68px 1fr 70px 80px',gap:7,padding:'5px 0',borderBottom:'1px solid var(--border)',marginBottom:3}}>
+          {['','Date','Entry \u2192 Exit','P&L','Reason'].map((h, i) => <span key={i} style={{fontSize:9,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--text-muted)'}}>{h}</span>)}
+        </div>
+        {trades.map((t, i) => (
+          <div key={i} style={{display:'grid',gridTemplateColumns:'16px 68px 1fr 70px 80px',gap:7,padding:'7px 0',borderBottom:'1px solid var(--border)',fontSize:11,animation:`fadeUp 0.2s ease ${i*0.04}s both`,alignItems:'center'}}>
+            <span style={{color:t.pnl_pct>=0?'var(--green)':'var(--red)',fontWeight:600}}>{t.pnl_pct>=0?'\u2191':'\u2193'}</span>
+            <span className="t-dim">{fmtDate(t.close_time)}</span>
+            <span className="t-mono" style={{fontSize:10}}>{fmtP(t.entry)} \u2192 {fmtP(t.exit)}</span>
+            <span style={{fontWeight:600,color:t.pnl_pct>=0?'var(--green)':'var(--red)'}} className="t-mono">{t.pnl_pct>=0?'+':''}{t.pnl_pct.toFixed(2)}%<div style={{fontSize:9,fontWeight:400,color:'var(--text-muted)'}}>{t.pnl_usdt>=0?'+':''}{t.pnl_usdt.toFixed(2)}$</div></span>
+            <span><span className={`trade-tag ${t.pnl_pct>=0?'tag-profit':'tag-loss'}`}>{t.reason}</span></span>
+          </div>
+        ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // POSITION PANEL
+  // ═══════════════════════════════════════
+
+  function PositionPanel({ detail }) {
+    const pos = detail && detail.position;
+    if (!pos) return <div className="no-position"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>No position</div>;
+    const fmtP = v => v >= 100 ? v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : v.toFixed(4);
+    const pnlPct = pos.current_pnl || 0;
+    const pnlColor = pnlPct >= 0 ? 'var(--green)' : 'var(--red)';
+    let durStr = '';
+    if (pos.open_time) {
+      const ms = Date.now() - new Date(pos.open_time).getTime();
+      const h = Math.floor(Math.abs(ms) / 3600000); const m = Math.floor((Math.abs(ms) % 3600000) / 60000);
+      durStr = `${h}h ${m}m`;
+    }
+    return (
+      <div style={{display:'flex',flexDirection:'column',gap:9,paddingTop:4}}>
+        <div style={{display:'flex',alignItems:'center',gap:7}}>
+          <span className="status-dot status-dot-live" style={{background:'var(--orange)'}} />
+          <span style={{fontWeight:600,fontSize:12,color:'var(--orange)'}}>LONG</span>
+        </div>
+        {[['Entry', '$' + fmtP(pos.entry)], ['Current', '$' + fmtP(detail.price)], ['Size', '$' + pos.size.toFixed(2)], ['Unrealized', null], ['Duration', durStr]].map(([l, v]) => (
+          <div key={l} style={{display:'flex',justifyContent:'space-between',fontSize:11}}>
+            <span style={{fontSize:10,textTransform:'uppercase',letterSpacing:'.06em',color:'var(--text-muted)'}}>{l}</span>
+            {l === 'Unrealized' ? <span style={{fontWeight:600,color:pnlColor}}>{pnlPct >= 0 ? '+' : ''}{pnlPct.toFixed(2)}%</span> : <span style={{fontWeight:500}} className="t-mono">{v}</span>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // PRICE EXPECTATION (Chart.js)
+  // ═══════════════════════════════════════
+
+  function PriceExpectation({ botId, currentPrice }) {
+    const [horizon, setHorizon] = useState('1w');
+    const canvasRef = useRef(null);
+    const chartRef = useRef(null);
+
+    const horizons = [['4H','4h'],['1D','1d'],['1W','1w'],['1M','1m'],['3M','3m'],['6M','6m'],['1Y','1y']];
+
+    useEffect(() => {
+      if (!canvasRef.current || typeof Chart === 'undefined') return;
+      if (chartRef.current) chartRef.current.destroy();
+
+      const data = generateProjection(currentPrice, horizon);
+      const nHist = data.hist.length;
+
+      const histLabels = data.hist.map((_, i) => `H${i}`);
+      const projLabels = data.proj.map((_, i) => `P${i+1}`);
+      const labels = [...histLabels, ...projLabels];
+
+      const histLine = [...data.hist, ...Array(data.proj.length).fill(null)];
+      const projLine = [...Array(nHist - 1).fill(null), data.hist[nHist - 1], ...data.proj];
+      const upperLine = [...Array(nHist - 1).fill(null), data.hist[nHist - 1], ...data.upper];
+      const lowerLine = [...Array(nHist - 1).fill(null), data.hist[nHist - 1], ...data.lower];
+
+      const nowLinePlugin = {
+        id: 'nowLine',
+        afterDraw(chart) {
+          const xScale = chart.scales.x;
+          const yScale = chart.scales.y;
+          const idx = nHist - 1;
+          if (idx < 0 || idx >= labels.length) return;
+          const x = xScale.getPixelForValue(idx);
+          const ctx2 = chart.ctx;
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.setLineDash([3, 3]);
+          ctx2.strokeStyle = 'rgba(148,163,184,0.25)';
+          ctx2.lineWidth = 1;
+          ctx2.moveTo(x, yScale.top);
+          ctx2.lineTo(x, yScale.bottom);
+          ctx2.stroke();
+          ctx2.setLineDash([]);
+          ctx2.fillStyle = 'rgba(148,163,184,0.4)';
+          ctx2.font = '8px JetBrains Mono, monospace';
+          ctx2.textAlign = 'center';
+          ctx2.fillText('NOW', x, yScale.top - 4);
+          ctx2.restore();
+        }
+      };
+
+      chartRef.current = new Chart(canvasRef.current.getContext('2d'), {
+        type: 'line',
+        plugins: [nowLinePlugin],
+        data: {
+          labels,
+          datasets: [
+            { label: 'Historical', data: histLine, borderColor: '#e2e8f0', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.1, order: 1 },
+            { label: 'Projected', data: projLine, borderColor: '#06b6d4', borderWidth: 2, borderDash: [6, 3], pointRadius: 0, fill: false, tension: 0.2, order: 2 },
+            { label: 'Upper', data: upperLine, borderColor: 'rgba(6,182,212,0.25)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, fill: '+1', backgroundColor: 'rgba(6,182,212,0.06)', tension: 0.2, order: 3 },
+            { label: 'Lower', data: lowerLine, borderColor: 'rgba(6,182,212,0.25)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, fill: false, tension: 0.2, order: 4 },
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(12,12,22,0.92)',
+              borderColor: 'rgba(6,182,212,0.3)',
+              borderWidth: 1,
+              titleFont: { family: "'JetBrains Mono', monospace", size: 10 },
+              bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+              titleColor: 'rgba(148,163,184,0.6)',
+              bodyColor: '#e2e8f0',
+              padding: 8,
+              callbacks: {
+                label: function(item) {
+                  if (item.raw == null) return null;
+                  const v = '$' + item.raw.toLocaleString('en-US', { maximumFractionDigits: 2 });
+                  return item.dataset.label + ': ' + v;
+                }
+              },
+              filter: function(item) { return item.raw != null; }
+            }
+          },
+          scales: {
+            x: {
+              display: true,
+              grid: { color: 'rgba(255,255,255,0.025)', drawBorder: false },
+              ticks: { display: false },
+            },
+            y: {
+              display: true,
+              position: 'right',
+              grid: { color: 'rgba(255,255,255,0.025)', drawBorder: false },
+              ticks: {
+                color: 'rgba(148,163,184,0.35)',
+                font: { family: "'JetBrains Mono', monospace", size: 8 },
+                callback: function(v) {
+                  if (v >= 10000) return '$' + (v/1000).toFixed(1) + 'k';
+                  if (v >= 1) return '$' + v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+                  return '$' + v.toFixed(4);
+                }
+              }
+            }
+          },
+          animation: { duration: 500, easing: 'easeOutQuart' }
+        }
+      });
+
+      return () => { if (chartRef.current) { chartRef.current.destroy(); chartRef.current = null; } };
+    }, [horizon, currentPrice]);
+
+    const dirColor = '#10b981';
+    const dirBg = 'rgba(16,185,129,0.08)';
+    const dirBorder = 'rgba(16,185,129,0.2)';
+
+    return (
+      <div className="card" style={{marginBottom:14,padding:'14px 18px'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8,flexWrap:'wrap',gap:6}}>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <span style={{fontSize:10,letterSpacing:'.08em',textTransform:'uppercase',color:'#06b6d4',fontWeight:600}}>Price Expectation</span>
+            <span style={{fontSize:9,fontWeight:600,padding:'2px 6px',borderRadius:3,background:dirBg,color:dirColor,border:'1px solid '+dirBorder}}>
+              &#8599; BULLISH (72%)
+            </span>
+            <span style={{fontSize:8,color:'rgba(148,163,184,0.35)',fontFamily:'var(--mono)'}}>3 models</span>
+          </div>
+          <div style={{display:'flex',gap:2}}>
+            {horizons.map(([label,key]) => (
+              <span key={key} onClick={()=>setHorizon(key)} style={{fontSize:9,padding:'2px 6px',borderRadius:3,cursor:'pointer',color:horizon===key?'#06b6d4':'var(--text-muted)',background:horizon===key?'rgba(6,182,212,0.08)':'transparent',fontWeight:horizon===key?600:400,transition:'all .12s',letterSpacing:'.02em'}}>{label}</span>
+            ))}
+          </div>
+        </div>
+        <div style={{position:'relative',height:200}}>
+          <canvas ref={canvasRef} />
+        </div>
+        <div style={{textAlign:'right',marginTop:4}}>
+          <span style={{fontSize:8,color:'rgba(148,163,184,0.3)',fontStyle:'italic'}}>Projections are estimates — accuracy decreases over longer timeframes</span>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // BOT DETAIL PAGE
+  // ═══════════════════════════════════════
+
+  function BotDetail({ bot, onBack }) {
+    const [tab, setTab] = useState('history');
+    const detail = DETAIL_DATA[bot.id];
+    if (!detail) return <div className="main-content page-anim"><div className="t-muted" style={{padding:40,textAlign:'center'}}>No detail data available for this bot.</div><button className="back-link" onClick={onBack}>&larr; Back to Portfolio</button></div>;
+
+    const fmt = v => v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const ind = detail.indicators || {};
+    const met = detail.metrics || {};
+    const hasPos = !!detail.position;
+    const fmtTime = iso => { try { const d = new Date(iso); return d.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit',second:'2-digit'}); } catch { return ''; } };
+    const fmtDate = iso => { try { const d = new Date(iso); return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`; } catch { return ''; } };
+
+    const llmData = (detail.analysis || []).slice(0, 10).map(a => {
+      const actionMap = { confirm:'CONFIRM', reject:'REJECT' };
+      const colorMap = { confirm:'var(--green)', reject:'var(--red)' };
+      return {
+        time: fmtTime(a.time),
+        dec: `${(actionMap[a.action]||a.action).toUpperCase()} (${Math.round((a.confidence||0)*100)}%)`,
+        col: colorMap[a.action] || 'var(--text-muted)',
+        text: a.reasoning || ''
+      };
+    });
+
+    return (
+      <div className="main-content page-anim">
+        <button className="back-link" onClick={onBack}>&larr; Back to Portfolio</button>
+        <div className="bot-header">
+          <div className="bot-icon">{bot.pair.charAt(0)}</div>
+          <div>
+            <div style={{fontSize:18,fontWeight:600}}>{bot.pair}</div>
+            <div style={{fontSize:11,color:'var(--text-muted)',marginTop:1}}>{bot.tf} &middot; {bot.mode} &middot; ML Active</div>
+          </div>
+          <div className="bot-actions">
+            <button className="btn btn-ghost" style={{color:'var(--green)', borderColor:'var(--green-border)'}}>&#9679; Active</button>
+          </div>
+        </div>
+
+        <div className="card" style={{marginBottom:10,padding:'14px 18px'}}>
+          <div style={{display:'flex',alignItems:'flex-start',gap:24,flexWrap:'wrap'}}>
+            <div><div className="card-label">Price</div><div className="price-big">${fmt(detail.price)}</div></div>
+            <div style={{display:'flex',gap:18,paddingTop:18,flexWrap:'wrap'}}>
+              {[['MA50','$'+fmt(ind.ma_fast||0)],['MA200','$'+fmt(ind.ma_200||0)],['RSI',String(Math.round(ind.rsi||0))],['ATR%',(ind.atr_pct||0).toFixed(2)+'%'],['VOL',(ind.volume_ratio||0).toFixed(2)+'x']].map(([l,v],i)=>(
+                <div key={i} style={{textAlign:'center'}}><div className="ind-label">{l}</div><div className="ind-value">{v}</div></div>
+              ))}
+            </div>
+            <div style={{flex:1,paddingTop:18}}>
+              <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+                {detail.momentum_up && <span className="badge badge-green" style={{fontSize:10}}>&#8599; Momentum</span>}
+                {detail.above_ma200 && <span className="badge badge-accent" style={{fontSize:10}}>&#9679; MA200</span>}
+                {hasPos && <span className="badge badge-orange" style={{fontSize:10}}>&#9650; POSITION OPEN</span>}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="metrics-grid stagger">
+          {[
+            {l:'Capital',v:`$${fmt(bot.capital)}`,s:`${bot.change>=0?'+':''}${bot.change.toFixed(2)}%`,sc:bot.change>=0?'var(--green)':'var(--red)'},
+            {l:'Win Rate',v:met.win_rate!=null?met.win_rate.toFixed(0)+'%':'\u2014',s:`${met.wins||0}W / ${met.losses||0}L`,sc:'var(--text-muted)'},
+            {l:'Profit Factor',v:met.profit_factor!=null?met.profit_factor.toFixed(2):'\u2014',s:'',sc:''},
+            {l:'Trades',v:String(met.total_trades||0),s:'',sc:''},
+            {l:'Best / Worst',v:'',s:`${met.best_trade!=null?'+'+met.best_trade.toFixed(2)+'%':'\u2014'} / ${met.worst_trade!=null?met.worst_trade.toFixed(2)+'%':'\u2014'}`,sc:'var(--text-muted)'},
+            {l:'Fees',v:met.fees_paid!=null?'$'+met.fees_paid.toFixed(2):'$0.00',s:'',sc:''}
+          ].map(({l,v,s,sc},i)=>(
+            <div className="metric-card" key={i}><div className="metric-label">{l}</div>{v&&<div className="metric-value">{v}</div>}{s&&<div className="metric-sub" style={{color:sc||'inherit'}}>{s}</div>}</div>
+          ))}
+        </div>
+
+        <div className="chart-pos-grid">
+          <div className="card"><div className="card-label" style={{marginBottom:6}}>Equity Curve</div><EquityCurve data={detail.equity} /></div>
+          <div className={`card ${hasPos?'mc-pos-glow':''}`}><div className="card-label">Position</div><PositionPanel detail={detail} /></div>
+        </div>
+
+        <PriceExpectation botId={bot.id} currentPrice={detail.price} />
+
+        <div className="tab-bar" style={{marginBottom:10}}>
+          {[['history','Trade History'],['llm','ML Analysis'],['logs','Logs']].map(([k,l])=>(
+            <div key={k} className={`tab-item ${tab===k?'active':''}`} onClick={()=>setTab(k)}>{l}</div>
+          ))}
+        </div>
+
+        {tab==='history' && <div className="card page-anim" style={{padding:'14px 16px'}}><TradeHistory trades={detail.trades||[]} /></div>}
+        {tab==='llm' && (
+          <div className="panels-grid page-anim">
+            <div className="panel"><div className="panel-title">ML Analysis</div><div className="panel-scroll">
+              {llmData.length ? llmData.map((e,i)=>(<div className="llm-entry" key={i}><div className="llm-time">{e.time}</div><div className="llm-decision" style={{color:e.col}}>{e.dec}</div><div className="llm-text">{e.text}</div></div>))
+              : <div className="t-muted" style={{fontSize:11}}>No ML analysis yet.</div>}
+            </div></div>
+            <div className="panel"><div className="panel-title">Recent Trades</div>
+              {(detail.trades||[]).slice(0,3).map((t,i)=>(<div className="trade-entry" key={i}><div style={{display:'flex',alignItems:'center',gap:6}}><span style={{color:t.pnl_pct>=0?'var(--green)':'var(--red)',fontSize:13}}>{t.pnl_pct>=0?'\u2191':'\u2193'}</span><span className="t-dim" style={{fontSize:11}}>${t.entry.toFixed(2)}</span></div><div style={{display:'flex',alignItems:'center',gap:6}}><span style={{fontSize:11,fontWeight:600,color:t.pnl_pct>=0?'var(--green)':'var(--red)'}}>{t.pnl_pct>=0?'+':''}{t.pnl_pct.toFixed(2)}%</span><span className={`trade-tag ${t.pnl_pct>=0?'tag-profit':'tag-loss'}`}>{t.reason}</span></div></div>))}
+            </div>
+            <div className="panel"><div className="panel-title">Logs</div><div className="panel-scroll">
+              {(detail.logs||[]).slice(-12).map((l,i)=><div className="log-entry" key={i}>[{fmtTime(l.time)}] {l.message}</div>)}
+            </div></div>
+          </div>
+        )}
+        {tab==='logs' && (
+          <div className="card page-anim"><div className="panel-scroll" style={{maxHeight:260}}>
+            {(detail.logs||[]).map((l,i)=><div className="log-entry" key={i} style={{color:l.level==='error'?'var(--red)':l.level==='warning'?'var(--orange)':l.level==='trade'?'var(--accent)':'var(--green)'}}>[{fmtTime(l.time)}] {l.message}</div>)}
+          </div></div>
+        )}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // PORTFOLIO PAGE
+  // ═══════════════════════════════════════
+
+  function Portfolio({ onSelectBot }) {
+    const [time, setTime] = useState(new Date());
+    const [animated, setAnimated] = useState(0);
+    const totalCapital = 72450.83;
+    const totalProfitPct = 8.23;
+
+    useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
+
+    useEffect(() => {
+      let start = null; const dur = 1100;
+      const step = ts => { if (!start) start = ts; const p = Math.min((ts - start) / dur, 1); const e = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p; setAnimated(totalCapital * e); if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    }, []);
+
+    const fmt = d => d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const fmtM = v => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    const openBots = DEMO_BOTS.filter(b => b.has_position);
+
+    // Build ticker
+    const tickerItems = DEMO_BOTS.map(b => {
+      const sym = b.pair.includes('/') ? b.pair.split('/')[0] : b.pair;
+      const sign = b.change >= 0 ? '+' : '';
+      const col = b.has_position ? 'var(--orange)' : b.change >= 0 ? 'var(--green)' : 'var(--red)';
+      const price = b.price >= 1 ? b.price.toLocaleString('en-US',{maximumFractionDigits:2}) : b.price.toFixed(4);
+      return { dot: col, text: `${sym} $${price}  ${sign}${b.change.toFixed(2)}%${b.has_position?' \u25B2 POS':''}` };
+    });
+    const tickerDup = [...tickerItems, ...tickerItems];
+
+    return (
+      <div className="main-content page-anim">
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
+          <div className="page-title">Portfolio</div>
+          <div style={{display:'flex',gap:6}}>
+            <span className="badge badge-accent">Lyra 3.0</span>
+            <span className="badge badge-green">ML Active</span>
+          </div>
+        </div>
+
+        <div className="news-ticker">
+          <div className="news-ticker-inner">
+            {tickerDup.map((it, i) => (
+              <span className="news-ticker-item" key={i}>
+                <span className="ticker-dot" style={{background: it.dot}} />
+                {it.text}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="stat-grid stagger">
+          <div className="card">
+            <div className="card-label">Total Portfolio</div>
+            <div className="card-value">${fmtM(animated)}</div>
+            <div className="card-sub t-green">+{totalProfitPct.toFixed(2)}%</div>
+          </div>
+          <div className="card">
+            <div className="card-label">Active Bots</div>
+            <div className="card-value">{DEMO_BOTS.length}</div>
+            <div className="card-sub" style={{color:'var(--orange)'}}>
+              {openBots.length} open positions
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-label">Server</div>
+            <div className="card-value" style={{fontSize:18,fontFamily:'var(--mono)'}}>{fmt(time)}</div>
+            <div className="card-sub t-green">All systems running</div>
+          </div>
+        </div>
+
+        {openBots.length > 0 && (
+          <div className="pos-banner">
+            <span className="status-dot status-dot-live" style={{background:'var(--orange)'}} />
+            <span className="t-dim">Open positions:</span>
+            {openBots.map(b => (
+              <span key={b.id} style={{cursor:'pointer'}} onClick={() => onSelectBot(b)}>
+                <span style={{fontWeight:600,color:'var(--orange)'}}>{b.pair}</span>
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="section-label">Active Markets</div>
+        <div className="market-grid stagger">
+          {DEMO_BOTS.map(b => <MarketCard key={b.id} bot={b} onClick={onSelectBot} />)}
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // ANALYTICS PAGE (placeholder)
+  // ═══════════════════════════════════════
+
+  function AnalyticsPage() {
+    const totalTrades = DEMO_BOTS.reduce((s, b) => s + b.trades, 0);
+    const totalCapital = DEMO_BOTS.reduce((s, b) => s + b.capital, 0);
+    const avgChange = DEMO_BOTS.reduce((s, b) => s + b.change, 0) / DEMO_BOTS.length;
+
+    return (
+      <div className="main-content page-anim">
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
+          <div className="page-title">Analytics</div>
+          <span className="badge badge-accent">Lyra 3.0</span>
+        </div>
+
+        <div className="stat-grid stagger" style={{gridTemplateColumns:'repeat(4, 1fr)'}}>
+          <div className="card">
+            <div className="card-label">Total Capital</div>
+            <div className="card-value">${totalCapital.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+          </div>
+          <div className="card">
+            <div className="card-label">Avg Return</div>
+            <div className="card-value t-green">+{avgChange.toFixed(2)}%</div>
+          </div>
+          <div className="card">
+            <div className="card-label">Total Trades</div>
+            <div className="card-value">{totalTrades}</div>
+          </div>
+          <div className="card">
+            <div className="card-label">Active Bots</div>
+            <div className="card-value">{DEMO_BOTS.length}</div>
+          </div>
+        </div>
+
+        <div className="section-label">Performance by Bot</div>
+        <div className="card" style={{padding:'14px 16px'}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 60px 80px 80px 60px',gap:8,padding:'5px 0',borderBottom:'1px solid var(--border)',marginBottom:3}}>
+            {['Bot','Trades','Capital','Return','Status'].map((h,i) => <span key={i} style={{fontSize:9,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--text-muted)'}}>{h}</span>)}
+          </div>
+          {DEMO_BOTS.map((b, i) => (
+            <div key={i} style={{display:'grid',gridTemplateColumns:'1fr 60px 80px 80px 60px',gap:8,padding:'8px 0',borderBottom:'1px solid var(--border)',fontSize:12,alignItems:'center'}}>
+              <span style={{fontWeight:600}}>{b.pair}</span>
+              <span className="t-mono t-dim">{b.trades}</span>
+              <span className="t-mono">${b.capital.toLocaleString('en-US',{maximumFractionDigits:0})}</span>
+              <span className={`t-mono ${b.change>=0?'t-green':'t-red'}`} style={{fontWeight:600}}>{b.change>=0?'+':''}{b.change.toFixed(2)}%</span>
+              <span><span className="status-dot status-dot-live" style={{background:'var(--green)'}}/></span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // SETTINGS PAGE (placeholder)
+  // ═══════════════════════════════════════
+
+  function SettingsPage() {
+    return (
+      <div className="main-content page-anim">
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
+          <div className="page-title">Settings</div>
+          <span className="badge badge-accent">Lyra 3.0</span>
+        </div>
+
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+          <div className="card">
+            <div style={{fontSize:13,fontWeight:600,color:'var(--accent)',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
+              <Ico.Gear /> General
+            </div>
+            {[['Trading Mode','Paper Trading'],['Default Timeframe','1d'],['ML Filter','Enabled'],['Risk Per Trade','2%'],['Max Drawdown','15%']].map(([l,v],i) => (
+              <div key={i} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--border)'}}>
+                <span style={{fontSize:12,color:'var(--text-dim)'}}>{l}</span>
+                <span style={{fontFamily:'var(--mono)',fontSize:12,color:'var(--text)'}}>{v}</span>
+              </div>
+            ))}
+          </div>
+          <div className="card">
+            <div style={{fontSize:13,fontWeight:600,color:'var(--accent)',marginBottom:14,display:'flex',alignItems:'center',gap:8}}>
+              <Ico.Chart /> ML Configuration
+            </div>
+            {[['Ensemble Models','3'],['Confidence Threshold','65%'],['Feature Count','12'],['Retrain Interval','Weekly'],['Lookback Period','180d']].map(([l,v],i) => (
+              <div key={i} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--border)'}}>
+                <span style={{fontSize:12,color:'var(--text-dim)'}}>{l}</span>
+                <span style={{fontFamily:'var(--mono)',fontSize:12,color:'var(--text)'}}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // APP ROUTER
+  // ═══════════════════════════════════════
+
+  function App() {
+    const [page, setPage] = useState('portfolio');
+    const [bot, setBot] = useState(null);
+
+    const nav = p => setPage(p);
+
+    const handleSelectBot = b => { setBot(b); nav('botdetail'); };
+
+    return (
+      <div className="app-layout">
+        <Sidebar page={page} onNav={nav} />
+
+        {page === 'portfolio' && <Portfolio onSelectBot={handleSelectBot} />}
+        {page === 'botdetail' && bot && <BotDetail bot={bot} onBack={() => nav('portfolio')} />}
+        {page === 'analytics' && <AnalyticsPage />}
+        {page === 'settings' && <SettingsPage />}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // RENDER
+  // ═══════════════════════════════════════
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
