@@ -460,13 +460,21 @@
   // ═══════════════════════════════════════
 
   const DEMO_BOTS = [
-    { id:'btc_usdt', pair:'BTC/USDT', tf:'1d', mode:'paper', trades:24, capital:12450.50, change:24.51, price:108534.20, status:'running', has_position:true },
-    { id:'eth_usdt', pair:'ETH/USDT', tf:'4h', mode:'paper', trades:31, capital:10820.30, change:8.20, price:2847.15, status:'running', has_position:false },
-    { id:'sol_usdt', pair:'SOL/USDT', tf:'4h', mode:'paper', trades:18, capital:10340.75, change:3.41, price:178.42, status:'running', has_position:false },
-    { id:'idx_sp500', pair:'SP500', tf:'1d', mode:'paper', trades:15, capital:11250.00, change:12.50, price:5892.30, status:'running', has_position:false },
+    { id:'btc_usdt', pair:'BTC/USDT', tf:'1d', mode:'paper', trades:24, capital:12450.50, change:6.21, price:108534.20, status:'running', has_position:true },
+    { id:'eth_usdt', pair:'ETH/USDT', tf:'4h', mode:'paper', trades:31, capital:10420.30, change:4.20, price:2847.15, status:'running', has_position:false },
+    { id:'sol_usdt', pair:'SOL/USDT', tf:'4h', mode:'paper', trades:18, capital:10240.75, change:2.41, price:178.42, status:'running', has_position:false },
+    { id:'sui_usdt', pair:'SUI/USDT', tf:'1h', mode:'paper', trades:9, capital:1017.70, change:1.77, price:3.42, status:'running', has_position:false },
+    { id:'ltc_usdt', pair:'LTC/USDT', tf:'4h', mode:'paper', trades:6, capital:988.40, change:-1.16, price:92.18, status:'paused', has_position:false },
+    { id:'idx_sp500', pair:'SP500', tf:'1d', mode:'paper', trades:15, capital:10450.00, change:4.50, price:5892.30, status:'running', has_position:false },
     { id:'idx_nikkei', pair:'NIKKEI', tf:'1d', mode:'paper', trades:12, capital:10150.80, change:1.51, price:38452.00, status:'running', has_position:false },
-    { id:'fx_eurusd', pair:'EUR/USD', tf:'4h', mode:'paper', trades:42, capital:10680.20, change:6.80, price:1.0847, status:'running', has_position:true },
-    { id:'fut_gold', pair:'GOLD', tf:'4h', mode:'paper', trades:20, capital:10520.40, change:5.20, price:2412.50, status:'running', has_position:false },
+    { id:'idx_dax', pair:'DAX', tf:'1d', mode:'paper', trades:7, capital:5011.70, change:0.23, price:24995.81, status:'running', has_position:false },
+    { id:'fx_eurusd', pair:'EUR/USD', tf:'4h', mode:'paper', trades:42, capital:10380.20, change:3.80, price:1.0847, status:'running', has_position:true },
+    { id:'fx_chfjpy', pair:'CHF/JPY', tf:'4h', mode:'paper', trades:14, capital:1004.60, change:0.46, price:200.89, status:'running', has_position:true, dir:-1 },
+    { id:'fx_audnzd', pair:'AUD/NZD', tf:'4h', mode:'paper', trades:11, capital:1008.20, change:0.82, price:1.2146, status:'running', has_position:true },
+    { id:'fx_gbpaud', pair:'GBP/AUD', tf:'4h', mode:'paper', trades:8, capital:1027.90, change:2.79, price:1.9312, status:'running', has_position:false },
+    { id:'fut_gold', pair:'GOLD', tf:'4h', mode:'paper', trades:20, capital:10320.40, change:3.20, price:2412.50, status:'running', has_position:false },
+    { id:'fut_silver', pair:'SILVER', tf:'4h', mode:'paper', trades:12, capital:4890.20, change:-2.20, price:62.72, status:'running', has_position:true },
+    { id:'fut_copper', pair:'COPPER', tf:'4h', mode:'paper', trades:5, capital:1013.30, change:1.33, price:6.25, status:'running', has_position:true },
     { id:'fut_oil', pair:'CRUDE OIL', tf:'1d', mode:'paper', trades:8, capital:10238.00, change:2.38, price:78.45, status:'running', has_position:false },
   ];
 
@@ -655,6 +663,64 @@
     },
   };
 
+  // Synthetic detail for bots without a hand-written entry — deterministic
+  // per bot id so the demo looks stable across reloads.
+  function makeGenericDetail(bot) {
+    let seed = 0; for (const ch of bot.id) seed = (seed * 31 + ch.charCodeAt(0)) % 2147483647;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const dir = bot.dir || 1;
+    const wins = Math.round(bot.trades * (0.35 + rnd() * 0.15));
+    const losses = bot.trades - wins;
+    const initial = bot.capital / (1 + bot.change / 100);
+    const equity = [initial];
+    for (let i = 1; i < 20; i++) {
+      const drift = (bot.capital - initial) / 19;
+      equity.push(Math.round((equity[i-1] + drift + (rnd() - 0.5) * initial * 0.01) * 100) / 100);
+    }
+    equity[19] = bot.capital;
+    const px = p => p >= 1 ? Math.round(p * 100) / 100 : Math.round(p * 10000) / 10000;
+    const trades = Array.from({length: Math.min(bot.trades, 5)}, (_, i) => {
+      const win = rnd() > 0.55;
+      const pct = win ? 0.5 + rnd() * 2.2 : -(0.3 + rnd() * 1.4);
+      const entry = px(bot.price * (1 - 0.01 * (i + 1) * (rnd() - 0.4)));
+      return { close_time: `2026-0${6 - Math.floor(i / 4)}-${String(28 - i * 5).padStart(2,'0')}`,
+               entry, exit: px(entry * (1 + dir * pct / 100)),
+               pnl_pct: Math.round(pct * 100) / 100,
+               pnl_usdt: Math.round(pct * bot.capital * 0.003 * 100) / 100,
+               reason: win ? (rnd() > 0.5 ? 'TP' : 'TRAIL') : 'SL' };
+    });
+    const pw = 34 + Math.round(rnd() * 32);
+    const ev = Math.round((pw / 100 * 3 - (1 - pw / 100)) * 100) / 100;
+    return {
+      price: bot.price,
+      indicators: { ma_fast: px(bot.price * 0.985), ma_200: px(bot.price * 0.94),
+                    rsi: 38 + Math.round(rnd() * 28), atr_pct: Math.round((0.4 + rnd() * 1.6) * 100) / 100,
+                    volume_ratio: Math.round((0.8 + rnd() * 0.7) * 100) / 100 },
+      metrics: { total_trades: bot.trades, wins, losses,
+                 win_rate: Math.round(wins / Math.max(bot.trades, 1) * 1000) / 10,
+                 profit_factor: Math.round((0.8 + rnd() * 1.4) * 100) / 100,
+                 total_pnl: Math.round((bot.capital - initial) * 100) / 100,
+                 fees_paid: Math.round(bot.trades * 1.7 * 100) / 100,
+                 best_trade: Math.round((1.5 + rnd() * 3) * 100) / 100,
+                 worst_trade: -Math.round((0.8 + rnd() * 2.5) * 100) / 100 },
+      equity,
+      position: bot.has_position ? {
+        entry: px(bot.price * (1 - dir * 0.012)), size: Math.round(bot.capital * 0.3),
+        open_time: '2026-07-02T04:07:00', current_pnl: Math.round(dir * 1.2 * 100) / 100,
+        max_pnl: Math.round(dir * 1.2 * 100) / 100 + 0.8, dir, side: dir === 1 ? 'long' : 'short',
+      } : null,
+      momentum_up: rnd() > 0.5, above_ma200: rnd() > 0.4,
+      analysis: [
+        { time: '2026-07-02T04:07:00', action: pw >= 32 ? 'confirm' : 'reject', confidence: pw / 100,
+          reasoning: `ML P(win)=${pw}% ${pw >= 32 ? '>=' : '<'} req 32% (RRR 3) | EV ${ev >= 0 ? '+' : ''}${ev}R | top: vol_20, macd_signal_norm, pool_pair_id` },
+      ],
+      logs: [
+        { time: '2026-07-02T04:07:00', level: 'success', message: `${bot.pair} evaluated by pooled ${bot.id.split('_')[0] === 'fx' ? 'forex' : bot.id.split('_')[0].replace('idx','indices').replace('fut','futures')}/${bot.tf} model` },
+        { time: '2026-07-02T00:12:00', level: 'info', message: 'Adopted shared pooled model (no per-bot retrain needed)' },
+      ],
+    };
+  }
+
   // ═══════════════════════════════════════
   // PROJECTION GENERATOR
   // ═══════════════════════════════════════
@@ -803,8 +869,13 @@
         </div>
 
         <div className="sb-section">Portfolio</div>
-        <SbItem icon={<Ico.Grid />} label="Portfolio" active={page==='portfolio'} onClick={() => onNav('portfolio')} badge={8} />
+        <SbItem icon={<Ico.Grid />} label="Portfolio" active={page==='portfolio'} onClick={() => onNav('portfolio')} badge={DEMO_BOTS.length} />
         <SbItem icon={<Ico.Chart />} label="Analytics" active={page==='analytics'} onClick={() => onNav('analytics')} />
+
+        <div className="sb-divider" />
+        <div className="sb-section">Intelligence</div>
+        <SbItem icon={<Ico.Shield />} label="Risk & Calibration" active={page==='risk'} onClick={() => onNav('risk')} />
+        <SbItem icon={<Ico.Cpu />} label="ML Models" active={page==='ml'} onClick={() => onNav('ml')} />
 
         <div className="sb-divider" />
         <div className="sb-section">System</div>
@@ -833,10 +904,17 @@
     const fmt = v => v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     const hasPos = !!bot.has_position;
     return (
-      <div className={`market-card ${hasPos?'mc-pos-glow':''}`} onClick={()=>onClick(bot)}>
+      <div className={`market-card ${hasPos?'mc-pos-glow':''}`} onClick={()=>onClick(bot)} style={bot.status==='paused'?{opacity:0.55}:undefined}>
         {hasPos ? (
           <div className="mc-status" style={{flexDirection:'column',alignItems:'flex-end',gap:3}}>
-            <span className="mc-pos-tag">&#9650; LONG</span>
+            {bot.dir === -1
+              ? <span className="mc-pos-tag" style={{color:'var(--red)',borderColor:'var(--red)'}}>&#9660; SHORT</span>
+              : <span className="mc-pos-tag">&#9650; LONG</span>}
+          </div>
+        ) : bot.status === 'paused' ? (
+          <div className="mc-status" style={{color:'var(--text-muted)'}}>
+            <span className="status-dot" style={{background:'var(--text-muted)'}}/>
+            <span style={{fontSize:10}}>Paused</span>
           </div>
         ) : (
           <div className="mc-status" style={{color:'var(--green)'}}>
@@ -1130,8 +1208,7 @@
 
   function BotDetail({ bot, onBack }) {
     const [tab, setTab] = useState('history');
-    const detail = DETAIL_DATA[bot.id];
-    if (!detail) return <div className="main-content page-anim"><div className="t-muted" style={{padding:40,textAlign:'center'}}>No detail data available for this bot.</div><button className="back-link" onClick={onBack}>&larr; Back to Portfolio</button></div>;
+    const detail = DETAIL_DATA[bot.id] || makeGenericDetail(bot);
 
     const fmt = v => v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const ind = detail.indicators || {};
@@ -1242,8 +1319,8 @@
   function Portfolio({ onSelectBot }) {
     const [time, setTime] = useState(new Date());
     const [animated, setAnimated] = useState(0);
-    const totalCapital = 72450.83;
-    const totalProfitPct = 8.23;
+    const totalCapital = DEMO_BOTS.reduce((s, b) => s + b.capital, 0);
+    const totalProfitPct = 2.84;
 
     useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
 
@@ -1297,9 +1374,9 @@
           </div>
           <div className="card">
             <div className="card-label">Active Bots</div>
-            <div className="card-value">{DEMO_BOTS.length}</div>
+            <div className="card-value">{DEMO_BOTS.filter(b => b.status !== 'paused').length}</div>
             <div className="card-sub" style={{color:'var(--orange)'}}>
-              {openBots.length} open positions
+              {openBots.length} open positions &middot; {DEMO_BOTS.filter(b => b.status === 'paused').length} paused
             </div>
           </div>
           <div className="card">
@@ -1324,6 +1401,25 @@
         <div className="section-label">Active Markets</div>
         <div className="market-grid stagger">
           {DEMO_BOTS.map(b => <MarketCard key={b.id} bot={b} onClick={onSelectBot} />)}
+        </div>
+
+        <div className="section-label" style={{marginTop:18}}>Recent Activity</div>
+        <div className="card" style={{padding:'4px 0'}}>
+          {[
+            { t:'04:07', col:'var(--green)',  tag:'OPEN',    txt:'CHF/JPY SHORT @ 200.889 via stoch_rsi — ML P(win)=40% >= req 32% | EV +0.58R' },
+            { t:'23:51', col:'var(--green)',  tag:'OPEN',    txt:'AUD/NZD @ 1.21457 via rsi_divergence — ML P(win)=64% | EV +1.57R' },
+            { t:'23:51', col:'var(--green)',  tag:'CLOSE',   txt:'GBP/AUD +2.79% (TAKE_PROFIT) — trailing armed at +1.2%' },
+            { t:'23:51', col:'var(--red)',    tag:'CLOSE',   txt:'AUD/CAD -0.06% (TRAILING_STOP)' },
+            { t:'22:14', col:'var(--orange)', tag:'REJECT',  txt:'EUR/USD signal rejected — ML P(win)=24% < req 32% (RRR 3)' },
+            { t:'21:30', col:'var(--orange)', tag:'BLOCKED', txt:'GBP/USD entry blocked by portfolio risk — max forex positions (3/3)' },
+            { t:'20:02', col:'var(--red)',    tag:'CLOSE',   txt:'EUR/CAD closed by TIME_STOP — 90 candles without arming the trailing stop' },
+          ].map((e, i) => (
+            <div key={i} style={{display:'flex',gap:10,alignItems:'baseline',padding:'7px 14px',borderTop: i ? '1px solid rgba(255,255,255,0.04)' : 'none'}}>
+              <span style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--text-muted)',flexShrink:0}}>{e.t}</span>
+              <span style={{fontFamily:'var(--mono)',fontSize:10,color:e.col,flexShrink:0,minWidth:52}}>{e.tag}</span>
+              <span style={{fontSize:11,color:'var(--text-dim)'}}>{e.txt}</span>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -1427,6 +1523,179 @@
   // APP ROUTER
   // ═══════════════════════════════════════
 
+  // ═══════════════════════════════════════
+  // RISK & CALIBRATION PAGE
+  // ═══════════════════════════════════════
+
+  const RISK_LIMITS = { total: 8, crypto: 3, forex: 3, indices: 2, futures: 3, per_currency: 2, agg_exposure_pct: 35 };
+
+  function RiskBar({ label, used, limit }) {
+    const pct = Math.min(used / limit * 100, 100);
+    const full = used >= limit;
+    return (
+      <div style={{marginBottom:12}}>
+        <div style={{display:'flex',justifyContent:'space-between',fontSize:11,marginBottom:4}}>
+          <span className="t-dim" style={{textTransform:'capitalize'}}>{label}</span>
+          <span style={{fontFamily:'var(--mono)',color: full ? 'var(--orange)' : 'var(--text)'}}>
+            {used}/{limit}{full ? ' FULL' : ''}
+          </span>
+        </div>
+        <div style={{height:6,background:'rgba(255,255,255,0.06)',borderRadius:3,overflow:'hidden'}}>
+          <div style={{height:'100%',width:`${pct}%`,borderRadius:3,transition:'width .6s',
+                       background: full ? 'var(--orange)' : 'var(--accent)'}} />
+        </div>
+      </div>
+    );
+  }
+
+  function RiskPage() {
+    const open = DEMO_BOTS.filter(b => b.has_position);
+    const marketOf = id => id.startsWith('fx_') ? 'forex' : id.startsWith('idx_') ? 'indices' : id.startsWith('fut_') ? 'futures' : 'crypto';
+    const byMarket = { crypto:0, forex:0, indices:0, futures:0 };
+    open.forEach(b => byMarket[marketOf(b.id)]++);
+    const clusters = [];
+    open.filter(b => marketOf(b.id) === 'forex').forEach(b => {
+      const [a, q] = b.pair.split('/');
+      [a, q].forEach(c => { const e = clusters.find(x => x.ccy === c); e ? e.n++ : clusters.push({ ccy: c, n: 1 }); });
+    });
+    // real calibration snapshot (counterfactual resolver, post-dedup)
+    const calib = [
+      { bucket: '0-10%', n: 10, pred: 8, real: 40 },
+      { bucket: '10-30%', n: 10, pred: 21, real: 0 },
+      { bucket: '30-50%', n: 6, pred: 37, real: 0 },
+      { bucket: '50-70%', n: 11, pred: 59, real: 36 },
+      { bucket: '70-90%', n: 10, pred: 83, real: 20 },
+      { bucket: '90-100%', n: 4, pred: 93, real: 50 },
+    ];
+    const cell = { padding:'7px 10px', fontSize:11, fontFamily:'var(--mono)' };
+    return (
+      <div className="main-content page-anim">
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
+          <div className="page-title">Risk &amp; Calibration</div>
+          <span className="badge badge-accent">Lyra v3.8</span>
+        </div>
+
+        <div className="stat-grid stagger">
+          <div className="card">
+            <div className="card-label">Open Positions</div>
+            <div className="card-value">{open.length}<span style={{fontSize:14,color:'var(--text-muted)'}}> / {RISK_LIMITS.total}</span></div>
+            <div className="card-sub t-dim">portfolio-wide cap</div>
+          </div>
+          <div className="card">
+            <div className="card-label">Aggregate Exposure</div>
+            <div className="card-value">9.6%<span style={{fontSize:14,color:'var(--text-muted)'}}> / {RISK_LIMITS.agg_exposure_pct}%</span></div>
+            <div className="card-sub t-dim">of initial capital</div>
+          </div>
+          <div className="card">
+            <div className="card-label">Blocked Entries</div>
+            <div className="card-value" style={{color:'var(--orange)'}}>3</div>
+            <div className="card-sub t-dim">this week (limits held)</div>
+          </div>
+        </div>
+
+        <div className="section-label">Exposure vs Limits — correlated bots are one bet, not many</div>
+        <div className="card" style={{marginBottom:16}}>
+          {Object.entries(byMarket).map(([m, n]) => <RiskBar key={m} label={m} used={n} limit={RISK_LIMITS[m]} />)}
+        </div>
+
+        <div className="section-label">Currency Clusters (max {RISK_LIMITS.per_currency} per currency)</div>
+        <div className="card" style={{marginBottom:16,display:'flex',gap:8,flexWrap:'wrap'}}>
+          {clusters.map(c => (
+            <span key={c.ccy} className="badge" style={{fontFamily:'var(--mono)',
+                  borderColor: c.n >= RISK_LIMITS.per_currency ? 'var(--orange)' : undefined,
+                  color: c.n >= RISK_LIMITS.per_currency ? 'var(--orange)' : undefined}}>
+              {c.ccy} &times;{c.n}
+            </span>
+          ))}
+        </div>
+
+        <div className="section-label">P(win) Calibration — predicted vs realized (counterfactual resolver)</div>
+        <div className="card" style={{padding:0,overflow:'hidden'}}>
+          <div style={{display:'grid',gridTemplateColumns:'1.2fr 0.6fr 1fr 1fr',background:'rgba(255,255,255,0.04)'}}>
+            {['Bucket','n','Predicted','Realized'].map(h => <div key={h} style={{...cell,color:'var(--text-muted)',fontFamily:'inherit'}}>{h}</div>)}
+          </div>
+          {calib.map(r => (
+            <div key={r.bucket} style={{display:'grid',gridTemplateColumns:'1.2fr 0.6fr 1fr 1fr',borderTop:'1px solid rgba(255,255,255,0.05)'}}>
+              <div style={cell}>{r.bucket}</div>
+              <div style={cell}>{r.n}</div>
+              <div style={cell}>{r.pred}%</div>
+              <div style={{...cell,color: Math.abs(r.pred - r.real) > 25 ? 'var(--orange)' : 'var(--green)'}}>{r.real}%</div>
+            </div>
+          ))}
+          <div style={{padding:'9px 10px',fontSize:10,color:'var(--text-muted)',borderTop:'1px solid rgba(255,255,255,0.05)'}}>
+            Every gate decision (confirm and reject) is graded against what the market actually did.
+            Sample still small (n=51) — the pooled models below exist because the per-bot models this measured were overconfident.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // ML MODELS PAGE (pooled per-market)
+  // ═══════════════════════════════════════
+
+  function MLModelsPage() {
+    const pools = [
+      { pool: 'forex/4h', samples: '81,919', pairs: 28, acc: '60.7%', dirs: 'long + short' },
+      { pool: 'crypto/1h', samples: '77,031', pairs: 9, acc: '55.2%', dirs: 'long' },
+      { pool: 'crypto/4h', samples: '37,611', pairs: 9, acc: '56.4%', dirs: 'long + short' },
+      { pool: 'forex/1d', samples: '30,772', pairs: 28, acc: '57.8%', dirs: 'long' },
+      { pool: 'futures/4h', samples: '26,949', pairs: 10, acc: '51.9%', dirs: 'long' },
+      { pool: 'indices/1d', samples: '12,687', pairs: 12, acc: '54.6%', dirs: 'long' },
+      { pool: 'crypto/1d', samples: '11,028', pairs: 9, acc: '53.1%', dirs: 'long' },
+    ];
+    const cell = { padding:'7px 10px', fontSize:11, fontFamily:'var(--mono)' };
+    return (
+      <div className="main-content page-anim">
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
+          <div className="page-title">ML Models</div>
+          <span className="badge badge-green">Meta-labeling gate</span>
+        </div>
+
+        <div className="card" style={{marginBottom:16,fontSize:12,lineHeight:1.7,color:'var(--text-dim)'}}>
+          The model doesn't predict market direction — it answers one question per signal:
+          <span style={{color:'var(--text)'}}> "does this entry win with this bot's stop and take-profit?"</span> (triple-barrier
+          meta-labeling). A signal only becomes a trade when P(win) beats the reward/risk breakeven with margin.
+          One <span style={{color:'var(--accent)'}}>pooled model per market &amp; timeframe</span> — trained on every pair of the
+          market at once — serves all bots: 9 models for 36 bots, 11k-82k samples each instead of ~800 per bot.
+        </div>
+
+        <div className="stat-grid stagger" style={{gridTemplateColumns:'repeat(3, 1fr)'}}>
+          <div className="card"><div className="card-label">Pooled Models</div><div className="card-value">9</div><div className="card-sub t-dim">7 long + 2 short</div></div>
+          <div className="card"><div className="card-label">Largest Pool</div><div className="card-value">81.9k</div><div className="card-sub t-dim">forex/4h, 28 pairs</div></div>
+          <div className="card"><div className="card-label">Retrain Cadence</div><div className="card-value">~80h</div><div className="card-sub t-dim">1 train serves all bots</div></div>
+        </div>
+
+        <div className="section-label">Pooled Models</div>
+        <div className="card" style={{padding:0,overflow:'hidden',marginBottom:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'1.1fr 1fr 0.6fr 0.8fr 1fr',background:'rgba(255,255,255,0.04)'}}>
+            {['Pool','Samples','Pairs','Test acc','Directions'].map(h => <div key={h} style={{...cell,color:'var(--text-muted)',fontFamily:'inherit'}}>{h}</div>)}
+          </div>
+          {pools.map(p => (
+            <div key={p.pool} style={{display:'grid',gridTemplateColumns:'1.1fr 1fr 0.6fr 0.8fr 1fr',borderTop:'1px solid rgba(255,255,255,0.05)'}}>
+              <div style={{...cell,color:'var(--accent)'}}>{p.pool}</div>
+              <div style={cell}>{p.samples}</div>
+              <div style={cell}>{p.pairs}</div>
+              <div style={cell}>{p.acc}</div>
+              <div style={{...cell,fontFamily:'inherit',fontSize:10,color:'var(--text-dim)'}}>{p.dirs}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="section-label">Live Gate Decision (example)</div>
+        <div className="card" style={{fontFamily:'var(--mono)',fontSize:11,lineHeight:1.8}}>
+          <div style={{color:'var(--green)'}}>ML CONFIRMED (64%)</div>
+          <div className="t-dim">ML P(win)=64% &gt;= req 32% (RRR 3) | EV +1.57R | top: vol_10, vol_20, macd_signal_norm | sent=+0.07</div>
+          <div style={{color:'var(--text-muted)',fontSize:10,marginTop:8,fontFamily:'inherit'}}>
+            Probabilities are clamped to [0.10, 0.85] until enough resolved predictions exist for formal
+            isotonic calibration — an honest model is worth more than a confident one.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function App() {
     const [page, setPage] = useState('portfolio');
     const [bot, setBot] = useState(null);
@@ -1442,6 +1711,8 @@
         {page === 'portfolio' && <Portfolio onSelectBot={handleSelectBot} />}
         {page === 'botdetail' && bot && <BotDetail bot={bot} onBack={() => nav('portfolio')} />}
         {page === 'analytics' && <AnalyticsPage />}
+        {page === 'risk' && <RiskPage />}
+        {page === 'ml' && <MLModelsPage />}
         {page === 'settings' && <SettingsPage />}
       </div>
     );
