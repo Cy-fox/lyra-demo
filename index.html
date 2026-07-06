@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Lyra 3.0 — AI Trading Framework</title>
-  <meta name="description" content="Multi-market algorithmic trading framework with ML signal filtering">
+  <title>Lyra v3.8 — AI Trading Framework</title>
+  <meta name="description" content="Multi-market algorithmic trading framework with a meta-labeling ML gate (pooled per-market LightGBM models)">
   <meta property="og:title" content="Lyra — AI Trading Framework">
-  <meta property="og:description" content="Multi-market algorithmic trading framework with ML signal filtering">
+  <meta property="og:description" content="Multi-market algorithmic trading framework with a meta-labeling ML gate (pooled per-market LightGBM models)">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -487,17 +487,17 @@
         { close_time:'2026-05-10', entry:95800, exit:99200, pnl_pct:3.55, pnl_usdt:355.00, reason:'TP' },
       ],
       analysis: [
-        { time:'2026-05-25T10:30:00', action:'confirm', confidence:0.82, reasoning:'ML BUY (82% conf, 3 models) | top: rsi, macd_hist, vol_ratio' },
-        { time:'2026-05-24T14:15:00', action:'confirm', confidence:0.76, reasoning:'ML BUY (76% conf, 3 models) | top: dist_ma50, ret_5, bb_pctb' },
-        { time:'2026-05-23T22:00:00', action:'reject', confidence:0.68, reasoning:'ML uncertain (B=32% H=41% S=27%) | top: vol_ratio, rsi_change, atr_norm' },
-        { time:'2026-05-22T18:30:00', action:'confirm', confidence:0.71, reasoning:'ML leans BUY (71%) | top: macd_cross, dist_ma200, weekly_ret' },
+        { time:'2026-05-25T10:30:00', action:'confirm', confidence:0.82, reasoning:'ML P(win)=82% >= req 32% (RRR 3) | EV +2.28R | top: rsi, macd_hist, vol_ratio' },
+        { time:'2026-05-24T14:15:00', action:'confirm', confidence:0.76, reasoning:'ML P(win)=76% >= req 32% (RRR 3) | EV +2.04R | top: dist_ma50, ret_5, bb_pctb' },
+        { time:'2026-05-23T22:00:00', action:'reject', confidence:0.68, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: vol_ratio, rsi_change, atr_norm' },
+        { time:'2026-05-22T18:30:00', action:'confirm', confidence:0.71, reasoning:'ML P(win)=71% >= req 32% (RRR 3) | EV +1.84R | top: macd_cross, dist_ma200, weekly_ret' },
       ],
       logs: [
         { time:'2026-05-25T11:00:15', level:'success', message:'BTC/USDT price: $108,534.20 | RSI: 62 | UP' },
-        { time:'2026-05-25T10:30:00', level:'trade', message:'ML CONFIRM: BUY signal validated (82% conf)' },
+        { time:'2026-05-25T10:30:00', level:'trade', message:'ML CONFIRMED (82%): P(win) above EV threshold' },
         { time:'2026-05-24T14:30:00', level:'trade', message:'ENTRY: BTC/USDT @ $105,200.00 | Size: $850' },
         { time:'2026-05-24T14:15:00', level:'success', message:'Signal detected: MA cross + RSI momentum' },
-        { time:'2026-05-23T22:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=32%)' },
+        { time:'2026-05-23T22:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
       ]
     },
     idx_sp500: {
@@ -515,14 +515,14 @@
         { close_time:'2026-05-09', entry:5600, exit:5550, pnl_pct:-0.89, pnl_usdt:-89.30, reason:'SL' },
       ],
       analysis: [
-        { time:'2026-05-25T09:00:00', action:'confirm', confidence:0.74, reasoning:'ML BUY (74% conf, 3 models) | top: dist_ma200, weekly_ret, rsi' },
-        { time:'2026-05-24T15:30:00', action:'reject', confidence:0.55, reasoning:'ML uncertain (B=35% H=38% S=27%) | top: vol_ratio, atr_norm, bb_width' },
-        { time:'2026-05-23T09:00:00', action:'confirm', confidence:0.69, reasoning:'ML leans BUY (69%) | top: macd_cross, dist_ma50, ret_10' },
+        { time:'2026-05-25T09:00:00', action:'confirm', confidence:0.74, reasoning:'ML P(win)=74% >= req 32% (RRR 3) | EV +1.96R | top: dist_ma200, weekly_ret, rsi' },
+        { time:'2026-05-24T15:30:00', action:'reject', confidence:0.55, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: vol_ratio, atr_norm, bb_width' },
+        { time:'2026-05-23T09:00:00', action:'confirm', confidence:0.69, reasoning:'ML P(win)=69% >= req 32% (RRR 3) | EV +1.76R | top: macd_cross, dist_ma50, ret_10' },
       ],
       logs: [
         { time:'2026-05-25T09:30:00', level:'success', message:'SP500 price: $5,892.30 | RSI: 58 | UP' },
-        { time:'2026-05-25T09:00:00', level:'trade', message:'ML CONFIRM: BUY signal validated (74% conf)' },
-        { time:'2026-05-24T16:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=35%)' },
+        { time:'2026-05-25T09:00:00', level:'trade', message:'ML CONFIRMED (74%): P(win) above EV threshold' },
+        { time:'2026-05-24T16:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
         { time:'2026-05-24T15:30:00', level:'success', message:'Market close scan complete' },
       ]
     },
@@ -542,16 +542,16 @@
         { close_time:'2026-05-19', entry:1.0720, exit:1.0790, pnl_pct:0.65, pnl_usdt:65.20, reason:'TP' },
       ],
       analysis: [
-        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.71, reasoning:'ML BUY (71% conf, 3 models) | top: dist_ma50, ret_5, rsi' },
-        { time:'2026-05-24T12:00:00', action:'confirm', confidence:0.68, reasoning:'ML leans BUY (68%) | top: macd_hist, bb_pctb, vol_ratio' },
-        { time:'2026-05-23T16:00:00', action:'reject', confidence:0.52, reasoning:'ML uncertain (B=28% H=44% S=28%) | top: atr_norm, rsi_change, dist_ma200' },
+        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.71, reasoning:'ML P(win)=71% >= req 32% (RRR 3) | EV +1.84R | top: dist_ma50, ret_5, rsi' },
+        { time:'2026-05-24T12:00:00', action:'confirm', confidence:0.68, reasoning:'ML P(win)=68% >= req 32% (RRR 3) | EV +1.72R | top: macd_hist, bb_pctb, vol_ratio' },
+        { time:'2026-05-23T16:00:00', action:'reject', confidence:0.52, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: atr_norm, rsi_change, dist_ma200' },
       ],
       logs: [
         { time:'2026-05-25T08:30:00', level:'success', message:'EUR/USD price: $1.0847 | RSI: 55 | STABLE' },
         { time:'2026-05-25T08:15:00', level:'trade', message:'ENTRY: EUR/USD @ $1.0810 | Size: $420' },
-        { time:'2026-05-25T08:00:00', level:'trade', message:'ML CONFIRM: BUY signal validated (71% conf)' },
+        { time:'2026-05-25T08:00:00', level:'trade', message:'ML CONFIRMED (71%): P(win) above EV threshold' },
         { time:'2026-05-24T12:00:00', level:'success', message:'London session active — scanning pairs' },
-        { time:'2026-05-23T16:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=28%)' },
+        { time:'2026-05-23T16:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
       ]
     },
     eth_usdt: {
@@ -568,11 +568,11 @@
         { close_time:'2026-05-17', entry:2700, exit:2730, pnl_pct:1.11, pnl_usdt:111.10, reason:'TRAIL' },
       ],
       analysis: [
-        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.58, reasoning:'ML uncertain (B=30% H=42% S=28%) | top: rsi, vol_ratio, atr_norm' },
-        { time:'2026-05-24T09:00:00', action:'confirm', confidence:0.73, reasoning:'ML BUY (73% conf, 3 models) | top: dist_ma200, ret_10, macd_hist' },
+        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.58, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: rsi, vol_ratio, atr_norm' },
+        { time:'2026-05-24T09:00:00', action:'confirm', confidence:0.73, reasoning:'ML P(win)=73% >= req 32% (RRR 3) | EV +1.92R | top: dist_ma200, ret_10, macd_hist' },
       ],
       logs: [
-        { time:'2026-05-25T09:00:00', level:'warning', message:'ML REJECT: uncertain signal (B=30%)' },
+        { time:'2026-05-25T09:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
         { time:'2026-05-25T08:00:00', level:'success', message:'ETH/USDT price: $2,847.15 | RSI: 54 | NEUTRAL' },
       ]
     },
@@ -589,7 +589,7 @@
         { close_time:'2026-05-18', entry:162, exit:172, pnl_pct:6.17, pnl_usdt:617.30, reason:'TP' },
       ],
       analysis: [
-        { time:'2026-05-25T10:00:00', action:'reject', confidence:0.55, reasoning:'ML uncertain (B=28% H=45% S=27%) | top: vol_ratio, rsi, bb_width' },
+        { time:'2026-05-25T10:00:00', action:'reject', confidence:0.55, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: vol_ratio, rsi, bb_width' },
       ],
       logs: [
         { time:'2026-05-25T10:00:00', level:'warning', message:'ML REJECT: uncertain signal' },
@@ -609,7 +609,7 @@
         { close_time:'2026-05-15', entry:37200, exit:37900, pnl_pct:1.88, pnl_usdt:188.20, reason:'TP' },
       ],
       analysis: [
-        { time:'2026-05-25T02:00:00', action:'confirm', confidence:0.65, reasoning:'ML leans BUY (65%) | top: dist_ma200, weekly_ret, rsi' },
+        { time:'2026-05-25T02:00:00', action:'confirm', confidence:0.65, reasoning:'ML P(win)=65% >= req 32% (RRR 3) | EV +1.6R | top: dist_ma200, weekly_ret, rsi' },
       ],
       logs: [
         { time:'2026-05-25T02:00:00', level:'success', message:'NIKKEI price: 38,452.00 | RSI: 51 | NEUTRAL' },
@@ -628,7 +628,7 @@
         { close_time:'2026-05-17', entry:2320, exit:2380, pnl_pct:2.59, pnl_usdt:258.60, reason:'TP' },
       ],
       analysis: [
-        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.78, reasoning:'ML BUY (78% conf, 3 models) | top: dist_ma200, vol_ratio, ret_10' },
+        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.78, reasoning:'ML P(win)=78% >= req 32% (RRR 3) | EV +2.12R | top: dist_ma200, vol_ratio, ret_10' },
       ],
       logs: [
         { time:'2026-05-25T08:00:00', level:'success', message:'GOLD price: $2,412.50 | RSI: 60 | UP' },
@@ -646,7 +646,7 @@
         { close_time:'2026-05-18', entry:79.00, exit:77.10, pnl_pct:-2.41, pnl_usdt:-240.50, reason:'SL' },
       ],
       analysis: [
-        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.48, reasoning:'ML uncertain (B=24% H=48% S=28%) | too volatile' },
+        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.48, reasoning:'ML P(win)=26% < req 32% (RRR 3) | EV -0.02R | high volatility regime' },
       ],
       logs: [
         { time:'2026-05-25T09:00:00', level:'warning', message:'OIL: volatility elevated — skipping signal' },
@@ -1273,7 +1273,7 @@
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div className="page-title">Portfolio</div>
           <div style={{display:'flex',gap:6}}>
-            <span className="badge badge-accent">Lyra 3.0</span>
+            <span className="badge badge-accent">Lyra v3.8</span>
             <span className="badge badge-green">ML Active</span>
           </div>
         </div>
@@ -1342,7 +1342,7 @@
       <div className="main-content page-anim">
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div className="page-title">Analytics</div>
-          <span className="badge badge-accent">Lyra 3.0</span>
+          <span className="badge badge-accent">Lyra v3.8</span>
         </div>
 
         <div className="stat-grid stagger" style={{gridTemplateColumns:'repeat(4, 1fr)'}}>
@@ -1392,7 +1392,7 @@
       <div className="main-content page-anim">
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div className="page-title">Settings</div>
-          <span className="badge badge-accent">Lyra 3.0</span>
+          <span className="badge badge-accent">Lyra v3.8</span>
         </div>
 
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
