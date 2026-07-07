@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Lyra v3.8 — API &amp; Database Reference</title>
+  <meta name="description" content="REST API endpoints and SQLite schema reference for the Lyra multi-market trading framework">
+  <meta property="og:title" content="Lyra — API &amp; Database Reference">
+  <meta property="og:description" content="REST API endpoints and SQLite schema reference for the Lyra multi-market trading framework">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #050508;
+      --bg-raised:  rgba(12,12,22,0.85);
+      --bg-card:    rgba(18,18,32,0.5);
+      --bg-hover:   rgba(255,255,255,0.03);
+      --border:     rgba(255,255,255,0.04);
+      --border-h:   rgba(255,255,255,0.08);
+      --text:       #e2e8f0;
+      --text-dim:   #64748b;
+      --text-muted: rgba(148,163,184,0.4);
+      --accent:     #8b5cf6;
+      --accent-dim: rgba(139,92,246,0.08);
+      --accent-bd:  rgba(139,92,246,0.15);
+      --green:      #10b981;
+      --green-dim:  rgba(16,185,129,0.08);
+      --green-border: rgba(16,185,129,0.2);
+      --red:        #ef4444;
+      --red-dim:    rgba(239,68,68,0.08);
+      --red-border: rgba(239,68,68,0.2);
+      --orange:     #f59e0b;
+      --orange-dim: rgba(245,158,11,0.08);
+      --orange-border: rgba(245,158,11,0.2);
+      --blue:       #3b82f6;
+      --blue-dim:   rgba(59,130,246,0.08);
+      --blue-border: rgba(59,130,246,0.2);
+      --mono:       'JetBrains Mono', monospace;
+      --sans:       'DM Sans', sans-serif;
+      --radius:     10px;
+      --radius-lg:  14px;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    * { -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); -webkit-text-size-adjust: 100%; }
+
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-bd); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); border: 2px solid transparent; background-clip: padding-box; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(139,92,246,0.3) transparent; }
+
+    /* ── Top bar ── */
+    .topbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 14px; padding: 14px 28px; background: rgba(8,8,16,0.92); border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); }
+    .brand { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--accent); text-decoration: none; }
+    .topbar-sep { color: var(--text-muted); font-size: 12px; }
+    .topbar-title { font-size: 12px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.04em; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .topbar a.nav-link { font-size: 12px; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+    .topbar a.nav-link:hover { color: var(--text); }
+
+    .badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; display: inline-block; }
+    .badge-accent { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-bd); }
+    .badge-green { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+    .badge-orange { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange-border); }
+
+    /* ── Layout ── */
+    .wrap { display: flex; gap: 40px; max-width: 1180px; margin: 0 auto; padding: 32px 28px 80px; }
+    .toc { width: 190px; flex-shrink: 0; position: sticky; top: 76px; align-self: flex-start; }
+    .toc-section { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding: 14px 0 6px; }
+    .toc a { display: block; font-size: 12px; color: var(--text-dim); text-decoration: none; padding: 5px 10px; border-left: 2px solid transparent; transition: all 0.2s; }
+    .toc a:hover { color: var(--text); background: var(--bg-hover); }
+    .toc a.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+    main { flex: 1; min-width: 0; }
+    @media (max-width: 900px) { .toc { display: none; } .wrap { padding: 24px 16px 60px; } }
+
+    h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+    .lede { font-size: 14px; color: var(--text-dim); line-height: 1.6; max-width: 640px; margin-bottom: 28px; }
+    h2 { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin: 40px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h2:first-of-type { margin-top: 0; }
+
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; transition: border-color 0.2s; backdrop-filter: blur(8px); margin-bottom: 12px; }
+    .card:hover { border-color: var(--border-h); }
+    .card p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+    .card p + p { margin-top: 8px; }
+    .card code, td code, p code { font-family: var(--mono); font-size: 12px; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
+
+    /* ── Endpoint rows ── */
+    .ep-group { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; background: var(--bg-card); backdrop-filter: blur(8px); }
+    .ep { display: flex; align-items: baseline; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .ep:last-child { border-bottom: none; }
+    .ep:hover { background: var(--bg-hover); }
+    .method { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px; width: 52px; text-align: center; flex-shrink: 0; }
+    .m-get    { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
+    .m-post   { background: var(--blue-dim);   color: var(--blue);   border: 1px solid var(--blue-border); }
+    .m-delete { background: var(--red-dim);    color: var(--red);    border: 1px solid var(--red-border); }
+    .ep-path { font-family: var(--mono); font-size: 12.5px; color: var(--text); white-space: nowrap; }
+    .ep-path .param { color: var(--orange); }
+    .ep-desc { font-size: 12px; color: var(--text-dim); margin-left: auto; text-align: right; }
+    @media (max-width: 700px) {
+      .ep { flex-wrap: wrap; gap: 8px; }
+      .ep-desc { margin-left: 64px; text-align: left; width: 100%; }
+    }
+
+    /* ── Code blocks ── */
+    pre { font-family: var(--mono); font-size: 12px; line-height: 1.65; background: rgba(8,8,16,0.7); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; overflow-x: auto; margin: 10px 0 4px; }
+    pre .c  { color: var(--text-muted); }   /* comment   */
+    pre .k  { color: var(--accent); }       /* key       */
+    pre .s  { color: var(--green); }        /* string    */
+    pre .n  { color: var(--orange); }       /* number    */
+    pre .b  { color: var(--blue); }         /* bool/null */
+
+    /* ── Schema tables ── */
+    .tbl-card { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; background: var(--bg-card); backdrop-filter: blur(8px); }
+    .tbl-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(10,10,20,0.5); }
+    .tbl-name { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text); }
+    .tbl-note { font-size: 11px; color: var(--text-dim); margin-left: auto; text-align: right; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 8px 16px; border-bottom: 1px solid var(--border); font-weight: 600; }
+    td { font-size: 12px; padding: 7px 16px; border-bottom: 1px solid var(--border); color: var(--text-dim); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-hover); }
+    td.col-name { font-family: var(--mono); color: var(--text); white-space: nowrap; }
+    td.col-type { font-family: var(--mono); font-size: 11px; color: var(--accent); white-space: nowrap; }
+    .pk { font-size: 9px; font-weight: 700; color: var(--orange); border: 1px solid var(--orange-border); background: var(--orange-dim); border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+    .fk { font-size: 9px; font-weight: 700; color: var(--blue); border: 1px solid var(--blue-border); background: var(--blue-dim); border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+
+    /* ── Misc ── */
+    .kv { display: grid; grid-template-columns: 170px 1fr; gap: 6px 16px; font-size: 13px; }
+    .kv dt { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 2px; }
+    .kv dd { color: var(--text-dim); }
+    .kv dd code { font-size: 12px; }
+    @media (max-width: 600px) { .kv { grid-template-columns: 1fr; gap: 2px; } .kv dd { margin-bottom: 8px; } }
+
+    footer { max-width: 1180px; margin: 0 auto; padding: 0 28px 40px; font-size: 11px; color: var(--text-muted); display: flex; gap: 16px; }
+    footer a { color: var(--text-dim); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">LYRA</a>
+  <span class="topbar-sep">/</span>
+  <span class="topbar-title">API &amp; Database Reference</span>
+  <div class="topbar-right">
+    <span class="badge badge-accent">v3.8</span>
+    <a class="nav-link" href="index.html">Dashboard demo →</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <nav class="toc" id="toc">
+    <div class="toc-section">API</div>
+    <a href="#overview">Overview</a>
+    <a href="#auth">Authentication</a>
+    <a href="#system">System</a>
+    <a href="#bots">Bots</a>
+    <a href="#markets">Markets &amp; scanning</a>
+    <a href="#optimizer">Optimizer</a>
+    <a href="#risk-ml">Risk &amp; ML</a>
+    <div class="toc-section">Database</div>
+    <a href="#db-overview">Engine</a>
+    <a href="#db-schema">Schema</a>
+  </nav>
+
+  <main>
+    <h1>API &amp; Database Reference</h1>
+    <p class="lede">
+      Lyra exposes a REST API from the same Flask process that runs the trading engine.
+      All state — bots, trades, logs, ML predictions — lives in a single SQLite database
+      with WAL enabled, so the dashboard, the Telegram monitor and the reporting CLI read
+      the same source of truth.
+    </p>
+
+    <h2 id="overview">Overview</h2>
+    <div class="card">
+      <dl class="kv">
+        <dt>Base URL</dt><dd><code>http://127.0.0.1:5000</code> — bound to localhost, reachable remotely over the VPN only</dd>
+        <dt>Format</dt><dd>JSON in, JSON out. Form-encoded also accepted on <code>/login</code>.</dd>
+        <dt>Auth</dt><dd>Cookie-based (<code>auth_token</code>, HttpOnly, SameSite=Lax, 30-day expiry)</dd>
+        <dt>Errors</dt><dd><code>401</code> unauthorized · <code>404</code> unknown bot · <code>429</code> login rate-limited</dd>
+      </dl>
+    </div>
+
+    <h2 id="auth">Authentication</h2>
+    <div class="ep-group">
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/login</span><span class="ep-desc">Password login, sets auth cookie</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/logout</span><span class="ep-desc">Clears the cookie, redirects to /login</span></div>
+    </div>
+    <div class="card">
+      <p>Send the password as JSON or a form field. On success the response sets the
+      <code>auth_token</code> cookie; every <code>/api/*</code> route requires it and returns
+      <code>401</code> otherwise. Failed attempts are rate-limited per IP — five misses lock
+      the address out for five minutes (<code>429</code>).</p>
+<pre><span class="c"># login and store the cookie</span>
+curl -c cookies.txt -X POST http://127.0.0.1:5000/login \
+     -H <span class="s">"Content-Type: application/json"</span> \
+     -d <span class="s">'{"password": "…"}'</span>
+
+<span class="c"># authenticated request</span>
+curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
+    </div>
+
+    <h2 id="system">System</h2>
+    <div class="ep-group">
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/health</span><span class="ep-desc">Per-bot liveness + system status</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/status</span><span class="ep-desc">Engine status summary</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/status/<span class="param">&lt;pair&gt;</span></span><span class="ep-desc">Status for a single pair</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/settings</span><span class="ep-desc">Read global settings</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/settings</span><span class="ep-desc">Update global settings</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/alerts/system</span><span class="ep-desc">Stale-bot watchdog alerts</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/activity/recent</span><span class="ep-desc">Recent trades and log events across bots</span></div>
+    </div>
+    <div class="card">
+      <p><code>/api/health</code> reports every registered bot with its thread liveness and
+      last update timestamp — the same feed the watchdog uses to flag stale bots:</p>
+<pre>{
+  <span class="k">"bots"</span>: {
+    <span class="k">"btc_usdt"</span>:  { <span class="k">"running"</span>: <span class="b">true</span>, <span class="k">"status"</span>: <span class="s">"waiting"</span>,     <span class="k">"last_update"</span>: <span class="s">"2026-07-07T09:47:35"</span> },
+    <span class="k">"fut_gold"</span>:  { <span class="k">"running"</span>: <span class="b">true</span>, <span class="k">"status"</span>: <span class="s">"in_position"</span>, <span class="k">"last_update"</span>: <span class="s">"2026-07-07T09:47:30"</span> }
+  }
+}</pre>
+    </div>
+
+    <h2 id="bots">Bots</h2>
+    <div class="ep-group">
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bots</span><span class="ep-desc">List all bots with live P&amp;L</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Full detail: config, position, trades, sessions</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/create</span><span class="ep-desc">Create a crypto bot</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/launch</span><span class="ep-desc">Optimize-then-launch pipeline</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/start</span><span class="ep-desc">Start the trading thread</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/stop</span><span class="ep-desc">Stop the trading thread</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/reset</span><span class="ep-desc">Reset capital and history</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/sessions</span><span class="ep-desc">Set active forex sessions</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/projection</span><span class="ep-desc">Equity projection cone</span></div>
+      <div class="ep"><span class="method m-delete">DELETE</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Delete bot and its history</span></div>
+    </div>
+    <div class="card">
+      <p>Each entry in <code>/api/bots</code> carries the market type (<code>crypto</code>,
+      <code>indices</code>, <code>forex</code>, <code>futures</code>), current price, open
+      position if any, and running win/loss counters:</p>
+<pre>{
+  <span class="k">"id"</span>: <span class="s">"btc_usdt"</span>,
+  <span class="k">"pair"</span>: <span class="s">"BTC/USDT"</span>,
+  <span class="k">"market"</span>: <span class="s">"crypto"</span>,
+  <span class="k">"timeframe"</span>: <span class="s">"1h"</span>,
+  <span class="k">"mode"</span>: <span class="s">"conservative"</span>,
+  <span class="k">"status"</span>: <span class="s">"waiting"</span>,
+  <span class="k">"capital"</span>: <span class="n">10000.0</span>,
+  <span class="k">"initial_capital"</span>: <span class="n">10000.0</span>,
+  <span class="k">"profit_pct"</span>: <span class="n">0.0</span>,
+  <span class="k">"has_position"</span>: <span class="b">false</span>,
+  <span class="k">"position_side"</span>: <span class="b">null</span>,
+  <span class="k">"total_trades"</span>: <span class="n">0</span>, <span class="k">"wins"</span>: <span class="n">0</span>, <span class="k">"losses"</span>: <span class="n">0</span>
+}</pre>
+    </div>
+
+    <h2 id="markets">Markets &amp; scanning</h2>
+    <div class="ep-group">
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/markets</span><span class="ep-desc">Available market types</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/pairs</span><span class="ep-desc">Tradable crypto pairs</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/indices</span><span class="ep-desc">Index instruments (S&amp;P 500, NASDAQ, …)</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/indices/prices</span><span class="ep-desc">Live index prices</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/indices/scan</span><span class="ep-desc">Scan indices for entry setups</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/indices/backtest</span><span class="ep-desc">Backtest a strategy on an index</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/indices/bot/create</span><span class="ep-desc">Create an index bot</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/forex</span><span class="ep-desc">Forex pairs and categories</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/forex/prices</span><span class="ep-desc">Live forex quotes</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/forex/sessions/<span class="param">&lt;pair&gt;</span></span><span class="ep-desc">Auto-detected trading sessions</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/forex/bot/create</span><span class="ep-desc">Create a forex bot (session-gated)</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/futures</span><span class="ep-desc">Futures instruments (gold, copper, …)</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/futures/prices</span><span class="ep-desc">Live futures quotes</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/futures/bot/create</span><span class="ep-desc">Create a futures bot</span></div>
+    </div>
+    <div class="card">
+      <p>Forex bots only open positions inside their configured sessions (London, New York,
+      Tokyo, Sydney); exits are always allowed. Sessions are auto-detected per pair at
+      creation and can be overridden through <code>/api/bot/&lt;bot_id&gt;/sessions</code>.</p>
+    </div>
+
+    <h2 id="optimizer">Optimizer</h2>
+    <div class="ep-group">
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/optimizer/modes</span><span class="ep-desc">Available optimization modes</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/optimizer/start</span><span class="ep-desc">Start an optimization run for a bot</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/optimizer/status/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Poll run progress</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/optimizer/apply</span><span class="ep-desc">Apply the optimized parameters</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/optimize</span><span class="ep-desc">Standalone optimization job</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/optimize/<span class="param">&lt;job_id&gt;</span></span><span class="ep-desc">Job result</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/optimize/<span class="param">&lt;job_id&gt;</span>/stream</span><span class="ep-desc">Progress as server-sent events</span></div>
+    </div>
+    <div class="card">
+      <p>Optimization runs out-of-sample: parameters are fit on a training window and scored
+      on unseen candles. Long-running jobs stream progress over SSE so the dashboard can show
+      a live progress bar without polling.</p>
+    </div>
+
+    <h2 id="risk-ml">Risk &amp; ML</h2>
+    <div class="ep-group">
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/risk/portfolio</span><span class="ep-desc">Portfolio-level exposure and correlation</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/risk-profiles</span><span class="ep-desc">Risk profile presets</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/portfolio/daily</span><span class="ep-desc">Daily portfolio equity series</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/ml/status</span><span class="ep-desc">Meta-labeling gate status per market</span></div>
+      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/ml/calibration</span><span class="ep-desc">P(win) calibration buckets</span></div>
+      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/ml/create_test_bots</span><span class="ep-desc">Spin up A/B bots (ML gate on vs. off)</span></div>
+    </div>
+    <div class="card">
+      <p>The ML layer is a meta-labeling gate: pooled per-market LightGBM models score each
+      strategy signal with a win probability, and signals below the threshold are skipped.
+      Every prediction is persisted (see <code>ml_predictions</code> below) so calibration —
+      predicted P(win) vs. realized hit rate — can be audited after trades resolve.</p>
+    </div>
+
+    <h2 id="db-overview">Database — engine</h2>
+    <div class="card">
+      <dl class="kv">
+        <dt>Engine</dt><dd>SQLite 3, single file (<code>lyra.db</code>)</dd>
+        <dt>Journal</dt><dd><code>WAL</code> — dashboard reads never block the trading threads' writes</dd>
+        <dt>Durability</dt><dd><code>synchronous=NORMAL</code>, <code>busy_timeout=5000</code></dd>
+        <dt>Integrity</dt><dd><code>foreign_keys=ON</code>; child rows cascade on bot deletion</dd>
+        <dt>Migration</dt><dd>Imported from the legacy per-bot JSON state files via <code>migrate_json_to_sqlite.py</code></dd>
+      </dl>
+    </div>
+
+    <h2 id="db-schema">Database — schema</h2>
+
+    <div class="tbl-card">
+      <div class="tbl-head"><span class="tbl-name">bots</span><span class="tbl-note">One row per bot; JSON columns hold nested config</span></div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td class="col-name">bot_id<span class="pk">PK</span></td><td class="col-type">TEXT</td><td>Slug, e.g. <code>btc_usdt</code>, <code>fut_gold</code></td></tr>
+        <tr><td class="col-name">pair</td><td class="col-type">TEXT</td><td>Instrument symbol (<code>BTC/USDT</code>, <code>XAU/USD</code>)</td></tr>
+        <tr><td class="col-name">timeframe</td><td class="col-type">TEXT</td><td>Candle interval: <code>15m</code>, <code>1h</code>, <code>4h</code></td></tr>
+        <tr><td class="col-name">mode</td><td class="col-type">TEXT</td><td><code>conservative</code> / <code>moderate</code> / <code>aggressive</code></td></tr>
+        <tr><td class="col-name">status</td><td class="col-type">TEXT</td><td><code>created</code>, <code>waiting</code>, <code>in_position</code>, <code>stopped</code></td></tr>
+        <tr><td class="col-name">capital</td><td class="col-type">REAL</td><td>Current equity</td></tr>
+        <tr><td class="col-name">initial_capital</td><td class="col-type">REAL</td><td>Starting equity, for return calculation</td></tr>
+        <tr><td class="col-name">candle_count</td><td class="col-type">INTEGER</td><td>Candles processed since start</td></tr>
+        <tr><td class="col-name">last_trade_candle</td><td class="col-type">INTEGER</td><td>Cooldown anchor between entries</td></tr>
+        <tr><td class="col-name">position_json</td><td class="col-type">TEXT</td><td>Open position (side, entry, stop, TP), null when flat</td></tr>
+        <tr><td class="col-name">config_json</td><td class="col-type">TEXT</td><td>Strategy parameters, sessions, ML gate settings</td></tr>
+        <tr><td class="col-name">optimization_json</td><td class="col-type">TEXT</td><td>Last optimizer result applied</td></tr>
+        <tr><td class="col-name">created_at / updated_at</td><td class="col-type">TEXT</td><td>ISO-8601 timestamps</td></tr>
+      </table>
+    </div>
+
+    <div class="tbl-card">
+      <div class="tbl-head"><span class="tbl-name">trades</span><span class="tbl-note">Closed trades · indexed on bot_id and close_time</span></div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td class="col-name">id<span class="pk">PK</span></td><td class="col-type">INTEGER</td><td>Autoincrement</td></tr>
+        <tr><td class="col-name">bot_id<span class="fk">FK</span></td><td class="col-type">TEXT</td><td>→ <code>bots.bot_id</code>, cascade on delete</td></tr>
+        <tr><td class="col-name">trade_num</td><td class="col-type">INTEGER</td><td>Sequence number within the bot</td></tr>
+        <tr><td class="col-name">open_time / close_time</td><td class="col-type">TEXT</td><td>Entry and exit timestamps</td></tr>
+        <tr><td class="col-name">entry_price / exit_price</td><td class="col-type">REAL</td><td>Fill prices</td></tr>
+        <tr><td class="col-name">size</td><td class="col-type">REAL</td><td>Position size in quote currency</td></tr>
+        <tr><td class="col-name">pnl_pct / pnl_usdt</td><td class="col-type">REAL</td><td>Result in percent and absolute terms</td></tr>
+        <tr><td class="col-name">fees</td><td class="col-type">REAL</td><td>Round-trip fees, deducted from P&amp;L</td></tr>
+        <tr><td class="col-name">reason</td><td class="col-type">TEXT</td><td>Exit cause: <code>take_profit</code>, <code>stop_loss</code>, <code>time_stop</code>, …</td></tr>
+      </table>
+    </div>
+
+    <div class="tbl-card">
+      <div class="tbl-head"><span class="tbl-name">ml_predictions</span><span class="tbl-note">Every gate decision, resolved after the trade closes</span></div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td class="col-name">id<span class="pk">PK</span></td><td class="col-type">INTEGER</td><td>Autoincrement</td></tr>
+        <tr><td class="col-name">bot_id</td><td class="col-type">TEXT</td><td>Bot that produced the signal</td></tr>
+        <tr><td class="col-name">time / price</td><td class="col-type">TEXT / REAL</td><td>When and at what price the signal fired</td></tr>
+        <tr><td class="col-name">direction</td><td class="col-type">INTEGER</td><td><code>1</code> long, <code>-1</code> short</td></tr>
+        <tr><td class="col-name">signal_type</td><td class="col-type">TEXT</td><td>Strategy signal that triggered the evaluation</td></tr>
+        <tr><td class="col-name">p_win / threshold</td><td class="col-type">REAL</td><td>Model probability vs. gate cutoff</td></tr>
+        <tr><td class="col-name">action</td><td class="col-type">TEXT</td><td><code>taken</code> or <code>skipped</code></td></tr>
+        <tr><td class="col-name">stop_pct / tp_pct</td><td class="col-type">REAL</td><td>Risk parameters at decision time</td></tr>
+        <tr><td class="col-name">outcome / pnl_pct</td><td class="col-type">TEXT / REAL</td><td>Filled in by the daily resolver cron</td></tr>
+        <tr><td class="col-name">resolved_at</td><td class="col-type">TEXT</td><td>Resolution timestamp</td></tr>
+      </table>
+    </div>
+
+    <div class="tbl-card">
+      <div class="tbl-head"><span class="tbl-name">analyses</span><span class="tbl-note">Per-candle strategy evaluations</span></div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td class="col-name">id<span class="pk">PK</span></td><td class="col-type">INTEGER</td><td>Autoincrement</td></tr>
+        <tr><td class="col-name">bot_id<span class="fk">FK</span></td><td class="col-type">TEXT</td><td>→ <code>bots.bot_id</code>, indexed</td></tr>
+        <tr><td class="col-name">time / price</td><td class="col-type">TEXT / REAL</td><td>Candle close</td></tr>
+        <tr><td class="col-name">action / confidence</td><td class="col-type">TEXT / REAL</td><td>Decision and score</td></tr>
+        <tr><td class="col-name">reasoning / analysis</td><td class="col-type">TEXT</td><td>Human-readable rationale shown in the dashboard</td></tr>
+      </table>
+    </div>
+
+    <div class="tbl-card">
+      <div class="tbl-head"><span class="tbl-name">logs</span><span class="tbl-note">Structured event log · indexed on bot_id and time</span></div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td class="col-name">id<span class="pk">PK</span></td><td class="col-type">INTEGER</td><td>Autoincrement</td></tr>
+        <tr><td class="col-name">bot_id<span class="fk">FK</span></td><td class="col-type">TEXT</td><td>→ <code>bots.bot_id</code>, cascade on delete</td></tr>
+        <tr><td class="col-name">time</td><td class="col-type">TEXT</td><td>Event timestamp</td></tr>
+        <tr><td class="col-name">level</td><td class="col-type">TEXT</td><td><code>info</code>, <code>success</code>, <code>warning</code>, <code>error</code></td></tr>
+        <tr><td class="col-name">message</td><td class="col-type">TEXT</td><td>Feeds the dashboard activity feed and Telegram alerts</td></tr>
+      </table>
+    </div>
+
+    <div class="tbl-card">
+      <div class="tbl-head"><span class="tbl-name">settings</span><span class="tbl-note">Global key-value configuration</span></div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td class="col-name">key<span class="pk">PK</span></td><td class="col-type">TEXT</td><td>Setting name</td></tr>
+        <tr><td class="col-name">value</td><td class="col-type">TEXT</td><td>JSON-encoded value</td></tr>
+        <tr><td class="col-name">updated_at</td><td class="col-type">TEXT</td><td>Last write</td></tr>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <span>Lyra v3.8</span>
+  <a href="index.html">Dashboard demo</a>
+  <a href="https://github.com/Cy-fox/lyra-framework">Source</a>
+</footer>
+
+<script>
+  // highlight the ToC entry for the section currently in view
+  const links = [...document.querySelectorAll('#toc a')];
+  const targets = links.map(a => document.querySelector(a.getAttribute('href')));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    });
+  }, { rootMargin: '-80px 0px -70% 0px' });
+  targets.forEach(t => t && obs.observe(t));
+</script>
+
+</body>
+</html>
