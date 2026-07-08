@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Lyra 3.0 — AI Trading Framework</title>
+  <title>Lyra 3.0 - AI Trading Framework</title>
   <meta name="description" content="Multi-market algorithmic trading framework with a meta-labeling ML gate (pooled per-market LightGBM models)">
-  <meta property="og:title" content="Lyra — AI Trading Framework">
+  <meta property="og:title" content="Lyra - AI Trading Framework">
   <meta property="og:description" content="Multi-market algorithmic trading framework with a meta-labeling ML gate (pooled per-market LightGBM models)">
   <meta property="og:image" content="logo_200.png">
   <link rel="icon" type="image/png" sizes="80x80" href="logo_80.png">
@@ -48,7 +48,7 @@
     .app-layout { display: flex; height: 100vh; height: 100dvh; }
     .main-content { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 28px 36px; }
     @media (max-width: 768px) { .main-content { padding: 16px; } }
-    /* zoom multiplies rendered height — divide 100vh back down or the bottom
+    /* zoom multiplies rendered height - divide 100vh back down or the bottom
        of the page gets cut off and becomes unreachable (broken scroll) */
     @media (min-width: 2000px) { .app-layout { zoom: 1.25; height: calc(100vh / 1.25); } .main-content { padding: 32px 44px; } }
     @media (min-width: 2800px) { .app-layout { zoom: 1.45; height: calc(100vh / 1.45); } }
@@ -400,7 +400,7 @@
     /* ── Responsive: tablet (<=768px) ── */
     @media (max-width: 768px) {
       /* Single natural document scroll: unlock #root/body and let the page
-         grow — avoids the double-scrollbar + 100vh-vs-URL-bar issues */
+         grow - avoids the double-scrollbar + 100vh-vs-URL-bar issues */
       body { overflow: auto; overflow-x: hidden; height: auto; min-height: 100dvh; }
       #root { height: auto !important; min-height: 100dvh; }
       .app-layout { flex-direction: column; height: auto !important; min-height: 100dvh; }
@@ -471,7 +471,7 @@
     var c=document.getElementById('bg-particles'),g=c.getContext('2d'),W,H,pts=[];
     function sz(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
     sz(); window.addEventListener('resize',sz);
-    var NP=window.innerWidth<=768?45:120; // fewer particles on mobile — the O(n²) link pass is heavy
+    var NP=window.innerWidth<=768?45:120; // fewer particles on mobile - the O(n²) link pass is heavy
     for(var i=0;i<NP;i++) pts.push({x:Math.random()*2000,y:Math.random()*2000,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2.8+1.2,o:Math.random()*.30+.20});
     function draw(){
       g.clearRect(0,0,W,H);
@@ -582,7 +582,7 @@
   ];
 
 
-  // Synthetic detail for bots without a hand-written entry — deterministic
+  // Synthetic detail for bots without a hand-written entry - deterministic
   // per bot id so the demo looks stable across reloads.
   function makeGenericDetail(bot) {
     let seed = 0; for (const ch of bot.id) seed = (seed * 31 + ch.charCodeAt(0)) % 2147483647;
@@ -717,7 +717,7 @@
   };
 
   // ═══════════════════════════════════════
-  // ASSET ICONS — real logos/flags per asset
+  // ASSET ICONS - real logos/flags per asset
   // (flag emojis render as plain letters on Windows, hence flagcdn images)
   // ═══════════════════════════════════════
 
@@ -986,7 +986,7 @@
     const chartRef = useRef(null);
 
     const horizons = [['4H','4h'],['1D','1d'],['1W','1w'],['1M','1m'],['3M','3m'],['6M','6m'],['1Y','1y']];
-    // Cone coverage is only validated up to 1W — longer horizons are flagged as extrapolation
+    // Cone coverage is only validated up to 1W - longer horizons are flagged as extrapolation
     const isExtrapolated = ['1m','3m','6m','1y'].includes(horizon);
 
     useEffect(() => {
@@ -1122,7 +1122,7 @@
         <div style={{display:'flex',justifyContent:'space-between',gap:8,flexWrap:'wrap',marginTop:4}}>
           <span style={{fontSize:8,color:'rgba(148,163,184,0.3)',fontStyle:'italic'}}>Model view, not a forecast</span>
           <span style={{fontSize:8,color:isExtrapolated?'rgba(245,158,11,0.55)':'rgba(148,163,184,0.3)',fontStyle:'italic'}}>
-            {isExtrapolated ? 'Extrapolation — cone only validated up to 1W' : '90% band · backtested OOS coverage ≈ 83–96%'}
+            {isExtrapolated ? 'Extrapolation - cone only validated up to 1W' : '90% band · backtested OOS coverage ≈ 83–96%'}
           </span>
         </div>
       </div>
@@ -1244,7 +1244,7 @@
   // ═══════════════════════════════════════
 
   // ═══════════════════════════════════════
-  // MARKET BLOCK (Lobby) — mirrors v3-lobby.jsx
+  // MARKET BLOCK (Lobby) - mirrors v3-lobby.jsx
   // ═══════════════════════════════════════
 
   function MarketBlock({ label, color, colorDim, colorBorder, capital, pnl, numBots, openPositions, bestBot, onClick }) {
@@ -1281,7 +1281,7 @@
   }
 
   // ═══════════════════════════════════════
-  // RECENT ACTIVITY ITEM — mirrors v3-lobby.jsx
+  // RECENT ACTIVITY ITEM - mirrors v3-lobby.jsx
   // ═══════════════════════════════════════
 
   function ActivityItem({ event, onBotClick }) {
@@ -1374,7 +1374,7 @@
   }
 
   // ═══════════════════════════════════════
-  // PORTFOLIO VIEW — unified Lobby / per-market (mirrors v3-lobby.jsx)
+  // PORTFOLIO VIEW - unified Lobby / per-market (mirrors v3-lobby.jsx)
   // ═══════════════════════════════════════
 
   function PortfolioView({ filter, onSelectBot, onNavMarket }) {
@@ -1759,7 +1759,7 @@
           </div>
         </div>
 
-        <div className="section-label">Exposure vs Limits — correlated bots are one bet, not many</div>
+        <div className="section-label">Exposure vs Limits - correlated bots are one bet, not many</div>
         <div className="card" style={{marginBottom:16}}>
           {Object.entries(byMarket).map(([m, n]) => <RiskBar key={m} label={m} used={n} limit={RISK_LIMITS[m]} />)}
         </div>
@@ -1775,7 +1775,7 @@
           ))}
         </div>
 
-        <div className="section-label">P(win) Calibration — predicted vs realized (counterfactual resolver)</div>
+        <div className="section-label">P(win) Calibration - predicted vs realized (counterfactual resolver)</div>
         <div className="card" style={{padding:0,overflow:'hidden'}}>
           <div style={{display:'grid',gridTemplateColumns:'1.2fr 0.6fr 1fr 1fr',background:'rgba(255,255,255,0.04)'}}>
             {['Bucket','n','Predicted','Realized'].map(h => <div key={h} style={{...cell,color:'var(--text-muted)',fontFamily:'inherit'}}>{h}</div>)}
@@ -1790,7 +1790,7 @@
           ))}
           <div style={{padding:'9px 10px',fontSize:10,color:'var(--text-muted)',borderTop:'1px solid rgba(255,255,255,0.05)'}}>
             Every gate decision (confirm and reject) is graded against what the market actually did.
-            Sample still small (n=51) — the pooled models below exist because the per-bot models this measured were overconfident.
+            Sample still small (n=51) - the pooled models below exist because the per-bot models this measured were overconfident.
           </div>
         </div>
       </div>
@@ -1820,11 +1820,11 @@
         </div>
 
         <div className="card" style={{marginBottom:16,fontSize:12,lineHeight:1.7,color:'var(--text-dim)'}}>
-          The model doesn't predict market direction — it answers one question per signal:
+          The model doesn't predict market direction - it answers one question per signal:
           <span style={{color:'var(--text)'}}> "does this entry win with this bot's stop and take-profit?"</span> (triple-barrier
           meta-labeling). A signal only becomes a trade when P(win) beats the reward/risk breakeven with margin.
-          One <span style={{color:'var(--accent)'}}>pooled model per market &amp; timeframe</span> — trained on every pair of the
-          market at once — serves all bots: 9 models for 36 bots, 11k-82k samples each instead of ~800 per bot.
+          One <span style={{color:'var(--accent)'}}>pooled model per market &amp; timeframe</span> - trained on every pair of the
+          market at once - serves all bots: 9 models for 36 bots, 11k-82k samples each instead of ~800 per bot.
         </div>
 
         <div className="stat-grid stagger" style={{gridTemplateColumns:'repeat(3, 1fr)'}}>
@@ -1855,7 +1855,7 @@
           <div className="t-dim">ML P(win)=64% &gt;= req 32% (RRR 3) | EV +1.57R | top: vol_10, vol_20, macd_signal_norm | sent=+0.07</div>
           <div style={{color:'var(--text-muted)',fontSize:10,marginTop:8,fontFamily:'inherit'}}>
             Probabilities are clamped to [0.10, 0.85] until enough resolved predictions exist for formal
-            isotonic calibration — an honest model is worth more than a confident one.
+            isotonic calibration - an honest model is worth more than a confident one.
           </div>
         </div>
       </div>
@@ -1868,7 +1868,7 @@
 
     const nav = p => setPage(p);
 
-    // market accent theme on body — mirrors v3-app.jsx
+    // market accent theme on body - mirrors v3-app.jsx
     useEffect(() => {
       document.body.classList.remove('theme-indices', 'theme-forex', 'theme-futures');
       const themeClasses = { indices: 'theme-indices', forex: 'theme-forex', futures: 'theme-futures' };
