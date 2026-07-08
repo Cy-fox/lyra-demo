@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Lyra v3.8 - API &amp; Database Reference</title>
+  <title>Lyra v3.8, API &amp; Database Reference</title>
   <meta name="description" content="REST API endpoints and SQLite schema reference for the Lyra multi-market trading framework">
-  <meta property="og:title" content="Lyra - API &amp; Database Reference">
+  <meta property="og:title" content="Lyra, API &amp; Database Reference">
   <meta property="og:description" content="REST API endpoints and SQLite schema reference for the Lyra multi-market trading framework">
   <meta property="og:image" content="logo_200.png">
   <link rel="icon" type="image/png" sizes="80x80" href="logo_80.png">
@@ -172,7 +172,7 @@
     <h1>API &amp; Database Reference</h1>
     <p class="lede">
       Lyra exposes a REST API from the same Flask process that runs the trading engine.
-      All state - bots, trades, logs, ML predictions - lives in a single SQLite database
+      All state, bots, trades, logs, ML predictions, lives in a single SQLite database
       with WAL enabled, so the dashboard, the Telegram monitor and the reporting CLI read
       the same source of truth.
     </p>
@@ -180,7 +180,7 @@
     <h2 id="overview">Overview</h2>
     <div class="card">
       <dl class="kv">
-        <dt>Base URL</dt><dd><code>http://127.0.0.1:5000</code> - bound to localhost, reachable remotely over the VPN only</dd>
+        <dt>Base URL</dt><dd><code>http://127.0.0.1:5000</code>, bound to localhost, reachable remotely over the VPN only</dd>
         <dt>Format</dt><dd>JSON in, JSON out. Form-encoded also accepted on <code>/login</code>.</dd>
         <dt>Auth</dt><dd>Cookie-based (<code>auth_token</code>, HttpOnly, SameSite=Lax, 30-day expiry)</dd>
         <dt>Errors</dt><dd><code>401</code> unauthorized · <code>404</code> unknown bot · <code>429</code> login rate-limited</dd>
@@ -195,7 +195,7 @@
     <div class="card">
       <p>Send the password as JSON or a form field. On success the response sets the
       <code>auth_token</code> cookie; every <code>/api/*</code> route requires it and returns
-      <code>401</code> otherwise. Failed attempts are rate-limited per IP - five misses lock
+      <code>401</code> otherwise. Failed attempts are rate-limited per IP, five misses lock
       the address out for five minutes (<code>429</code>).</p>
 <pre><span class="c"># login and store the cookie</span>
 curl -c cookies.txt -X POST http://127.0.0.1:5000/login \
@@ -218,7 +218,7 @@ curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
     </div>
     <div class="card">
       <p><code>/api/health</code> reports every registered bot with its thread liveness and
-      last update timestamp - the same feed the watchdog uses to flag stale bots:</p>
+      last update timestamp, the same feed the watchdog uses to flag stale bots:</p>
 <pre>{
   <span class="k">"bots"</span>: {
     <span class="k">"btc_usdt"</span>:  { <span class="k">"running"</span>: <span class="b">true</span>, <span class="k">"status"</span>: <span class="s">"waiting"</span>,     <span class="k">"last_update"</span>: <span class="s">"2026-07-07T09:47:35"</span> },
@@ -312,21 +312,21 @@ curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
       <p>The ML layer is a meta-labeling gate: pooled per-market LightGBM models score each
       strategy signal with a win probability, and signals below the threshold are skipped.
       Every prediction is persisted (see <code>ml_predictions</code> below) so calibration -
-      predicted P(win) vs. realized hit rate - can be audited after trades resolve.</p>
+      predicted P(win) vs. realized hit rate, can be audited after trades resolve.</p>
     </div>
 
-    <h2 id="db-overview">Database - engine</h2>
+    <h2 id="db-overview">Database, engine</h2>
     <div class="card">
       <dl class="kv">
         <dt>Engine</dt><dd>SQLite 3, single file (<code>lyra.db</code>)</dd>
-        <dt>Journal</dt><dd><code>WAL</code> - dashboard reads never block the trading threads' writes</dd>
+        <dt>Journal</dt><dd><code>WAL</code>, dashboard reads never block the trading threads' writes</dd>
         <dt>Durability</dt><dd><code>synchronous=NORMAL</code>, <code>busy_timeout=5000</code></dd>
         <dt>Integrity</dt><dd><code>foreign_keys=ON</code>; child rows cascade on bot deletion</dd>
         <dt>Migration</dt><dd>Imported from the legacy per-bot JSON state files via <code>migrate_json_to_sqlite.py</code></dd>
       </dl>
     </div>
 
-    <h2 id="db-schema">Database - schema</h2>
+    <h2 id="db-schema">Database, schema</h2>
 
     <div class="tbl-card">
       <div class="tbl-head"><span class="tbl-name">bots</span><span class="tbl-note">One row per bot; JSON columns hold nested config</span></div>
