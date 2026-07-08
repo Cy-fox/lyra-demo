@@ -1122,7 +1122,7 @@
         <div style={{display:'flex',justifyContent:'space-between',gap:8,flexWrap:'wrap',marginTop:4}}>
           <span style={{fontSize:8,color:'rgba(148,163,184,0.3)',fontStyle:'italic'}}>Model view, not a forecast</span>
           <span style={{fontSize:8,color:isExtrapolated?'rgba(245,158,11,0.55)':'rgba(148,163,184,0.3)',fontStyle:'italic'}}>
-            {isExtrapolated ? 'Extrapolation - cone only validated up to 1W' : '90% band · backtested OOS coverage ≈ 83–96%'}
+            {isExtrapolated ? 'Extrapolation - cone only validated up to 1W' : '90% band · backtested OOS coverage ≈ 83-96%'}
           </span>
         </div>
       </div>
@@ -1192,10 +1192,10 @@
         <div className="metrics-grid stagger">
           {[
             {l:'Capital',v:`$${fmt(bot.capital)}`,s:`${bot.change>=0?'+':''}${bot.change.toFixed(2)}%`,sc:bot.change>=0?'var(--green)':'var(--red)'},
-            {l:'Win Rate',v:met.win_rate!=null?met.win_rate.toFixed(0)+'%':'\u2014',s:`${met.wins||0}W / ${met.losses||0}L`,sc:'var(--text-muted)'},
-            {l:'Profit Factor',v:met.profit_factor!=null?met.profit_factor.toFixed(2):'\u2014',s:'',sc:''},
+            {l:'Win Rate',v:met.win_rate!=null?met.win_rate.toFixed(0)+'%':'-',s:`${met.wins||0}W / ${met.losses||0}L`,sc:'var(--text-muted)'},
+            {l:'Profit Factor',v:met.profit_factor!=null?met.profit_factor.toFixed(2):'-',s:'',sc:''},
             {l:'Trades',v:String(met.total_trades||0),s:'',sc:''},
-            {l:'Best / Worst',v:'',s:`${met.best_trade!=null?'+'+met.best_trade.toFixed(2)+'%':'\u2014'} / ${met.worst_trade!=null?met.worst_trade.toFixed(2)+'%':'\u2014'}`,sc:'var(--text-muted)'},
+            {l:'Best / Worst',v:'',s:`${met.best_trade!=null?'+'+met.best_trade.toFixed(2)+'%':'-'} / ${met.worst_trade!=null?met.worst_trade.toFixed(2)+'%':'-'}`,sc:'var(--text-muted)'},
             {l:'Fees',v:met.fees_paid!=null?'$'+met.fees_paid.toFixed(2):'$0.00',s:'',sc:''}
           ].map(({l,v,s,sc},i)=>(
             <div className="metric-card" key={i}><div className="metric-label">{l}</div>{v&&<div className="metric-value">{v}</div>}{s&&<div className="metric-sub" style={{color:sc||'inherit'}}>{s}</div>}</div>
