@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Lyra v3.8 — AI Trading Framework</title>
+  <title>Lyra 3.0 — AI Trading Framework</title>
   <meta name="description" content="Multi-market algorithmic trading framework with a meta-labeling ML gate (pooled per-market LightGBM models)">
   <meta property="og:title" content="Lyra — AI Trading Framework">
   <meta property="og:description" content="Multi-market algorithmic trading framework with a meta-labeling ML gate (pooled per-market LightGBM models)">
+  <meta property="og:image" content="logo_200.png">
+  <link rel="icon" type="image/png" sizes="80x80" href="logo_80.png">
+  <link rel="apple-touch-icon" href="logo_200.png">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -57,6 +60,76 @@
     ::-webkit-scrollbar-thumb { background: var(--accent-bd); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); border: 2px solid transparent; background-clip: padding-box; }
     * { scrollbar-width: thin; scrollbar-color: rgba(139,92,246,0.3) transparent; }
+
+    /* ── Indices cyan theme override ── */
+    .theme-indices {
+      --accent:     #06b6d4;
+      --accent-dim: rgba(6,182,212,0.08);
+      --accent-bd:  rgba(6,182,212,0.15);
+    }
+    .theme-indices .card:hover { border-color: var(--accent-bd); }
+    .theme-indices .metric-card { border-color: var(--accent-bd); }
+    .theme-indices .market-card:hover { border-color: var(--accent-bd); }
+    .theme-indices ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.15); }
+    .theme-indices .cursor-ring { border-color: rgba(6,182,212,0.35); }
+    .theme-indices .cursor-hover .cursor-ring { border-color: rgba(6,182,212,0.5); }
+    .theme-indices .ms-item.selected { box-shadow: 0 0 12px rgba(6,182,212,0.1); }
+    .theme-indices .btn-primary:hover { background: #0891b2; }
+    .theme-indices .tf-btn.active { background: transparent; border-color: #06b6d4; color: #06b6d4; }
+    .theme-indices .btn-primary { background: transparent; border-color: #06b6d4; color: #06b6d4; }
+    .theme-indices .entry-crypto { background: radial-gradient(ellipse at center, rgba(6,182,212,0.15) 0%, rgba(3,3,8,0.95) 70%); }
+    .theme-indices .card { border-color: var(--accent-bd); }
+    .theme-indices .card-label { color: rgba(6,182,212,0.7); }
+    .theme-indices .section-label { color: var(--accent); }
+    .theme-indices .page-title { color: #06b6d4; }
+    .theme-indices .pos-banner { border-color: var(--accent-bd); }
+
+    /* ── Forex green theme override ── */
+    .theme-forex {
+      --accent:     #22c55e;
+      --accent-dim: rgba(34,197,94,0.08);
+      --accent-bd:  rgba(34,197,94,0.15);
+    }
+    .theme-forex .card:hover { border-color: var(--accent-bd); }
+    .theme-forex .metric-card { border-color: var(--accent-bd); }
+    .theme-forex .market-card:hover { border-color: var(--accent-bd); }
+    .theme-forex ::-webkit-scrollbar-thumb { background: rgba(34,197,94,0.15); }
+    .theme-forex .cursor-ring { border-color: rgba(34,197,94,0.35); }
+    .theme-forex .cursor-hover .cursor-ring { border-color: rgba(34,197,94,0.5); }
+    .theme-forex .ms-item.selected { box-shadow: 0 0 12px rgba(34,197,94,0.1); }
+    .theme-forex .btn-primary:hover { background: #16a34a; }
+    .theme-forex .tf-btn.active { background: transparent; border-color: #22c55e; color: #22c55e; }
+    .theme-forex .btn-primary { background: transparent; border-color: #22c55e; color: #22c55e; }
+    .theme-forex .entry-crypto { background: radial-gradient(ellipse at center, rgba(34,197,94,0.15) 0%, rgba(3,3,8,0.95) 70%); }
+    .theme-forex .card { border-color: var(--accent-bd); }
+    .theme-forex .card-label { color: rgba(34,197,94,0.7); }
+    .theme-forex .section-label { color: var(--accent); }
+    .theme-forex .page-title { color: #22c55e; }
+    .theme-forex .pos-banner { border-color: var(--accent-bd); }
+
+    /* ── Futures orange theme override ── */
+    .theme-futures {
+      --accent:     #f97316;
+      --accent-dim: rgba(249,115,22,0.08);
+      --accent-bd:  rgba(249,115,22,0.15);
+    }
+    .theme-futures .card:hover { border-color: var(--accent-bd); }
+    .theme-futures .metric-card { border-color: var(--accent-bd); }
+    .theme-futures .market-card:hover { border-color: var(--accent-bd); }
+    .theme-futures ::-webkit-scrollbar-thumb { background: rgba(249,115,22,0.15); }
+    .theme-futures .cursor-ring { border-color: rgba(249,115,22,0.35); }
+    .theme-futures .cursor-hover .cursor-ring { border-color: rgba(249,115,22,0.5); }
+    .theme-futures .ms-item.selected { box-shadow: 0 0 12px rgba(249,115,22,0.1); }
+    .theme-futures .btn-primary:hover { background: #ea580c; }
+    .theme-futures .tf-btn.active { background: transparent; border-color: #f97316; color: #f97316; }
+    .theme-futures .btn-primary { background: transparent; border-color: #f97316; color: #f97316; }
+    .theme-futures .entry-crypto { background: radial-gradient(ellipse at center, rgba(249,115,22,0.15) 0%, rgba(3,3,8,0.95) 70%); }
+    .theme-futures .card { border-color: var(--accent-bd); }
+    .theme-futures .card-label { color: rgba(249,115,22,0.7); }
+    .theme-futures .section-label { color: var(--accent); }
+    .theme-futures .page-title { color: #f97316; }
+    .theme-futures .pos-banner { border-color: var(--accent-bd); }
+
 
     /* ── Sidebar ── */
     .sidebar { width: 56px; min-width: 56px; height: 100vh; background: rgba(8,8,16,0.92); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 12px 0; transition: width 0.25s ease; overflow: hidden; z-index: 20; flex-shrink: 0; backdrop-filter: blur(12px); }
@@ -460,208 +533,54 @@
   // ═══════════════════════════════════════
 
   const DEMO_BOTS = [
-    { id:'btc_usdt', pair:'BTC/USDT', tf:'1d', mode:'paper', trades:24, capital:12450.50, change:6.21, price:108534.20, status:'running', has_position:true },
-    { id:'eth_usdt', pair:'ETH/USDT', tf:'4h', mode:'paper', trades:31, capital:10420.30, change:4.20, price:2847.15, status:'running', has_position:false },
-    { id:'sol_usdt', pair:'SOL/USDT', tf:'4h', mode:'paper', trades:18, capital:10240.75, change:2.41, price:178.42, status:'running', has_position:false },
-    { id:'sui_usdt', pair:'SUI/USDT', tf:'1h', mode:'paper', trades:9, capital:1017.70, change:1.77, price:3.42, status:'running', has_position:false },
-    { id:'ltc_usdt', pair:'LTC/USDT', tf:'4h', mode:'paper', trades:6, capital:988.40, change:-1.16, price:92.18, status:'paused', has_position:false },
-    { id:'idx_sp500', pair:'SP500', tf:'1d', mode:'paper', trades:15, capital:10450.00, change:4.50, price:5892.30, status:'running', has_position:false },
-    { id:'idx_nikkei', pair:'NIKKEI', tf:'1d', mode:'paper', trades:12, capital:10150.80, change:1.51, price:38452.00, status:'running', has_position:false },
-    { id:'idx_dax', pair:'DAX', tf:'1d', mode:'paper', trades:7, capital:5011.70, change:0.23, price:24995.81, status:'running', has_position:false },
-    { id:'fx_eurusd', pair:'EUR/USD', tf:'4h', mode:'paper', trades:42, capital:10380.20, change:3.80, price:1.0847, status:'running', has_position:true },
-    { id:'fx_chfjpy', pair:'CHF/JPY', tf:'4h', mode:'paper', trades:14, capital:1004.60, change:0.46, price:200.89, status:'running', has_position:true, dir:-1 },
-    { id:'fx_audnzd', pair:'AUD/NZD', tf:'4h', mode:'paper', trades:11, capital:1008.20, change:0.82, price:1.2146, status:'running', has_position:true },
-    { id:'fx_gbpaud', pair:'GBP/AUD', tf:'4h', mode:'paper', trades:8, capital:1027.90, change:2.79, price:1.9312, status:'running', has_position:false },
-    { id:'fut_gold', pair:'GOLD', tf:'4h', mode:'paper', trades:20, capital:10320.40, change:3.20, price:2412.50, status:'running', has_position:false },
-    { id:'fut_silver', pair:'SILVER', tf:'4h', mode:'paper', trades:12, capital:4890.20, change:-2.20, price:62.72, status:'running', has_position:true },
-    { id:'fut_copper', pair:'COPPER', tf:'4h', mode:'paper', trades:5, capital:1013.30, change:1.33, price:6.25, status:'running', has_position:true },
-    { id:'fut_oil', pair:'CRUDE OIL', tf:'1d', mode:'paper', trades:8, capital:10238.00, change:2.38, price:78.45, status:'running', has_position:false },
+    { id:'ada_usdt', pair:'ADA/USDT', tf:'1h', mode:'aggressive', market:'crypto', trades:22, capital:977.12, change:-2.29, price:0.1668, status:'running', has_position:false },
+    { id:'bnb_usdt', pair:'BNB/USDT', tf:'4h', mode:'conservative', market:'crypto', trades:23, capital:980.53, change:-1.95, price:562.10, status:'running', has_position:false },
+    { id:'btc_usdt', pair:'BTC/USDT', tf:'1d', mode:'conservative', market:'crypto', trades:4, capital:10183.28, change:1.83, price:62234.00, status:'running', has_position:false },
+    { id:'dot_usdt', pair:'DOT/USDT', tf:'4h', mode:'aggressive', market:'crypto', trades:10, capital:1018.39, change:1.84, price:0.8220, status:'running', has_position:false },
+    { id:'eth_usdt', pair:'ETH/USDT', tf:'4h', mode:'conservative', market:'crypto', trades:14, capital:10113.00, change:1.13, price:1721.72, status:'running', has_position:false },
+    { id:'ltc_usdt', pair:'LTC/USDT', tf:'4h', mode:'aggressive', market:'crypto', trades:18, capital:998.08, change:-0.19, price:43.30, status:'running', has_position:false },
+    { id:'sol_usdt', pair:'SOL/USDT', tf:'4h', mode:'aggressive', market:'crypto', trades:20, capital:9961.42, change:-0.39, price:76.60, status:'running', has_position:false },
+    { id:'sui_usdt', pair:'SUI/USDT', tf:'1h', mode:'aggressive', market:'crypto', trades:19, capital:994.35, change:-0.56, price:0.7105, status:'running', has_position:false },
+    { id:'xrp_usdt', pair:'XRP/USDT', tf:'1h', mode:'aggressive', market:'crypto', trades:38, capital:1002.14, change:0.21, price:1.0881, status:'running', has_position:false },
+    { id:'idx_dax', pair:'DAX', tf:'1d', mode:'moderate', market:'indices', trades:12, capital:5053.08, change:1.06, price:24897.45, status:'running', has_position:false },
+    { id:'idx_nikkei', pair:'NIKKEI', tf:'1d', mode:'moderate', market:'indices', trades:4, capital:5095.60, change:1.91, price:68256.96, status:'running', has_position:false },
+    { id:'idx_sp500', pair:'SP500', tf:'1d', mode:'moderate', market:'indices', trades:12, capital:10058.43, change:0.58, price:7477.54, status:'running', has_position:false },
+    { id:'fx_audcad', pair:'AUDCAD', tf:'4h', mode:'conservative', market:'forex', trades:12, capital:984.20, change:-1.58, price:0.9827, status:'running', has_position:false },
+    { id:'fx_audjpy', pair:'AUDJPY', tf:'4h', mode:'conservative', market:'forex', trades:9, capital:1001.41, change:0.14, price:112.72, status:'running', has_position:false },
+    { id:'fx_audnzd', pair:'AUDNZD', tf:'4h', mode:'conservative', market:'forex', trades:8, capital:1008.20, change:0.82, price:1.2150, status:'running', has_position:true },
+    { id:'fx_audusd', pair:'AUDUSD', tf:'4h', mode:'aggressive', market:'forex', trades:12, capital:999.87, change:-0.01, price:0.6940, status:'running', has_position:false },
+    { id:'fx_cadjpy', pair:'CADJPY', tf:'4h', mode:'conservative', market:'forex', trades:24, capital:1020.35, change:2.04, price:114.67, status:'running', has_position:false },
+    { id:'fx_chfjpy', pair:'CHFJPY', tf:'4h', mode:'conservative', market:'forex', trades:13, capital:1004.60, change:0.46, price:201.16, status:'running', has_position:true },
+    { id:'fx_euraud', pair:'EURAUD', tf:'4h', mode:'conservative', market:'forex', trades:21, capital:993.33, change:-0.67, price:1.6471, status:'running', has_position:false },
+    { id:'fx_eurcad', pair:'EURCAD', tf:'4h', mode:'conservative', market:'forex', trades:16, capital:1009.00, change:0.90, price:1.6187, status:'running', has_position:true },
+    { id:'fx_eurgbp', pair:'EURGBP', tf:'4h', mode:'conservative', market:'forex', trades:8, capital:1000.71, change:0.07, price:0.8526, status:'running', has_position:false },
+    { id:'fx_eurjpy', pair:'EURJPY', tf:'4h', mode:'conservative', market:'forex', trades:7, capital:1014.46, change:1.45, price:185.65, status:'running', has_position:false },
+    { id:'fx_eurnzd', pair:'EURNZD', tf:'4h', mode:'conservative', market:'forex', trades:13, capital:1001.05, change:0.11, price:2.0018, status:'running', has_position:false },
+    { id:'fx_eurusd', pair:'EURUSD', tf:'4h', mode:'moderate', market:'forex', trades:12, capital:998.11, change:-0.19, price:1.1430, status:'running', has_position:false },
+    { id:'fx_gbpaud', pair:'GBPAUD', tf:'4h', mode:'conservative', market:'forex', trades:12, capital:1027.90, change:2.79, price:1.9318, status:'running', has_position:false },
+    { id:'fx_gbpcad', pair:'GBPCAD', tf:'4h', mode:'conservative', market:'forex', trades:10, capital:1024.36, change:2.44, price:1.8986, status:'running', has_position:false },
+    { id:'fx_gbpjpy', pair:'GBPJPY', tf:'1d', mode:'aggressive', market:'forex', trades:10, capital:982.26, change:-1.77, price:217.75, status:'running', has_position:false },
+    { id:'fx_gbpnzd', pair:'GBPNZD', tf:'4h', mode:'conservative', market:'forex', trades:8, capital:1004.40, change:0.44, price:2.3473, status:'running', has_position:false },
+    { id:'fx_gbpusd', pair:'GBPUSD', tf:'4h', mode:'aggressive', market:'forex', trades:7, capital:998.38, change:-0.16, price:1.3402, status:'running', has_position:false },
+    { id:'fx_usdcad', pair:'USDCAD', tf:'4h', mode:'conservative', market:'forex', trades:20, capital:1002.66, change:0.27, price:1.4164, status:'running', has_position:false },
+    { id:'fx_usdchf', pair:'USDCHF', tf:'4h', mode:'conservative', market:'forex', trades:8, capital:1004.98, change:0.50, price:0.8076, status:'running', has_position:false },
+    { id:'fx_usdjpy', pair:'USDJPY', tf:'4h', mode:'moderate', market:'forex', trades:16, capital:1003.22, change:0.32, price:162.47, status:'running', has_position:false },
+    { id:'fut_copper', pair:'COPPER', tf:'4h', mode:'aggressive', market:'futures', trades:21, capital:1020.82, change:2.08, price:6.1320, status:'running', has_position:true },
+    { id:'fut_gold', pair:'GOLD', tf:'4h', mode:'moderate', market:'futures', trades:11, capital:10104.14, change:1.04, price:4089.50, status:'running', has_position:false },
+    { id:'fut_oil', pair:'OIL', tf:'4h', mode:'moderate', market:'futures', trades:16, capital:5162.81, change:3.26, price:73.79, status:'running', has_position:false },
+    { id:'fut_silver', pair:'SILVER', tf:'4h', mode:'conservative', market:'futures', trades:13, capital:5011.33, change:0.23, price:59.04, status:'running', has_position:true },
   ];
 
-  const DETAIL_DATA = {
-    btc_usdt: {
-      price: 108534.20,
-      indicators: { ma_fast: 106200, ma_200: 98500, rsi: 62, atr_pct: 2.15, volume_ratio: 1.35 },
-      metrics: { total_trades:24, wins:16, losses:8, win_rate:66.7, profit_factor:2.84, total_pnl:2450.50, fees_paid:48.20, best_trade:8.52, worst_trade:-3.21 },
-      equity: [10000,10120,10080,10250,10180,10420,10350,10580,10720,10690,10850,10940,11020,10980,11150,11280,11420,11350,11580,11720,11890,12050,12180,12350,12450],
-      position: { entry:105200, size:850, open_time:'2026-05-24T14:30:00', current_pnl:3.17, max_pnl:4.25 },
-      momentum_up: true, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-23', entry:102500, exit:105200, pnl_pct:2.63, pnl_usdt:263.40, reason:'TP' },
-        { close_time:'2026-05-20', entry:104800, exit:103200, pnl_pct:-1.53, pnl_usdt:-153.00, reason:'SL' },
-        { close_time:'2026-05-18', entry:99800, exit:104200, pnl_pct:4.41, pnl_usdt:441.00, reason:'TP' },
-        { close_time:'2026-05-15', entry:101500, exit:103800, pnl_pct:2.27, pnl_usdt:226.50, reason:'TRAIL' },
-        { close_time:'2026-05-12', entry:98200, exit:97500, pnl_pct:-0.71, pnl_usdt:-71.40, reason:'SL' },
-        { close_time:'2026-05-10', entry:95800, exit:99200, pnl_pct:3.55, pnl_usdt:355.00, reason:'TP' },
-      ],
-      analysis: [
-        { time:'2026-05-25T10:30:00', action:'confirm', confidence:0.82, reasoning:'ML P(win)=82% >= req 32% (RRR 3) | EV +2.28R | top: rsi, macd_hist, vol_ratio' },
-        { time:'2026-05-24T14:15:00', action:'confirm', confidence:0.76, reasoning:'ML P(win)=76% >= req 32% (RRR 3) | EV +2.04R | top: dist_ma50, ret_5, bb_pctb' },
-        { time:'2026-05-23T22:00:00', action:'reject', confidence:0.68, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: vol_ratio, rsi_change, atr_norm' },
-        { time:'2026-05-22T18:30:00', action:'confirm', confidence:0.71, reasoning:'ML P(win)=71% >= req 32% (RRR 3) | EV +1.84R | top: macd_cross, dist_ma200, weekly_ret' },
-      ],
-      logs: [
-        { time:'2026-05-25T11:00:15', level:'success', message:'BTC/USDT price: $108,534.20 | RSI: 62 | UP' },
-        { time:'2026-05-25T10:30:00', level:'trade', message:'ML CONFIRMED (82%): P(win) above EV threshold' },
-        { time:'2026-05-24T14:30:00', level:'trade', message:'ENTRY: BTC/USDT @ $105,200.00 | Size: $850' },
-        { time:'2026-05-24T14:15:00', level:'success', message:'Signal detected: MA cross + RSI momentum' },
-        { time:'2026-05-23T22:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
-      ]
-    },
-    idx_sp500: {
-      price: 5892.30,
-      indicators: { ma_fast: 5840, ma_200: 5420, rsi: 58, atr_pct: 1.05, volume_ratio: 1.12 },
-      metrics: { total_trades:15, wins:10, losses:5, win_rate:66.7, profit_factor:2.41, total_pnl:1250.00, fees_paid:32.50, best_trade:5.80, worst_trade:-2.10 },
-      equity: [10000,10050,10120,10090,10200,10180,10350,10420,10380,10520,10600,10680,10750,10900,10980,11050,11120,11250],
-      position: null,
-      momentum_up: true, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-22', entry:5780, exit:5860, pnl_pct:1.38, pnl_usdt:138.40, reason:'TP' },
-        { close_time:'2026-05-19', entry:5820, exit:5750, pnl_pct:-1.20, pnl_usdt:-120.00, reason:'SL' },
-        { close_time:'2026-05-16', entry:5650, exit:5800, pnl_pct:2.65, pnl_usdt:265.50, reason:'TP' },
-        { close_time:'2026-05-13', entry:5700, exit:5780, pnl_pct:1.40, pnl_usdt:140.00, reason:'TRAIL' },
-        { close_time:'2026-05-09', entry:5600, exit:5550, pnl_pct:-0.89, pnl_usdt:-89.30, reason:'SL' },
-      ],
-      analysis: [
-        { time:'2026-05-25T09:00:00', action:'confirm', confidence:0.74, reasoning:'ML P(win)=74% >= req 32% (RRR 3) | EV +1.96R | top: dist_ma200, weekly_ret, rsi' },
-        { time:'2026-05-24T15:30:00', action:'reject', confidence:0.55, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: vol_ratio, atr_norm, bb_width' },
-        { time:'2026-05-23T09:00:00', action:'confirm', confidence:0.69, reasoning:'ML P(win)=69% >= req 32% (RRR 3) | EV +1.76R | top: macd_cross, dist_ma50, ret_10' },
-      ],
-      logs: [
-        { time:'2026-05-25T09:30:00', level:'success', message:'SP500 price: $5,892.30 | RSI: 58 | UP' },
-        { time:'2026-05-25T09:00:00', level:'trade', message:'ML CONFIRMED (74%): P(win) above EV threshold' },
-        { time:'2026-05-24T16:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
-        { time:'2026-05-24T15:30:00', level:'success', message:'Market close scan complete' },
-      ]
-    },
-    fx_eurusd: {
-      price: 1.0847,
-      indicators: { ma_fast: 1.0820, ma_200: 1.0650, rsi: 55, atr_pct: 0.45, volume_ratio: 0.98 },
-      metrics: { total_trades:42, wins:26, losses:16, win_rate:61.9, profit_factor:1.92, total_pnl:680.20, fees_paid:85.40, best_trade:3.20, worst_trade:-1.85 },
-      equity: [10000,10020,10050,10030,10080,10060,10120,10100,10150,10180,10160,10220,10250,10230,10290,10320,10300,10360,10400,10380,10430,10460,10500,10540,10580,10560,10620,10650,10680],
-      position: { entry:1.0810, size:420, open_time:'2026-05-25T08:15:00', current_pnl:0.34, max_pnl:0.52 },
-      momentum_up: true, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-24', entry:1.0780, exit:1.0830, pnl_pct:0.46, pnl_usdt:46.30, reason:'TP' },
-        { close_time:'2026-05-23', entry:1.0850, exit:1.0820, pnl_pct:-0.28, pnl_usdt:-27.60, reason:'SL' },
-        { close_time:'2026-05-22', entry:1.0750, exit:1.0820, pnl_pct:0.65, pnl_usdt:65.10, reason:'TP' },
-        { close_time:'2026-05-21', entry:1.0800, exit:1.0840, pnl_pct:0.37, pnl_usdt:37.00, reason:'TRAIL' },
-        { close_time:'2026-05-20', entry:1.0830, exit:1.0790, pnl_pct:-0.37, pnl_usdt:-36.90, reason:'SL' },
-        { close_time:'2026-05-19', entry:1.0720, exit:1.0790, pnl_pct:0.65, pnl_usdt:65.20, reason:'TP' },
-      ],
-      analysis: [
-        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.71, reasoning:'ML P(win)=71% >= req 32% (RRR 3) | EV +1.84R | top: dist_ma50, ret_5, rsi' },
-        { time:'2026-05-24T12:00:00', action:'confirm', confidence:0.68, reasoning:'ML P(win)=68% >= req 32% (RRR 3) | EV +1.72R | top: macd_hist, bb_pctb, vol_ratio' },
-        { time:'2026-05-23T16:00:00', action:'reject', confidence:0.52, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: atr_norm, rsi_change, dist_ma200' },
-      ],
-      logs: [
-        { time:'2026-05-25T08:30:00', level:'success', message:'EUR/USD price: $1.0847 | RSI: 55 | STABLE' },
-        { time:'2026-05-25T08:15:00', level:'trade', message:'ENTRY: EUR/USD @ $1.0810 | Size: $420' },
-        { time:'2026-05-25T08:00:00', level:'trade', message:'ML CONFIRMED (71%): P(win) above EV threshold' },
-        { time:'2026-05-24T12:00:00', level:'success', message:'London session active — scanning pairs' },
-        { time:'2026-05-23T16:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
-      ]
-    },
-    eth_usdt: {
-      price: 2847.15,
-      indicators: { ma_fast: 2790, ma_200: 2450, rsi: 54, atr_pct: 2.80, volume_ratio: 1.18 },
-      metrics: { total_trades:31, wins:18, losses:13, win_rate:58.1, profit_factor:1.76, total_pnl:820.30, fees_paid:62.10, best_trade:6.20, worst_trade:-2.80 },
-      equity: [10000,10040,10010,10080,10050,10130,10100,10180,10220,10190,10270,10310,10280,10360,10400,10380,10450,10490,10520,10560,10600,10640,10680,10720,10780,10820],
-      position: null,
-      momentum_up: false, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-23', entry:2780, exit:2840, pnl_pct:2.16, pnl_usdt:216.00, reason:'TP' },
-        { close_time:'2026-05-21', entry:2810, exit:2750, pnl_pct:-2.14, pnl_usdt:-213.50, reason:'SL' },
-        { close_time:'2026-05-19', entry:2650, exit:2780, pnl_pct:4.91, pnl_usdt:490.60, reason:'TP' },
-        { close_time:'2026-05-17', entry:2700, exit:2730, pnl_pct:1.11, pnl_usdt:111.10, reason:'TRAIL' },
-      ],
-      analysis: [
-        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.58, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: rsi, vol_ratio, atr_norm' },
-        { time:'2026-05-24T09:00:00', action:'confirm', confidence:0.73, reasoning:'ML P(win)=73% >= req 32% (RRR 3) | EV +1.92R | top: dist_ma200, ret_10, macd_hist' },
-      ],
-      logs: [
-        { time:'2026-05-25T09:00:00', level:'warning', message:'ML REJECTED (24%): P(win) below RRR breakeven' },
-        { time:'2026-05-25T08:00:00', level:'success', message:'ETH/USDT price: $2,847.15 | RSI: 54 | NEUTRAL' },
-      ]
-    },
-    sol_usdt: {
-      price: 178.42,
-      indicators: { ma_fast: 172, ma_200: 145, rsi: 48, atr_pct: 3.50, volume_ratio: 1.05 },
-      metrics: { total_trades:18, wins:10, losses:8, win_rate:55.6, profit_factor:1.52, total_pnl:340.75, fees_paid:28.60, best_trade:7.10, worst_trade:-3.80 },
-      equity: [10000,10020,9980,10050,10010,10080,10040,10120,10090,10160,10130,10200,10180,10250,10220,10300,10340],
-      position: null,
-      momentum_up: false, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-22', entry:170, exit:178, pnl_pct:4.71, pnl_usdt:470.60, reason:'TP' },
-        { close_time:'2026-05-20', entry:175, exit:169, pnl_pct:-3.43, pnl_usdt:-342.80, reason:'SL' },
-        { close_time:'2026-05-18', entry:162, exit:172, pnl_pct:6.17, pnl_usdt:617.30, reason:'TP' },
-      ],
-      analysis: [
-        { time:'2026-05-25T10:00:00', action:'reject', confidence:0.55, reasoning:'ML P(win)=24% < req 32% (RRR 3) | EV -0.04R | top: vol_ratio, rsi, bb_width' },
-      ],
-      logs: [
-        { time:'2026-05-25T10:00:00', level:'warning', message:'ML REJECT: uncertain signal' },
-        { time:'2026-05-25T08:00:00', level:'success', message:'SOL/USDT price: $178.42 | RSI: 48 | NEUTRAL' },
-      ]
-    },
-    idx_nikkei: {
-      price: 38452.00,
-      indicators: { ma_fast: 38100, ma_200: 36200, rsi: 51, atr_pct: 1.20, volume_ratio: 0.95 },
-      metrics: { total_trades:12, wins:7, losses:5, win_rate:58.3, profit_factor:1.68, total_pnl:150.80, fees_paid:24.00, best_trade:4.20, worst_trade:-2.50 },
-      equity: [10000,10010,10030,10020,10050,10040,10080,10070,10100,10120,10140,10150],
-      position: null,
-      momentum_up: false, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-21', entry:37800, exit:38200, pnl_pct:1.06, pnl_usdt:105.80, reason:'TP' },
-        { close_time:'2026-05-18', entry:38100, exit:37600, pnl_pct:-1.31, pnl_usdt:-131.20, reason:'SL' },
-        { close_time:'2026-05-15', entry:37200, exit:37900, pnl_pct:1.88, pnl_usdt:188.20, reason:'TP' },
-      ],
-      analysis: [
-        { time:'2026-05-25T02:00:00', action:'confirm', confidence:0.65, reasoning:'ML P(win)=65% >= req 32% (RRR 3) | EV +1.6R | top: dist_ma200, weekly_ret, rsi' },
-      ],
-      logs: [
-        { time:'2026-05-25T02:00:00', level:'success', message:'NIKKEI price: 38,452.00 | RSI: 51 | NEUTRAL' },
-      ]
-    },
-    fut_gold: {
-      price: 2412.50,
-      indicators: { ma_fast: 2380, ma_200: 2150, rsi: 60, atr_pct: 1.10, volume_ratio: 1.22 },
-      metrics: { total_trades:20, wins:13, losses:7, win_rate:65.0, profit_factor:2.15, total_pnl:520.40, fees_paid:40.00, best_trade:4.80, worst_trade:-2.10 },
-      equity: [10000,10030,10060,10040,10100,10080,10150,10130,10200,10230,10210,10280,10310,10350,10380,10420,10460,10490,10520],
-      position: null,
-      momentum_up: true, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-23', entry:2370, exit:2410, pnl_pct:1.69, pnl_usdt:168.80, reason:'TP' },
-        { close_time:'2026-05-20', entry:2400, exit:2360, pnl_pct:-1.67, pnl_usdt:-166.80, reason:'SL' },
-        { close_time:'2026-05-17', entry:2320, exit:2380, pnl_pct:2.59, pnl_usdt:258.60, reason:'TP' },
-      ],
-      analysis: [
-        { time:'2026-05-25T08:00:00', action:'confirm', confidence:0.78, reasoning:'ML P(win)=78% >= req 32% (RRR 3) | EV +2.12R | top: dist_ma200, vol_ratio, ret_10' },
-      ],
-      logs: [
-        { time:'2026-05-25T08:00:00', level:'success', message:'GOLD price: $2,412.50 | RSI: 60 | UP' },
-      ]
-    },
-    fut_oil: {
-      price: 78.45,
-      indicators: { ma_fast: 76.80, ma_200: 72.50, rsi: 46, atr_pct: 2.30, volume_ratio: 0.88 },
-      metrics: { total_trades:8, wins:4, losses:4, win_rate:50.0, profit_factor:1.28, total_pnl:238.00, fees_paid:16.00, best_trade:3.80, worst_trade:-2.90 },
-      equity: [10000,10010,9990,10020,10040,10030,10080,10120,10238],
-      position: null,
-      momentum_up: false, above_ma200: true,
-      trades: [
-        { close_time:'2026-05-22', entry:76.50, exit:78.20, pnl_pct:2.22, pnl_usdt:222.20, reason:'TP' },
-        { close_time:'2026-05-18', entry:79.00, exit:77.10, pnl_pct:-2.41, pnl_usdt:-240.50, reason:'SL' },
-      ],
-      analysis: [
-        { time:'2026-05-25T09:00:00', action:'reject', confidence:0.48, reasoning:'ML P(win)=26% < req 32% (RRR 3) | EV -0.02R | high volatility regime' },
-      ],
-      logs: [
-        { time:'2026-05-25T09:00:00', level:'warning', message:'OIL: volatility elevated — skipping signal' },
-        { time:'2026-05-25T08:00:00', level:'success', message:'CRUDE OIL price: $78.45 | RSI: 46 | NEUTRAL' },
-      ]
-    },
-  };
+  const DEMO_ACTIVITY = [
+    { type:'trade_open', timestamp:'2026-07-08T17:11:03', market:'futures', symbol:'SILVER', bot_id:'fut_silver', data:{ entry_price:57.79, size:947.77 } },
+    { type:'signal_rejected', timestamp:'2026-07-08T15:53:49', market:'forex', symbol:'GBPAUD', bot_id:'fx_gbpaud', data:{ signal:'SMA_CROSS_BUY', llm_confidence:0.1989, llm_reasoning:'ML P(win)=20% < req 32% (RRR 3) | EV -0.20R | top: dist_ma200, ma50_slope, macd_signal_norm' } },
+    { type:'trade_close', timestamp:'2026-07-08T10:10:40', market:'futures', symbol:'SILVER', bot_id:'fut_silver', data:{ entry_price:61.475, exit_price:58.74, pnl_pct:-4.45, pnl_usdt:-43.11, close_reason:'SIGNAL' } },
+    { type:'trade_close', timestamp:'2026-07-08T07:47:04', market:'indices', symbol:'NIKKEI', bot_id:'idx_nikkei', data:{ entry_price:71105.3, exit_price:66819, pnl_pct:-6.03, pnl_usdt:-153.09, close_reason:'STOP_LOSS' } },
+    { type:'signal_rejected', timestamp:'2026-07-07T17:02:34', market:'forex', symbol:'EURNZD', bot_id:'fx_eurnzd', data:{ signal:'SMA_CROSS_BUY', llm_confidence:0.2908, llm_reasoning:'ML P(win)=29% < req 32% (RRR 3) | EV +0.16R | top: dist_ma200, ma50_slope, macd_signal_norm' } },
+    { type:'trade_close', timestamp:'2026-07-05T02:20:21', market:'crypto', symbol:'SUI/USDT', bot_id:'sui_usdt', data:{ entry_price:0.7696, exit_price:0.745, pnl_pct:-3.2, pnl_usdt:-10, close_reason:'STOP_LOSS' } },
+    { type:'trade_open', timestamp:'2026-07-02T04:07:44', market:'forex', symbol:'CHFJPY', bot_id:'fx_chfjpy', data:{ entry_price:200.889, size:499.3 } },
+  ];
+
 
   // Synthetic detail for bots without a hand-written entry — deterministic
   // per bot id so the demo looks stable across reloads.
@@ -772,6 +691,11 @@
     ChevL: () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>,
     Shield: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
     Cpu: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>,
+    Home: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    Crypto: (p) => <svg width={p?.size||17} height={p?.size||17} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M10 7.5v1.5h-1v2h1v2h-1v2h1v1.5"/><path d="M13 7.5v1.5"/><path d="M13 15v1.5"/><path d="M10 9h3.5a2 2 0 0 1 0 4H10"/><path d="M10 13h4a2 2 0 0 1 0 4H10"/></svg>,
+    Globe: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+    Forex: (p) => <svg width={p?.size||17} height={p?.size||17} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 4l3 3-3 3"/><path d="M20 7H8a4 4 0 0 0-4 4"/><path d="M7 20l-3-3 3-3"/><path d="M4 17h12a4 4 0 0 0 4-4"/></svg>,
+    Futures: (p) => <svg width={p?.size||17} height={p?.size||17} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M6 10h12l3 8H3z"/><path d="M6 10l2-5h8l2 5"/><line x1="8" y1="5" x2="6" y2="10"/><line x1="16" y1="5" x2="18" y2="10"/><line x1="10" y1="10" x2="11" y2="5"/><line x1="14" y1="10" x2="13" y2="5"/></svg>,
     Lyra: () => (
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none" style={{filter:'drop-shadow(0 0 8px rgba(139,92,246,0.3))'}}>
         <circle cx="16" cy="6" r="2" fill="#8b5cf6"/>
@@ -871,17 +795,18 @@
         </div>
 
         <div className="sb-section">Portfolio</div>
-        <SbItem icon={<Ico.Grid />} label="Portfolio" active={page==='portfolio'} onClick={() => onNav('portfolio')} badge={DEMO_BOTS.length} />
-        <SbItem icon={<Ico.Chart />} label="Analytics" active={page==='analytics'} onClick={() => onNav('analytics')} />
+        <SbItem icon={<Ico.Home />}    label="Lobby"     active={page==='lobby'}    onClick={() => onNav('lobby')} />
+        <SbItem icon={<Ico.Crypto />}  label="Crypto"    active={page==='crypto'}   onClick={() => onNav('crypto')} />
+        <SbItem icon={<Ico.Globe />}   label="Indices"   active={page==='indices'}  onClick={() => onNav('indices')} />
+        <SbItem icon={<Ico.Forex />}   label="Forex"     active={page==='forex'}    onClick={() => onNav('forex')} />
+        <SbItem icon={<Ico.Futures />} label="Futures"   active={page==='futures'}  onClick={() => onNav('futures')} />
+        <SbItem icon={<Ico.Chart />}   label="Analytics" active={page==='analytics'} onClick={() => onNav('analytics')} />
 
         <div className="sb-divider" />
-        <div className="sb-section">Intelligence</div>
-        <SbItem icon={<Ico.Shield />} label="Risk & Calibration" active={page==='risk'} onClick={() => onNav('risk')} />
-        <SbItem icon={<Ico.Cpu />} label="ML Models" active={page==='ml'} onClick={() => onNav('ml')} />
-
-        <div className="sb-divider" />
-        <div className="sb-section">System</div>
-        <SbItem icon={<Ico.Gear />} label="Settings" active={page==='settings'} onClick={() => onNav('settings')} />
+        <div className="sb-section">Sistema</div>
+        <SbItem icon={<Ico.Shield />} label="Risk"      active={page==='risk'}     onClick={() => onNav('risk')} />
+        <SbItem icon={<Ico.Cpu />}    label="ML Models" active={page==='ml'}       onClick={() => onNav('ml')} />
+        <SbItem icon={<Ico.Gear />}   label="Settings"  active={page==='settings'} onClick={() => onNav('settings')} />
 
         <div className="sb-spacer" />
 
@@ -914,8 +839,8 @@
               : <span className="mc-pos-tag">&#9650; LONG</span>}
           </div>
         ) : bot.status === 'paused' ? (
-          <div className="mc-status" style={{color:'var(--text-muted)'}}>
-            <span className="status-dot" style={{background:'var(--text-muted)'}}/>
+          <div className="mc-status" style={{color:'var(--orange)'}}>
+            <span className="status-dot" style={{background:'var(--orange)'}}/>
             <span style={{fontSize:10}}>Paused</span>
           </div>
         ) : (
@@ -1210,7 +1135,7 @@
 
   function BotDetail({ bot, onBack }) {
     const [tab, setTab] = useState('history');
-    const detail = DETAIL_DATA[bot.id] || makeGenericDetail(bot);
+    const detail = makeGenericDetail(bot);
 
     const fmt = v => v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const ind = detail.indicators || {};
@@ -1318,11 +1243,151 @@
   // PORTFOLIO PAGE
   // ═══════════════════════════════════════
 
-  function Portfolio({ onSelectBot }) {
+  // ═══════════════════════════════════════
+  // MARKET BLOCK (Lobby) — mirrors v3-lobby.jsx
+  // ═══════════════════════════════════════
+
+  function MarketBlock({ label, color, colorDim, colorBorder, capital, pnl, numBots, openPositions, bestBot, onClick }) {
+    const fmt = v => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (
+      <div onClick={onClick} style={{
+        flex: 1, minWidth: 260, padding: '22px 20px', cursor: 'pointer',
+        background: colorDim, border: `1px solid ${colorBorder}`, borderRadius: 'var(--radius-lg)',
+        transition: 'all 0.2s',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = colorBorder; e.currentTarget.style.transform = 'none'; }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
+          <span style={{ fontSize: 14, fontWeight: 600, color }}>{label}</span>
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Capital Allocated</div>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 22, fontWeight: 600, marginBottom: 8 }}>${fmt(capital)}</div>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 13, fontWeight: 500, color: pnl >= 0 ? 'var(--green)' : 'var(--red)', marginBottom: 12 }}>
+          {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)}%
+        </div>
+        <div style={{ display: 'flex', gap: 16, fontSize: 10, color: 'var(--text-dim)' }}>
+          <span>{numBots} bot{numBots !== 1 ? 's' : ''}</span>
+          <span>{openPositions} open</span>
+        </div>
+        {bestBot && (
+          <div style={{ marginTop: 8, fontSize: 10, color: 'var(--text-muted)' }}>
+            Best: <span style={{ color: 'var(--green)', fontWeight: 600 }}>{bestBot.pair}</span> ({bestBot.change >= 0 ? '+' : ''}{bestBot.change.toFixed(2)}%)
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // RECENT ACTIVITY ITEM — mirrors v3-lobby.jsx
+  // ═══════════════════════════════════════
+
+  function ActivityItem({ event, onBotClick }) {
+    const [expanded, setExpanded] = useState(false);
+    const isTrade = event.type === 'trade_close' || event.type === 'trade_open';
+    const isReject = event.type === 'signal_rejected';
+    const d = event.data || {};
+
+    const fmtTime = iso => {
+      try { const dt = new Date(iso); return dt.toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); }
+      catch { return ''; }
+    };
+
+    const typeLabel = {
+      trade_close: 'Trade Closed',
+      trade_open: 'Position Opened',
+      signal_rejected: 'Signal Rejected',
+    }[event.type] || event.type;
+
+    const typeColor = {
+      trade_close: d.pnl_pct >= 0 ? 'var(--green)' : 'var(--red)',
+      trade_open: 'var(--orange)',
+      signal_rejected: 'var(--text-muted)',
+    }[event.type] || 'var(--text-dim)';
+
+    const marketBadges = {
+      indices: { bg: 'rgba(6,182,212,0.08)', color: '#06b6d4', border: 'rgba(6,182,212,0.2)', label: 'IDX' },
+      forex:   { bg: 'rgba(16,185,129,0.08)', color: '#10b981', border: 'rgba(16,185,129,0.2)', label: 'FX' },
+      futures: { bg: 'rgba(245,158,11,0.08)', color: '#f59e0b', border: 'rgba(245,158,11,0.2)', label: 'FUT' },
+      crypto:  { bg: 'rgba(139,92,246,0.08)', color: '#8b5cf6', border: 'rgba(139,92,246,0.2)', label: 'CRYPTO' },
+    };
+    const marketBadge = marketBadges[event.market] || marketBadges.crypto;
+
+    return (
+      <div style={{ borderBottom: '1px solid var(--border)', padding: '10px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+          <span style={{ fontSize: 14, color: typeColor, fontWeight: 600, width: 18 }}>
+            {event.type === 'trade_close' ? (d.pnl_pct >= 0 ? '↑' : '↓') : event.type === 'trade_open' ? '▲' : '○'}
+          </span>
+          <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--mono)', minWidth: 100 }}>{fmtTime(event.timestamp)}</span>
+          <span className="badge" style={{ background: marketBadge.bg, color: marketBadge.color, border: `1px solid ${marketBadge.border}`, fontSize: 8, padding: '1px 5px' }}>{marketBadge.label}</span>
+          <span style={{ fontSize: 12, fontWeight: 600 }}>{event.symbol}</span>
+          <span style={{ fontSize: 11, color: typeColor }}>{typeLabel}</span>
+          {isTrade && event.type === 'trade_close' && (
+            <span style={{ marginLeft: 'auto', fontFamily: 'var(--mono)', fontSize: 12, fontWeight: 600, color: d.pnl_pct >= 0 ? 'var(--green)' : 'var(--red)' }}>
+              {d.pnl_pct >= 0 ? '+' : ''}{d.pnl_pct?.toFixed(2)}% (${d.pnl_usdt?.toFixed(2)})
+            </span>
+          )}
+          {isReject && (
+            <span style={{ marginLeft: 'auto', fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--text-muted)' }}>
+              Conf: {Math.round((d.llm_confidence || 0) * 100)}%
+            </span>
+          )}
+          <span style={{ fontSize: 10, color: 'var(--text-muted)', transform: expanded ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }}>▶</span>
+        </div>
+        {expanded && (
+          <div style={{ marginTop: 8, marginLeft: 28, padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 'var(--radius)', border: '1px solid var(--border)' }}>
+            {event.type === 'trade_close' && (<>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, fontSize: 11, marginBottom: 8 }}>
+                <div><span className="t-muted">Entry</span><div className="t-mono" style={{ fontWeight: 500 }}>${d.entry_price?.toLocaleString()}</div></div>
+                <div><span className="t-muted">Exit</span><div className="t-mono" style={{ fontWeight: 500 }}>${d.exit_price?.toLocaleString()}</div></div>
+                <div><span className="t-muted">Reason</span><div><span className={`trade-tag ${d.pnl_pct >= 0 ? 'tag-profit' : 'tag-loss'}`}>{d.close_reason}</span></div></div>
+              </div>
+              {d.llm_analysis && (
+                <div style={{ fontSize: 11, color: 'var(--text-dim)', lineHeight: 1.5, borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+                  <span style={{ fontSize: 9, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.06em' }}>ML Analysis</span>
+                  <div style={{ marginTop: 3 }}>{d.llm_analysis}</div>
+                </div>
+              )}
+            </>)}
+            {event.type === 'signal_rejected' && (
+              <div style={{ fontSize: 11, color: 'var(--text-dim)', lineHeight: 1.5 }}>
+                <div style={{ marginBottom: 4 }}><span className="t-muted">Signal:</span> {d.signal}</div>
+                <div style={{ marginBottom: 4 }}><span className="t-muted">Confidence:</span> {Math.round((d.llm_confidence || 0) * 100)}%</div>
+                {d.llm_reasoning && <div>{d.llm_reasoning}</div>}
+              </div>
+            )}
+            {event.type === 'trade_open' && (
+              <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
+                <span className="t-muted">Entry:</span> ${d.entry_price?.toLocaleString()} | <span className="t-muted">Size:</span> ${d.size?.toFixed(2)}
+              </div>
+            )}
+            <div style={{ marginTop: 8, textAlign: 'right' }}>
+              <span style={{ fontSize: 10, color: 'var(--accent)', cursor: 'pointer' }} onClick={e => { e.stopPropagation(); onBotClick && onBotClick(event.bot_id); }}>Ver Bot →</span>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // PORTFOLIO VIEW — unified Lobby / per-market (mirrors v3-lobby.jsx)
+  // ═══════════════════════════════════════
+
+  function PortfolioView({ filter, onSelectBot, onNavMarket }) {
     const [time, setTime] = useState(new Date());
     const [animated, setAnimated] = useState(0);
-    const totalCapital = DEMO_BOTS.reduce((s, b) => s + b.capital, 0);
-    const totalProfitPct = 2.84;
+
+    const bots = DEMO_BOTS;
+    const filteredBots = filter === 'all' ? bots : bots.filter(b => b.market === filter);
+    const initOf = b => b.capital / (1 + b.change / 100);
+    const totalCapital = filteredBots.reduce((s, b) => s + b.capital, 0);
+    const totalInit = filteredBots.reduce((s, b) => s + initOf(b), 0);
+    const totalProfitPct = totalInit ? ((totalCapital - totalInit) / totalInit * 100) : 0;
+    const activity = (filter === 'all' ? DEMO_ACTIVITY : DEMO_ACTIVITY.filter(e => e.market === filter)).slice(0, 10);
 
     useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
 
@@ -1330,102 +1395,201 @@
       let start = null; const dur = 1100;
       const step = ts => { if (!start) start = ts; const p = Math.min((ts - start) / dur, 1); const e = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p; setAnimated(totalCapital * e); if (p < 1) requestAnimationFrame(step); };
       requestAnimationFrame(step);
-    }, []);
+    }, [filter]);
 
     const fmt = d => d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const fmtM = v => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const openBots = DEMO_BOTS.filter(b => b.has_position);
+    const cryptoBots = bots.filter(b => b.market === 'crypto');
+    const indexBots = bots.filter(b => b.market === 'indices');
+    const forexBots = bots.filter(b => b.market === 'forex');
+    const futuresBots = bots.filter(b => b.market === 'futures');
 
-    // Build ticker
-    const tickerItems = DEMO_BOTS.map(b => {
-      const sym = b.pair.includes('/') ? b.pair.split('/')[0] : b.pair;
+    const openBots = filteredBots.filter(b => b.has_position);
+
+    const totalTrades = filteredBots.reduce((s, b) => s + b.trades, 0);
+    const winCount = filteredBots.reduce((s, b) => s + (b.change >= 0 ? 1 : 0), 0);
+    const globalWinRate = filteredBots.length ? Math.round(winCount / filteredBots.length * 100) : 0;
+
+    const bestOf = arr => arr.length ? arr.reduce((best, b) => b.change > best.change ? b : best) : null;
+
+    const tickerItems = filteredBots.map(b => {
+      const sym = (b.market === 'indices' || b.market === 'forex' || b.market === 'futures') ? b.pair : b.pair.split('/')[0];
       const sign = b.change >= 0 ? '+' : '';
       const col = b.has_position ? 'var(--orange)' : b.change >= 0 ? 'var(--green)' : 'var(--red)';
-      const price = b.price >= 1 ? b.price.toLocaleString('en-US',{maximumFractionDigits:2}) : b.price.toFixed(4);
-      return { dot: col, text: `${sym} $${price}  ${sign}${b.change.toFixed(2)}%${b.has_position?' \u25B2 POS':''}` };
+      const price = b.price >= 1 ? b.price.toLocaleString('en-US', { maximumFractionDigits: 2 }) : b.price.toFixed(4);
+      return { dot: col, text: `${sym} $${price} ${sign}${b.change.toFixed(2)}%` };
     });
     const tickerDup = [...tickerItems, ...tickerItems];
 
+    const isLobby = filter === 'all';
+    const titleMap = { all: 'Portfolio Lobby', crypto: 'Crypto Portfolio', indices: 'Indices Portfolio', forex: 'Forex Portfolio', futures: 'Futures Portfolio' };
+    const title = titleMap[filter] || 'Portfolio';
+
+    const mktStats = (arr) => {
+      const cap = arr.reduce((s, b) => s + b.capital, 0);
+      const init = arr.reduce((s, b) => s + initOf(b), 0);
+      return { cap, pnl: init ? ((cap - init) / init * 100) : 0, open: arr.filter(b => b.has_position).length };
+    };
+    const cryptoS = mktStats(cryptoBots);
+    const idxS = mktStats(indexBots);
+    const fxS = mktStats(forexBots);
+    const futS = mktStats(futuresBots);
+
+    const handleBotClick = botId => {
+      const b = bots.find(x => x.id === botId);
+      if (b && onSelectBot) onSelectBot(b);
+    };
+
     return (
       <div className="main-content page-anim">
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
-          <div className="page-title">Portfolio</div>
-          <div style={{display:'flex',gap:6}}>
-            <span className="badge badge-accent">Lyra v3.8</span>
-            <span className="badge badge-green">ML Active</span>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div className="page-title">{title}</div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <span className="badge badge-accent">Lyra 3.0</span>
+            <span className="badge badge-green">ML Filter On</span>
           </div>
         </div>
 
+        {/* Ticker */}
         <div className="news-ticker">
           <div className="news-ticker-inner">
             {tickerDup.map((it, i) => (
               <span className="news-ticker-item" key={i}>
-                <span className="ticker-dot" style={{background: it.dot}} />
+                <span className="ticker-dot" style={{ background: it.dot }} />
                 {it.text}
               </span>
             ))}
           </div>
         </div>
 
+        {/* Top Metric Cards */}
         <div className="stat-grid stagger">
           <div className="card">
-            <div className="card-label">Total Portfolio</div>
+            <div className="card-label">Total Capital</div>
             <div className="card-value">${fmtM(animated)}</div>
-            <div className="card-sub t-green">+{totalProfitPct.toFixed(2)}%</div>
-          </div>
-          <div className="card">
-            <div className="card-label">Active Bots</div>
-            <div className="card-value">{DEMO_BOTS.filter(b => b.status !== 'paused').length}</div>
-            <div className="card-sub" style={{color:'var(--orange)'}}>
-              {openBots.length} open positions &middot; {DEMO_BOTS.filter(b => b.status === 'paused').length} paused
+            <div className={`card-sub ${totalProfitPct >= 0 ? 't-green' : 't-red'}`}>
+              {totalProfitPct >= 0 ? '+' : ''}{totalProfitPct.toFixed(2)}%
             </div>
           </div>
           <div className="card">
-            <div className="card-label">Server</div>
-            <div className="card-value" style={{fontSize:18,fontFamily:'var(--mono)'}}>{fmt(time)}</div>
-            <div className="card-sub t-green">All systems running</div>
+            <div className="card-label">Total PnL</div>
+            <div className="card-value" style={{ color: totalProfitPct >= 0 ? 'var(--green)' : 'var(--red)' }}>
+              {totalProfitPct >= 0 ? '+' : ''}{totalProfitPct.toFixed(2)}%
+            </div>
+            <div className="card-sub">{filteredBots.length} bot{filteredBots.length !== 1 ? 's' : ''} | {openBots.length} open</div>
+          </div>
+          <div className="card">
+            <div className="card-label">{isLobby ? 'Server' : 'Win Rate'}</div>
+            {isLobby ? (
+              <>
+                <div className="card-value" style={{ fontSize: 18, fontFamily: 'var(--mono)' }}>{fmt(time)}</div>
+                <div className="card-sub t-green">All systems running</div>
+              </>
+            ) : (
+              <>
+                <div className="card-value">{globalWinRate}%</div>
+                <div className="card-sub">{totalTrades} trades total</div>
+              </>
+            )}
           </div>
         </div>
 
+        {/* Open positions banner */}
         {openBots.length > 0 && (
           <div className="pos-banner">
-            <span className="status-dot status-dot-live" style={{background:'var(--orange)'}} />
+            <span className="status-dot status-dot-live" style={{ background: 'var(--orange)' }} />
             <span className="t-dim">Open positions:</span>
             {openBots.map(b => (
-              <span key={b.id} style={{cursor:'pointer'}} onClick={() => onSelectBot(b)}>
-                <span style={{fontWeight:600,color:'var(--orange)'}}>{b.pair}</span>
+              <span key={b.id} style={{ cursor: 'pointer' }} onClick={() => onSelectBot && onSelectBot(b)}>
+                <span style={{ fontWeight: 600, color: 'var(--orange)' }}>{b.pair}</span>
               </span>
             ))}
           </div>
         )}
 
-        <div className="section-label">Active Markets</div>
-        <div className="market-grid stagger">
-          {DEMO_BOTS.map(b => <MarketCard key={b.id} bot={b} onClick={onSelectBot} />)}
-        </div>
+        {/* LOBBY MODE: Market blocks */}
+        {isLobby && (
+          <div style={{ display: 'flex', gap: 16, marginBottom: 20, flexWrap: 'wrap' }}>
+            <MarketBlock
+              label="Crypto Trading"
+              color="#8b5cf6"
+              colorDim="rgba(139,92,246,0.06)"
+              colorBorder="rgba(139,92,246,0.15)"
+              capital={cryptoS.cap}
+              pnl={cryptoS.pnl}
+              numBots={cryptoBots.length}
+              openPositions={cryptoS.open}
+              bestBot={bestOf(cryptoBots)}
+              onClick={() => onNavMarket && onNavMarket('crypto')}
+            />
+            <MarketBlock
+              label="World Indices"
+              color="#06b6d4"
+              colorDim="rgba(6,182,212,0.06)"
+              colorBorder="rgba(6,182,212,0.15)"
+              capital={idxS.cap}
+              pnl={idxS.pnl}
+              numBots={indexBots.length}
+              openPositions={idxS.open}
+              bestBot={bestOf(indexBots)}
+              onClick={() => onNavMarket && onNavMarket('indices')}
+            />
+            <MarketBlock
+              label="Forex"
+              color="#10b981"
+              colorDim="rgba(16,185,129,0.06)"
+              colorBorder="rgba(16,185,129,0.15)"
+              capital={fxS.cap}
+              pnl={fxS.pnl}
+              numBots={forexBots.length}
+              openPositions={fxS.open}
+              bestBot={bestOf(forexBots)}
+              onClick={() => onNavMarket && onNavMarket('forex')}
+            />
+            <MarketBlock
+              label="Futures"
+              color="#f59e0b"
+              colorDim="rgba(245,158,11,0.06)"
+              colorBorder="rgba(245,158,11,0.15)"
+              capital={futS.cap}
+              pnl={futS.pnl}
+              numBots={futuresBots.length}
+              openPositions={futS.open}
+              bestBot={bestOf(futuresBots)}
+              onClick={() => onNavMarket && onNavMarket('futures')}
+            />
+          </div>
+        )}
 
-        <div className="section-label" style={{marginTop:18}}>Recent Activity</div>
-        <div className="card" style={{padding:'4px 0'}}>
-          {[
-            { t:'04:07', col:'var(--green)',  tag:'OPEN',    txt:'CHF/JPY SHORT @ 200.889 via stoch_rsi — ML P(win)=40% >= req 32% | EV +0.58R' },
-            { t:'23:51', col:'var(--green)',  tag:'OPEN',    txt:'AUD/NZD @ 1.21457 via rsi_divergence — ML P(win)=64% | EV +1.57R' },
-            { t:'23:51', col:'var(--green)',  tag:'CLOSE',   txt:'GBP/AUD +2.79% (TAKE_PROFIT) — trailing armed at +1.2%' },
-            { t:'23:51', col:'var(--red)',    tag:'CLOSE',   txt:'AUD/CAD -0.06% (TRAILING_STOP)' },
-            { t:'22:14', col:'var(--orange)', tag:'REJECT',  txt:'EUR/USD signal rejected — ML P(win)=24% < req 32% (RRR 3)' },
-            { t:'21:30', col:'var(--orange)', tag:'BLOCKED', txt:'GBP/USD entry blocked by portfolio risk — max forex positions (3/3)' },
-            { t:'20:02', col:'var(--red)',    tag:'CLOSE',   txt:'EUR/CAD closed by TIME_STOP — 90 candles without arming the trailing stop' },
-          ].map((e, i) => (
-            <div key={i} style={{display:'flex',gap:10,alignItems:'baseline',padding:'7px 14px',borderTop: i ? '1px solid rgba(255,255,255,0.04)' : 'none'}}>
-              <span style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--text-muted)',flexShrink:0}}>{e.t}</span>
-              <span style={{fontFamily:'var(--mono)',fontSize:10,color:e.col,flexShrink:0,minWidth:52}}>{e.tag}</span>
-              <span style={{fontSize:11,color:'var(--text-dim)'}}>{e.txt}</span>
+        {/* PORTFOLIO MODE: Bot cards grid */}
+        {!isLobby && filteredBots.length > 0 && (
+          <>
+            <div className="section-label">Active Markets</div>
+            <div className="market-grid stagger">
+              {filteredBots.map(b => (
+                <MarketCard key={b.id} bot={b} onClick={() => onSelectBot && onSelectBot(b)} />
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
+
+        {/* Recent Activity */}
+        {activity.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <div className="section-label">Recent Activity</div>
+            <div className="card" style={{ padding: '10px 16px' }}>
+              {activity.map((ev, i) => (
+                <ActivityItem key={i} event={ev} onBotClick={handleBotClick} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
+
 
   // ═══════════════════════════════════════
   // ANALYTICS PAGE (placeholder)
@@ -1440,7 +1604,7 @@
       <div className="main-content page-anim">
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div className="page-title">Analytics</div>
-          <span className="badge badge-accent">Lyra v3.8</span>
+          <span className="badge badge-accent">Lyra 3.0</span>
         </div>
 
         <div className="stat-grid stagger" style={{gridTemplateColumns:'repeat(4, 1fr)'}}>
@@ -1490,7 +1654,7 @@
       <div className="main-content page-anim">
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div className="page-title">Settings</div>
-          <span className="badge badge-accent">Lyra v3.8</span>
+          <span className="badge badge-accent">Lyra 3.0</span>
         </div>
 
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
@@ -1574,7 +1738,7 @@
       <div className="main-content page-anim">
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div className="page-title">Risk &amp; Calibration</div>
-          <span className="badge badge-accent">Lyra v3.8</span>
+          <span className="badge badge-accent">Lyra 3.0</span>
         </div>
 
         <div className="stat-grid stagger">
@@ -1699,19 +1863,31 @@
   }
 
   function App() {
-    const [page, setPage] = useState('portfolio');
+    const [page, setPage] = useState('lobby');
     const [bot, setBot] = useState(null);
 
     const nav = p => setPage(p);
 
+    // market accent theme on body — mirrors v3-app.jsx
+    useEffect(() => {
+      document.body.classList.remove('theme-indices', 'theme-forex', 'theme-futures');
+      const themeClasses = { indices: 'theme-indices', forex: 'theme-forex', futures: 'theme-futures' };
+      if (themeClasses[page]) document.body.classList.add(themeClasses[page]);
+    }, [page]);
+
     const handleSelectBot = b => { setBot(b); nav('botdetail'); };
+
+    const marketPages = ['lobby', 'crypto', 'indices', 'forex', 'futures'];
 
     return (
       <div className="app-layout">
         <Sidebar page={page} onNav={nav} />
 
-        {page === 'portfolio' && <Portfolio onSelectBot={handleSelectBot} />}
-        {page === 'botdetail' && bot && <BotDetail bot={bot} onBack={() => nav('portfolio')} />}
+        {marketPages.includes(page) && (
+          <PortfolioView key={page} filter={page === 'lobby' ? 'all' : page}
+            onSelectBot={handleSelectBot} onNavMarket={nav} />
+        )}
+        {page === 'botdetail' && bot && <BotDetail bot={bot} onBack={() => nav(bot.market || 'lobby')} />}
         {page === 'analytics' && <AnalyticsPage />}
         {page === 'risk' && <RiskPage />}
         {page === 'ml' && <MLModelsPage />}
