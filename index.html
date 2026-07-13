@@ -131,6 +131,58 @@
     .theme-futures .pos-banner { border-color: var(--accent-bd); }
 
 
+    /* ── Forms / Create Bot wizard ── */
+    .form-label { font-size: 11px; font-weight: 600; color: var(--text-dim); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .form-input, .form-select { font-family: var(--mono); font-size: 13px; background: rgba(10,10,20,0.6); border: 1px solid var(--border-h); border-radius: var(--radius); padding: 10px 12px; color: var(--text); width: 100%; outline: none; transition: border-color 0.2s; }
+    .form-input:focus, .form-select:focus { border-color: var(--accent-bd); }
+    .form-select { appearance: auto; -webkit-appearance: menulist; cursor: pointer !important; background-image: none; }
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 600px) { .config-grid { grid-template-columns: 1fr; } }
+    .step-label { font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 10px; letter-spacing: 0.02em; }
+    .step-section { margin-bottom: 18px; }
+    .step-nav { display: flex; gap: 8px; margin-top: 8px; justify-content: space-between; }
+    .ms-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .ms-item:hover { border-color: var(--accent-bd); background: var(--accent-dim); }
+    .ms-item.selected { border-color: var(--accent); background: var(--accent-dim); }
+    .ms-sym { font-size: 13px; font-weight: 600; color: var(--accent); }
+    .ms-pair { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
+    .ms-active { font-size: 9px; color: var(--green); font-weight: 600; margin-top: 2px; }
+    .tf-row { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tf-btn { font-family: var(--mono); font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--border-h); background: var(--bg-card); color: var(--text-dim); cursor: pointer; transition: all 0.15s; }
+    .tf-btn:hover { border-color: var(--accent-bd); color: var(--text); }
+    .tf-btn.active { background: transparent; border-color: var(--accent); color: var(--accent); }
+    .strats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 5px; }
+    .strat-item { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: var(--radius); cursor: pointer; font-size: 12px; color: var(--text-dim); transition: color 0.15s; }
+    .strat-item:hover { color: var(--text); }
+    .strat-check { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border-h); background: var(--bg-card); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+    .strat-check.checked { border-color: var(--accent); background: var(--accent-dim); }
+    .range-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .toggle { width: 36px; height: 20px; border-radius: 10px; position: relative; cursor: pointer; border: 1px solid var(--border-h); transition: background 0.2s; }
+    .toggle-knob { width: 14px; height: 14px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 2px; transition: transform 0.2s; }
+    .toggle:not(.off) .toggle-knob { transform: translateX(16px); }
+    .training-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 60px 20px; }
+    .training-spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .training-pct { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--accent); }
+    .training-bar { width: 200px; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+    .training-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.2s; }
+
+    /* ── Market Intelligence ── */
+    .news-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .news-tag-bull { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+    .news-tag-bear { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-border); }
+    .news-tag-neut { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange-border); }
+    .mkt-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    @media (min-width: 1800px) { .mkt-stats-grid { gap: 18px; } }
+    @media (max-width: 1100px) { .mkt-stats-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .mkt-stats-grid { grid-template-columns: 1fr; } }
+    .mkt-news-layout { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .mkt-news-detail { grid-template-columns: 1fr 400px; }
+    @media (min-width: 1800px) { .mkt-news-detail { grid-template-columns: 1fr 480px; } }
+    @media (max-width: 900px) { .mkt-news-detail { grid-template-columns: 1fr; } }
+    .dom-bar { height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+    .dom-fill { height: 100%; border-radius: 3px; background: var(--orange); transition: width 0.6s ease; }
+
     /* ── Sidebar ── */
     .sidebar { width: 56px; min-width: 56px; height: 100vh; background: rgba(8,8,16,0.92); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 12px 0; transition: width 0.25s ease; overflow: hidden; z-index: 20; flex-shrink: 0; backdrop-filter: blur(12px); }
     .sidebar.expanded { width: 180px; min-width: 180px; }
@@ -696,6 +748,8 @@
     Globe: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
     Forex: (p) => <svg width={p?.size||17} height={p?.size||17} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 4l3 3-3 3"/><path d="M20 7H8a4 4 0 0 0-4 4"/><path d="M7 20l-3-3 3-3"/><path d="M4 17h12a4 4 0 0 0 4-4"/></svg>,
     Futures: (p) => <svg width={p?.size||17} height={p?.size||17} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M6 10h12l3 8H3z"/><path d="M6 10l2-5h8l2 5"/><line x1="8" y1="5" x2="6" y2="10"/><line x1="16" y1="5" x2="18" y2="10"/><line x1="10" y1="10" x2="11" y2="5"/><line x1="14" y1="10" x2="13" y2="5"/></svg>,
+    News: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="7" x2="13" y2="7"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="15" x2="17" y2="15"/><line x1="7" y1="19" x2="12" y2="19"/><rect x="15" y="6" width="2.5" height="3" rx="0.5"/></svg>,
+    Plus: () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
     Lyra: () => (
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none" style={{filter:'drop-shadow(0 0 8px rgba(139,92,246,0.3))'}}>
         <circle cx="16" cy="6" r="2" fill="#8b5cf6"/>
@@ -725,11 +779,11 @@
   const INDEX_FLAG = { SP500:'us', NASDAQ:'us', DOW:'us', DAX:'de', FTSE:'gb', CAC:'fr', IBEX:'es', PSI:'pt', STOXX50:'eu', NIKKEI:'jp', HANGSENG:'hk', ASX:'au' };
   const FUT_EMOJI = { GOLD:'\u{1F947}', SILVER:'\u{1F948}', OIL:'\u{1F6E2}️', 'CRUDE OIL':'\u{1F6E2}️', BRENT:'\u{1F6E2}️', NATGAS:'\u{1F525}', COPPER:'\u{1FA99}' };
 
-  function AssetIcon({ pair, botId, size = 20 }) {
+  function AssetIcon({ pair, botId, market: marketProp, size = 20 }) {
     const [srcIdx, setSrcIdx] = useState(0);
-    const market = botId && botId.startsWith('idx_') ? 'indices'
+    const market = marketProp || (botId && botId.startsWith('idx_') ? 'indices'
       : botId && botId.startsWith('fx_') ? 'forex'
-      : botId && botId.startsWith('fut_') ? 'futures' : 'crypto';
+      : botId && botId.startsWith('fut_') ? 'futures' : 'crypto');
     const flag = (code, st) => <img src={`https://flagcdn.com/w40/${code}.png`} alt={code}
       style={{ width: size * 0.92, height: size * 0.92, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-h)', ...st }} />;
     const letter = txt => (
@@ -801,6 +855,28 @@
         <SbItem icon={<Ico.Forex />}   label="Forex"     active={page==='forex'}    onClick={() => onNav('forex')} />
         <SbItem icon={<Ico.Futures />} label="Futures"   active={page==='futures'}  onClick={() => onNav('futures')} />
         <SbItem icon={<Ico.Chart />}   label="Analytics" active={page==='analytics'} onClick={() => onNav('analytics')} />
+
+        {['crypto','market','createbot'].includes(page) && (<>
+          <div className="sb-divider" />
+          <div className="sb-section">Crypto</div>
+          <SbItem icon={<Ico.News />} label="Mercado"   active={page==='market'}    onClick={() => onNav('market')} />
+          <SbItem icon={<Ico.Plus />} label="Criar Bot" active={page==='createbot'} onClick={() => onNav('createbot')} />
+        </>)}
+        {['indices','idx-createbot'].includes(page) && (<>
+          <div className="sb-divider" />
+          <div className="sb-section">Indices</div>
+          <SbItem icon={<Ico.Plus />} label="Criar Bot" active={page==='idx-createbot'} onClick={() => onNav('idx-createbot')} />
+        </>)}
+        {['forex','fx-createbot'].includes(page) && (<>
+          <div className="sb-divider" />
+          <div className="sb-section">Forex</div>
+          <SbItem icon={<Ico.Plus />} label="Criar Bot" active={page==='fx-createbot'} onClick={() => onNav('fx-createbot')} />
+        </>)}
+        {['futures','fut-createbot'].includes(page) && (<>
+          <div className="sb-divider" />
+          <div className="sb-section">Futures</div>
+          <SbItem icon={<Ico.Plus />} label="Criar Bot" active={page==='fut-createbot'} onClick={() => onNav('fut-createbot')} />
+        </>)}
 
         <div className="sb-divider" />
         <div className="sb-section">Sistema</div>
@@ -1862,6 +1938,869 @@
     );
   }
 
+  // ═══════════════════════════════════════
+  // MARKET INTELLIGENCE, mirrors v3-market.jsx (static news data, as no real app)
+  // ═══════════════════════════════════════
+
+  function MarketBg() {
+    const canvasRef = useRef(null);
+    useEffect(() => {
+      const c = canvasRef.current; if (!c) return;
+      const ctx = c.getContext('2d');
+      let frame = 0, alive = true;
+      function resize() { c.width = c.parentElement.offsetWidth; c.height = c.parentElement.offsetHeight; }
+      resize(); window.addEventListener('resize', resize);
+      function draw() {
+        if (!alive) return;
+        ctx.clearRect(0, 0, c.width, c.height);
+        for (let j = 0; j < 4; j++) {
+          ctx.beginPath();
+          const baseY = c.height * 0.3 + j * 40;
+          for (let x = 0; x <= c.width; x += 4) {
+            const y = baseY + Math.sin((x * 0.005) + frame * 0.012 + j * 1.2) * (18 + j * 6) + Math.sin((x * 0.002) + frame * 0.008) * 10;
+            x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          const alpha = 0.04 - j * 0.008;
+          const hue = j % 2 === 0 ? '139,124,247' : '107,184,201';
+          ctx.strokeStyle = `rgba(${hue},${Math.max(alpha + 0.02, 0.02)})`;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+          ctx.lineTo(c.width, c.height);
+          ctx.lineTo(0, c.height);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(${hue},${Math.max(alpha, 0.005)})`;
+          ctx.fill();
+        }
+        frame++;
+        requestAnimationFrame(draw);
+      }
+      draw();
+      return () => { alive = false; window.removeEventListener('resize', resize); };
+    }, []);
+    return <canvas ref={canvasRef} style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', borderRadius:'var(--radius-lg)' }} />;
+  }
+
+  const FULL_NEWS = [
+    { tag:'bull', label:'BULLISH', title:'BlackRock aumenta posição em ETFs de Bitcoin para $18.2B', source:'Reuters', time:'12 min', coins:['BTC'], impact:3,
+      summary:'BlackRock reportou a maior entrada mensal em ETFs de Bitcoin desde o lançamento em Janeiro. O iShares Bitcoin Trust (IBIT) acumulou $420M só esta semana, elevando o total de AUM para $18.2B.',
+      analysis:'O volume institucional continua a crescer de forma consistente. Entradas desta magnitude historicamente precedem movimentos de alta de 5-15% no BTC dentro de 2-4 semanas.',
+      sentiment:82, priceTarget:'$82,000 - $88,000', timeframe:'2-4 semanas',
+      indicators:['Volume institucional ↑','Fluxos ETF positivos','Correlação com S&P500 ↓'] },
+    { tag:'bear', label:'BEARISH', title:'SEC abre investigação a Uniswap por violações de securities', source:'Bloomberg', time:'34 min', coins:['ETH','UNI'], impact:2,
+      summary:'A SEC enviou um Wells Notice à Uniswap Labs, alegando que a plataforma opera como um broker-dealer não registado. A equipa legal da Uniswap já respondeu publicamente.',
+      analysis:'Apesar do impacto negativo no curto prazo para UNI (-8%), o mercado DeFi tem demonstrado resiliência a ações regulatórias. ETH deve sentir pressão limitada.',
+      sentiment:35, priceTarget:'UNI: $4.50 - $5.80', timeframe:'1-2 semanas',
+      indicators:['Pressão regulatória ↑','Volume DEX estável','TVL DeFi resiliente'] },
+    { tag:'bull', label:'BULLISH', title:'Ripple vence batalha legal: XRP não é security', source:'CoinDesk', time:'1h', coins:['XRP'], impact:3,
+      summary:'O tribunal confirmou a decisão de 2023: vendas de XRP no mercado secundário não constituem ofertas de valores mobiliários. Ripple celebra vitória decisiva contra a SEC.',
+      analysis:'Clareza regulatória é extremamente positiva para XRP. Listagens em exchanges que tinham deslistado XRP podem voltar. Potencial re-entry de investidores institucionais.',
+      sentiment:88, priceTarget:'$2.80 - $3.40', timeframe:'1-3 semanas',
+      indicators:['Clareza regulatória ↑','Re-listagens possíveis','Momentum social ↑'] },
+    { tag:'neut', label:'NEUTRO', title:'Fed mantém taxas nos 4.25-4.50%, Powell cauteloso', source:'CNBC', time:'2h', coins:['BTC','ETH'], impact:2,
+      summary:'Como esperado, o Federal Reserve manteve as taxas de juro inalteradas. Powell sublinhou a necessidade de "mais dados" antes de considerar cortes, mas reconheceu progressos na inflação.',
+      analysis:'Mercados já tinham precificado a manutenção. O tom ligeiramente dovish de Powell pode dar suporte a ativos de risco no curto prazo. Próxima reunião em Junho será mais decisiva.',
+      sentiment:52, priceTarget:'Neutro, range-bound', timeframe:'Até próxima reunião FOMC',
+      indicators:['Taxas estáveis','Inflação a descer','Emprego robusto'] },
+    { tag:'bull', label:'BULLISH', title:'Sui Network atinge 58M transações diárias, novo record', source:'TheBlock', time:'3h', coins:['SUI'], impact:2,
+      summary:'A Sui Network quebrou o seu record de transações diárias com 58 milhões, impulsionada pelo crescimento de DeFi e gaming on-chain. TVL subiu 23% na última semana.',
+      analysis:'O crescimento orgânico de atividade on-chain é o melhor indicador de adoção real. SUI mostra fundamentals sólidos que justificam a valorização recente.',
+      sentiment:75, priceTarget:'$3.20 - $3.80', timeframe:'2-4 semanas',
+      indicators:['Atividade on-chain ↑↑','TVL +23%','Developer activity ↑'] },
+    { tag:'bear', label:'BEARISH', title:'Arbitrum regista saída líquida de $340M em TVL', source:'DeFiLlama', time:'4h', coins:['ETH','ARB'], impact:1,
+      summary:'Nos últimos 3 dias, Arbitrum perdeu $340M em TVL, com capital a migrar para Base e Optimism. O token ARB caiu 5% no período.',
+      analysis:'A competição entre L2s está a intensificar-se. Arbitrum precisa de catalisadores como o airdrop de incentivos ou novos protocolos para reverter a tendência.',
+      sentiment:30, priceTarget:'ARB: $0.85 - $1.05', timeframe:'1-2 semanas',
+      indicators:['TVL ↓','Competição L2 ↑','Incentivos a esgotar'] },
+  ];
+
+  function SentBar({ value }) {
+    const color = value < 35 ? 'var(--red)' : value < 55 ? 'var(--orange)' : 'var(--green)';
+    return (
+      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <div style={{ flex:1, height:4, borderRadius:2, background:'var(--bg)', overflow:'hidden' }}>
+          <div style={{ width:`${value}%`, height:'100%', borderRadius:2, background:color, transition:'width 0.6s ease' }} />
+        </div>
+        <span style={{ fontSize:11, fontWeight:600, color, fontFamily:'var(--mono)', minWidth:28 }}>{value}%</span>
+      </div>
+    );
+  }
+
+  function FearGaugeLarge({ value }) {
+    const v = value || 38;
+    const color = v < 25 ? 'var(--red)' : v < 45 ? 'var(--orange)' : v < 55 ? 'var(--text)' : v < 75 ? 'var(--accent)' : 'var(--green)';
+    const label = v < 25 ? 'Extreme Fear' : v < 45 ? 'Fear' : v < 55 ? 'Neutral' : v < 75 ? 'Greed' : 'Extreme Greed';
+    const cx = 100, cy = 102, r = 64;
+    const toRad = d => d * Math.PI / 180;
+    const arcX = d => cx + r * Math.cos(toRad(d));
+    const arcY = d => cy + r * Math.sin(toRad(d));
+    const needleAngle = -180 + (v / 100) * 180;
+    return (
+      <div style={{ textAlign:'center', width:'100%', maxWidth:240, margin:'0 auto', position:'relative' }}>
+        <svg viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet"
+          style={{ width:'100%', height:'auto', display:'block', margin:'0 auto', overflow:'visible' }}>
+          <path d={`M ${arcX(-180)} ${arcY(-180)} A ${r} ${r} 0 1 1 ${arcX(0)} ${arcY(0)}`}
+            fill="none" stroke="var(--border)" strokeWidth="10" strokeLinecap="round" />
+          <path d={`M ${arcX(-180)} ${arcY(-180)} A ${r} ${r} 0 ${v > 50 ? 1 : 0} 1 ${arcX(needleAngle)} ${arcY(needleAngle)}`}
+            fill="none" stroke={color} strokeWidth="10" strokeLinecap="round" opacity="0.8"
+            style={{strokeDasharray:'500',strokeDashoffset:'500',animation:'drawIn 1.4s ease 0.3s forwards'}} />
+          <circle cx={cx + r * Math.cos(toRad(needleAngle))} cy={cy + r * Math.sin(toRad(needleAngle))} r="5" fill={color}
+            style={{opacity:0,animation:'fadeIn 0.3s ease 1.6s forwards'}} />
+          <text x={cx} y={cy - 14} textAnchor="middle" fill="var(--text)" fontSize="28" fontWeight="700" fontFamily="var(--mono)">{v}</text>
+          <text x={arcX(-180)} y={arcY(-180) + 14} textAnchor="middle" fill="var(--text-muted)" fontSize="10">Fear</text>
+          <text x={arcX(0)} y={arcY(0) + 14} textAnchor="middle" fill="var(--text-muted)" fontSize="10">Greed</text>
+        </svg>
+        <div style={{ fontSize:14, fontWeight:600, color, marginTop:-4 }}>{label}</div>
+      </div>
+    );
+  }
+
+  function MarketIntelPage() {
+    const [selected, setSelected] = useState(null);
+    const [filter, setFilter] = useState('all');
+
+    const filtered = filter === 'all' ? FULL_NEWS : FULL_NEWS.filter(n => n.tag === filter);
+    const impactDots = n => Array.from({ length: 3 }, (_, i) => (
+      <div key={i} style={{ width:5, height:5, borderRadius:'50%', background: i < n ? 'var(--orange)' : 'var(--border)' }} />
+    ));
+
+    const sel = selected !== null ? FULL_NEWS[selected] : null;
+
+    return (
+      <div className="main-content page-anim" style={{ position:'relative' }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18 }}>
+          <div className="page-title">Market Intelligence</div>
+          <div style={{ display:'flex', gap:6 }}>
+            <span className="badge badge-accent">Live Feed</span>
+            <span className="badge badge-green">LLM Analysis</span>
+          </div>
+        </div>
+
+        <div className="mkt-stats-grid">
+          <div className="card" style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
+            <MarketBg />
+            <div style={{ position:'relative', zIndex:1 }}>
+              <FearGaugeLarge value={38} />
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-label">BTC Dominance</div>
+            <div className="card-value" style={{ color:'var(--orange)' }}>54.2%</div>
+            <div className="dom-bar" style={{ marginTop:8 }}><div className="dom-fill" style={{ width:'54.2%' }} /></div>
+            <div style={{ fontSize:10, color:'var(--text-muted)', marginTop:6 }}>↑ +0.8% vs ontem</div>
+            <div style={{ marginTop:10, fontSize:10, color:'var(--text-dim)', lineHeight:1.6 }}>
+              Bitcoin continua a ganhar dominância face a altcoins. Historicamente, dominância acima de 55% sinaliza rotação para BTC-only.
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-label">Market Cap Total</div>
+            <div className="card-value">$2.84T</div>
+            <div style={{ fontSize:10, color:'var(--green)', marginTop:4 }}>↑ +1.3% 24h</div>
+            <div style={{ marginTop:10 }}>
+              {[['DeFi TVL','$148B','var(--accent)'],['Stablecoins','$162B','var(--text-dim)'],['NFT Vol 24h','$28M','var(--text-muted)']].map(([l,v,c]) => (
+                <div key={l} style={{ display:'flex', justifyContent:'space-between', fontSize:10, padding:'3px 0', borderBottom:'1px solid var(--border)' }}>
+                  <span className="t-muted">{l}</span><span style={{ color:c, fontFamily:'var(--mono)', fontWeight:500 }}>{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-label">Volume 24h</div>
+            <div className="card-value">$94.7B</div>
+            <div style={{ fontSize:10, color:'var(--text-muted)', marginTop:4 }}>↓ -12% vs 7d avg</div>
+            <div style={{ marginTop:10 }}>
+              {[['BTC','$38.2B','40.3%'],['ETH','$18.4B','19.4%'],['Outros','$38.1B','40.3%']].map(([l,v,p]) => (
+                <div key={l} style={{ display:'flex', justifyContent:'space-between', fontSize:10, padding:'3px 0', borderBottom:'1px solid var(--border)' }}>
+                  <span className="t-muted">{l}</span><span className="t-mono t-dim">{v} ({p})</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
+          <div className="tab-bar">
+            {[['all','Todos'],['bull','Bullish'],['bear','Bearish'],['neut','Neutro']].map(([k,l]) => (
+              <div key={k} className={`tab-item ${filter===k?'active':''}`} onClick={() => { setFilter(k); setSelected(null); }}>{l}</div>
+            ))}
+          </div>
+          <span className="t-muted" style={{ fontSize:10, marginLeft:'auto' }}>{filtered.length} notícias · atualizado há 12 min</span>
+        </div>
+
+        <div className={sel ? 'mkt-news-layout mkt-news-detail' : 'mkt-news-layout'}>
+          <div className="card" style={{ padding:0, overflow:'hidden' }}>
+            {filtered.map((n, i) => {
+              const origIdx = FULL_NEWS.indexOf(n);
+              const isSelected = selected === origIdx;
+              return (
+                <div key={i} onClick={() => setSelected(isSelected ? null : origIdx)}
+                  style={{ padding:'14px 18px', borderBottom:'1px solid var(--border)', cursor:'pointer', transition:'all 0.15s',
+                    background: isSelected ? 'var(--accent-dim)' : 'transparent',
+                    borderLeft: isSelected ? '3px solid var(--accent)' : '3px solid transparent',
+                    animation:`fadeUp 0.25s ease ${i * 0.05}s both` }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:5 }}>
+                    <span className={`news-tag news-tag-${n.tag}`}>{n.label}</span>
+                    {n.coins.map(c => (
+                      <span key={c} style={{ fontSize:9, color:'var(--text-muted)', background:'var(--bg-card)', padding:'2px 6px', borderRadius:3 }}>{c}</span>
+                    ))}
+                    <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:8 }}>
+                      <div style={{ display:'flex', gap:2 }}>{impactDots(n.impact)}</div>
+                      <span style={{ fontSize:10, color:'var(--text-muted)' }}>há {n.time}</span>
+                    </div>
+                  </div>
+                  <div style={{ fontSize:13, fontWeight:500, color:'var(--text)', lineHeight:1.4 }}>{n.title}</div>
+                  <div style={{ fontSize:10, color:'var(--text-muted)', marginTop:3 }}>{n.source}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          {sel && (
+            <div className="card slide-in" style={{ padding:18, alignSelf:'start', position:'sticky', top:28 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:12 }}>
+                <span className={`news-tag news-tag-${sel.tag}`}>{sel.label}</span>
+                {sel.coins.map(c => <span key={c} className="badge badge-accent" style={{ fontSize:9, padding:'2px 6px' }}>{c}</span>)}
+                <span className="t-muted" style={{ marginLeft:'auto', fontSize:10 }}>há {sel.time}</span>
+              </div>
+              <div style={{ fontSize:14, fontWeight:600, color:'var(--text)', lineHeight:1.4, marginBottom:12 }}>{sel.title}</div>
+              <div style={{ fontSize:11, color:'var(--text-dim)', lineHeight:1.6, marginBottom:14, paddingBottom:14, borderBottom:'1px solid var(--border)' }}>
+                {sel.summary}
+              </div>
+              <div className="card-label">Análise LLM</div>
+              <div style={{ fontSize:11, color:'var(--text-dim)', lineHeight:1.6, marginBottom:14 }}>
+                {sel.analysis}
+              </div>
+              <div className="card-label">Sentimento</div>
+              <SentBar value={sel.sentiment} />
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginTop:14 }}>
+                <div>
+                  <div className="card-label">Price Target</div>
+                  <div style={{ fontSize:12, fontWeight:600, fontFamily:'var(--mono)', color:'var(--text)' }}>{sel.priceTarget}</div>
+                </div>
+                <div>
+                  <div className="card-label">Timeframe</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:'var(--text)' }}>{sel.timeframe}</div>
+                </div>
+              </div>
+              <div style={{ marginTop:14 }}>
+                <div className="card-label">Indicadores</div>
+                <div style={{ display:'flex', flexDirection:'column', gap:4, marginTop:4 }}>
+                  {sel.indicators.map((ind, i) => (
+                    <div key={i} style={{ fontSize:11, color:'var(--text-dim)', display:'flex', alignItems:'center', gap:6 }}>
+                      <span style={{ width:4, height:4, borderRadius:'50%', background:'var(--accent)', flexShrink:0 }} />
+                      {ind}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ marginTop:16, fontSize:10, color:'var(--text-muted)', borderTop:'1px solid var(--border)', paddingTop:10 }}>
+                Fonte: {sel.source} · Análise gerada por Lyra LLM
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+
+  // ═══════════════════════════════════════
+  // CREATE BOT WIZARD, mirrors v3-createbot-unified.jsx
+  // (static data + simulated optimization, creation disabled in the demo)
+  // ═══════════════════════════════════════
+
+  const MARKET_DEFS = [
+    { key: 'crypto',  name: 'Cryptocurrency', desc: 'BTC, ETH, SOL and 20+ USDT pairs via Binance', color: '#8b5cf6', iconKey: 'Crypto' },
+    { key: 'indices', name: 'World Indices',   desc: 'S&P 500, DAX, Nikkei and 12 global indices',   color: '#06b6d4', iconKey: 'Globe' },
+    { key: 'forex',   name: 'Forex',           desc: 'EUR/USD, GBP/JPY and 12 major/cross pairs',    color: '#10b981', iconKey: 'Forex' },
+    { key: 'futures', name: 'Futures',         desc: 'Gold, Oil, Natural Gas and 10 commodities',     color: '#f59e0b', iconKey: 'Futures' },
+  ];
+
+  const STRAT_LIST = [
+    { key: 'momentum',      label: 'Momentum' },
+    { key: 'macd',           label: 'MACD' },
+    { key: 'stoch_rsi',      label: 'Stoch RSI' },
+    { key: 'vcb',            label: 'Vol. Compression' },
+    { key: 'ema_cross',      label: 'EMA Cross' },
+    { key: 'bb_squeeze',     label: 'BB Squeeze' },
+    { key: 'rsi_divergence', label: 'RSI Divergence' },
+    { key: 'multi',          label: 'Multi (2/3)' },
+  ];
+
+  const DEMO_MARKETS = [
+    { key: 'crypto', timeframes: ['1h','4h','1d'], assets: [
+      { pair:'BTC/USDT', name:'Bitcoin' }, { pair:'ETH/USDT', name:'Ethereum' }, { pair:'SOL/USDT', name:'Solana' },
+      { pair:'BNB/USDT', name:'BNB' }, { pair:'XRP/USDT', name:'Ripple' }, { pair:'ADA/USDT', name:'Cardano' },
+      { pair:'DOT/USDT', name:'Polkadot' }, { pair:'LTC/USDT', name:'Litecoin' }, { pair:'SUI/USDT', name:'Sui' },
+      { pair:'UNI/USDT', name:'Uniswap' }, { pair:'AVAX/USDT', name:'Avalanche' }, { pair:'LINK/USDT', name:'Chainlink' },
+      { pair:'DOGE/USDT', name:'Dogecoin' }, { pair:'ATOM/USDT', name:'Cosmos' },
+    ]},
+    { key: 'indices', timeframes: ['1d'], assets: [
+      { key:'SP500', name:'S&P 500', region:'Americas', currency:'USD' }, { key:'NASDAQ', name:'Nasdaq 100', region:'Americas', currency:'USD' },
+      { key:'DOW', name:'Dow Jones', region:'Americas', currency:'USD' },
+      { key:'DAX', name:'DAX 40', region:'Europe', currency:'EUR' }, { key:'FTSE', name:'FTSE 100', region:'Europe', currency:'GBP' },
+      { key:'CAC', name:'CAC 40', region:'Europe', currency:'EUR' }, { key:'IBEX', name:'IBEX 35', region:'Europe', currency:'EUR' },
+      { key:'PSI', name:'PSI 20', region:'Europe', currency:'EUR' }, { key:'STOXX50', name:'Euro Stoxx 50', region:'Europe', currency:'EUR' },
+      { key:'NIKKEI', name:'Nikkei 225', region:'Asia-Pacific', currency:'JPY' }, { key:'HANGSENG', name:'Hang Seng', region:'Asia-Pacific', currency:'HKD' },
+      { key:'ASX', name:'ASX 200', region:'Asia-Pacific', currency:'AUD' },
+    ]},
+    { key: 'forex', timeframes: ['1h','4h','1d'], assets: [
+      { key:'EURUSD', name:'EUR/USD', category:'Majors' }, { key:'GBPUSD', name:'GBP/USD', category:'Majors' },
+      { key:'USDJPY', name:'USD/JPY', category:'Majors' }, { key:'USDCHF', name:'USD/CHF', category:'Majors' },
+      { key:'USDCAD', name:'USD/CAD', category:'Majors' }, { key:'AUDUSD', name:'AUD/USD', category:'Majors' },
+      { key:'EURGBP', name:'EUR/GBP', category:'Crosses' }, { key:'EURJPY', name:'EUR/JPY', category:'Crosses' },
+      { key:'EURAUD', name:'EUR/AUD', category:'Crosses' }, { key:'EURNZD', name:'EUR/NZD', category:'Crosses' },
+      { key:'EURCAD', name:'EUR/CAD', category:'Crosses' }, { key:'GBPJPY', name:'GBP/JPY', category:'Crosses' },
+      { key:'GBPAUD', name:'GBP/AUD', category:'Crosses' }, { key:'GBPCAD', name:'GBP/CAD', category:'Crosses' },
+      { key:'GBPNZD', name:'GBP/NZD', category:'Crosses' }, { key:'AUDJPY', name:'AUD/JPY', category:'Crosses' },
+      { key:'AUDNZD', name:'AUD/NZD', category:'Crosses' }, { key:'AUDCAD', name:'AUD/CAD', category:'Crosses' },
+      { key:'CADJPY', name:'CAD/JPY', category:'Crosses' }, { key:'CHFJPY', name:'CHF/JPY', category:'Crosses' },
+    ]},
+    { key: 'futures', timeframes: ['1h','4h','1d'], assets: [
+      { key:'GOLD', name:'Gold', category:'Metals', unit:'USD/oz' }, { key:'SILVER', name:'Silver', category:'Metals', unit:'USD/oz' },
+      { key:'COPPER', name:'Copper', category:'Metals', unit:'USD/lb' },
+      { key:'OIL', name:'Crude Oil WTI', category:'Energy', unit:'USD/bbl' }, { key:'BRENT', name:'Brent', category:'Energy', unit:'USD/bbl' },
+      { key:'NATGAS', name:'Natural Gas', category:'Energy', unit:'USD/MMBtu' },
+    ]},
+  ];
+
+  const FX_SESSION_DEFS = [
+    { key:'sydney',  label:'Sydney',   color:'#f59e0b', start:21, end:6 },
+    { key:'tokyo',   label:'Tokyo',    color:'#ef4444', start:0,  end:9 },
+    { key:'london',  label:'London',   color:'#10b981', start:8,  end:17 },
+    { key:'newyork', label:'New York', color:'#3b82f6', start:13, end:22 },
+  ];
+  const fxAutoSessions = pairKey => {
+    const ccys = [(pairKey || '').slice(0,3), (pairKey || '').slice(3,6)];
+    const auto = new Set();
+    ccys.forEach(c => {
+      if (c === 'JPY') auto.add('tokyo');
+      if (c === 'AUD' || c === 'NZD') auto.add('sydney');
+      if (c === 'EUR' || c === 'GBP' || c === 'CHF') auto.add('london');
+      if (c === 'USD' || c === 'CAD') auto.add('newyork');
+    });
+    return FX_SESSION_DEFS.map(s => ({ ...s, active: auto.has(s.key) }));
+  };
+
+  function UToggle({ on, set, color }) {
+    return <div className={`toggle ${on?'':'off'}`} style={{background:on?(color||'var(--accent)'):'var(--bg-card)'}} onClick={()=>set(!on)}><div className="toggle-knob"/></div>;
+  }
+
+  function CreateBotDemo({ onDone, initialMarket }) {
+    const [step, setStep] = useState(initialMarket ? 2 : 1);
+    const [marketType, setMarketType] = useState(initialMarket || null);
+    const existingBots = DEMO_BOTS.map(b => b.id);
+
+    const [selectedAsset, setSelectedAsset] = useState(null);
+    const [customPair, setCustomPair] = useState('');
+    const [searchFilter, setSearchFilter] = useState('');
+
+    const [tf, setTf] = useState('1h');
+    const [capital, setCapital] = useState('10000');
+    const [mode, setMode] = useState('Conservative');
+
+    const [autoTrain, setAutoTrain] = useState(true);
+    const [btWin, setBtWin] = useState('3Y');
+    const [strats, setStrats] = useState(new Set(STRAT_LIST.map(s => s.key)));
+    const [rrMin, setRrMin] = useState('1.5'); const [rrMax, setRrMax] = useState('4.0'); const [rrStep, setRrStep] = useState('0.5');
+    const [atrMin, setAtrMin] = useState('1.0'); const [atrMax, setAtrMax] = useState('2.5'); const [atrStep, setAtrStep] = useState('0.5');
+    const [volMin, setVolMin] = useState('1.0');
+    const [regime, setRegime] = useState(true);
+
+    const [fxSessions, setFxSessions] = useState(null);
+
+    const [optStatus, setOptStatus] = useState(null);
+    const [optResults, setOptResults] = useState([]);
+    const [optProgress, setOptProgress] = useState(0);
+    const [selectedConfig, setSelectedConfig] = useState(null);
+
+    const toggleStrat = s => setStrats(p => { const n = new Set(p); n.has(s) ? n.delete(s) : n.add(s); return n; });
+
+    const mkt = MARKET_DEFS.find(m => m.key === marketType);
+    const accent = mkt ? mkt.color : 'var(--accent)';
+
+    useEffect(() => {
+      if (marketType === 'indices') setTf('1d');
+      else setTf('1h');
+      setSelectedAsset(null);
+      setCustomPair('');
+      setSearchFilter('');
+      setFxSessions(null);
+    }, [marketType]);
+
+    useEffect(() => {
+      if (marketType !== 'forex' || !selectedAsset) { setFxSessions(null); return; }
+      setFxSessions(fxAutoSessions(selectedAsset.key));
+    }, [marketType, selectedAsset]);
+
+    const getAssets = () => {
+      const m = DEMO_MARKETS.find(x => x.key === marketType);
+      return m ? m.assets : [];
+    };
+    const getTimeframes = () => {
+      const m = DEMO_MARKETS.find(x => x.key === marketType);
+      return m ? m.timeframes : ['1h', '4h', '1d'];
+    };
+    const getAssetName = () => {
+      if (customPair.trim()) return customPair.trim().toUpperCase();
+      if (!selectedAsset) return '?';
+      return selectedAsset.name || selectedAsset.key;
+    };
+    const getBotId = () => {
+      if (marketType === 'crypto') {
+        const pair = customPair.trim() || (selectedAsset ? selectedAsset.pair || selectedAsset.name : '');
+        return pair.replace('/', '_').toLowerCase();
+      }
+      const prefix = { indices: 'idx_', forex: 'fx_', futures: 'fut_' }[marketType] || '';
+      return prefix + (selectedAsset ? selectedAsset.key.toLowerCase() : '');
+    };
+    const isExisting = () => existingBots.includes(getBotId());
+    const canProceedStep2 = selectedAsset || (marketType === 'crypto' && customPair.trim());
+
+    const groupedAssets = () => {
+      const assets = getAssets();
+      let filtered = assets;
+      if (searchFilter.trim()) {
+        const q = searchFilter.toLowerCase();
+        filtered = assets.filter(a => (a.name || '').toLowerCase().includes(q) || (a.key || '').toLowerCase().includes(q) || (a.pair || '').toLowerCase().includes(q));
+      }
+      if (marketType === 'indices') {
+        const groups = {};
+        filtered.forEach(a => { const r = a.region || 'Other'; if (!groups[r]) groups[r] = []; groups[r].push(a); });
+        return Object.entries(groups);
+      }
+      if (marketType === 'forex' || marketType === 'futures') {
+        const groups = {};
+        filtered.forEach(a => { const c = a.category || 'Other'; if (!groups[c]) groups[c] = []; groups[c].push(a); });
+        return Object.entries(groups);
+      }
+      return [['', filtered]];
+    };
+
+    // Simulated grid search: deterministic per asset, deliberately modest numbers
+    const launchOptimization = () => {
+      if (optStatus === 'running') return;
+      setOptStatus('running');
+      setOptProgress(0);
+      setOptResults([]);
+      setSelectedConfig(null);
+
+      let seed = 0; for (const ch of getBotId()) seed = (seed * 31 + ch.charCodeAt(0)) % 2147483647;
+      const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+      const chosen = STRAT_LIST.filter(s => strats.has(s.key));
+      const results = chosen.map(s => ({
+        strategy: s.label,
+        sharpe_ratio: Math.round((1.35 - rnd() * 1.8) * 100) / 100,
+        win_rate: Math.round((0.34 + rnd() * 0.22) * 1000) / 1000,
+        total_return_pct: Math.round((-6 + rnd() * 34) * 10) / 10,
+        total_trades: 18 + Math.round(rnd() * 120),
+      })).sort((a, b) => b.sharpe_ratio - a.sharpe_ratio);
+
+      let p = 0;
+      const iv = setInterval(() => {
+        p += 2 + Math.random() * 6;
+        if (p >= 100) {
+          clearInterval(iv);
+          setOptProgress(100);
+          setOptStatus('done');
+          setOptResults(results);
+          if (results.length > 0) setSelectedConfig(0);
+        } else {
+          setOptProgress(p);
+        }
+      }, 160);
+    };
+
+    const handleCreate = () => {
+      if (isExisting()) return;
+      window.showToast && window.showToast('Demo: bot creation is disabled in this static version');
+    };
+
+    const stepLabels = ['Market', 'Asset', 'Config', 'Strategy', 'Review'];
+
+    return (
+      <div className="main-content page-anim">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div className="page-title">Create Bot</div>
+          {mkt && <span className="badge" style={{ background: `${accent}14`, color: accent, border: `1px solid ${accent}33` }}>{mkt.name}</span>}
+        </div>
+
+        <div style={{ display: 'flex', gap: 4, marginBottom: 20 }}>
+          {stepLabels.map((lbl, i) => (
+            <div key={i} style={{ flex: 1, textAlign: 'center' }}>
+              <div style={{ height: 3, borderRadius: 2, background: (i + 1) <= step ? accent : 'var(--bg-card)', transition: 'background 0.3s', marginBottom: 4 }} />
+              <div style={{ fontSize: 9, color: (i + 1) <= step ? accent : 'var(--text-muted)', fontWeight: (i + 1) === step ? 600 : 400 }}>{lbl}</div>
+            </div>
+          ))}
+        </div>
+
+        {step === 1 && (<>
+          <div className="step-section">
+            <div className="step-label">Step 1 - Select Market</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
+              {MARKET_DEFS.map(m => (
+                <div key={m.key}
+                  className={`ms-item ${marketType === m.key ? 'selected' : ''}`}
+                  onClick={() => setMarketType(m.key)}
+                  style={{ borderColor: marketType === m.key ? m.color : undefined, padding: '16px 14px', cursor: 'pointer', textAlign: 'center' }}>
+                  <div style={{ marginBottom: 8, opacity: 0.9, color: m.color, display: 'flex', justifyContent: 'center' }}>
+                    {Ico[m.iconKey] ? Ico[m.iconKey]({ size: 30 }) : null}
+                  </div>
+                  <div className="ms-sym" style={{ color: marketType === m.key ? m.color : undefined, fontSize: 13, fontWeight: 600 }}>{m.name}</div>
+                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 4, lineHeight: 1.3 }}>{m.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="step-nav">
+            <div />
+            <button className="btn btn-primary" style={{ padding: '9px 20px', background: accent, color: '#fff' }}
+              onClick={() => setStep(2)} disabled={!marketType}>
+              Next: Select Asset &rarr;
+            </button>
+          </div>
+        </>)}
+
+        {step === 2 && (<>
+          <div className="step-section">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <div className="step-label" style={{ marginBottom: 0 }}>Step 2 - Select Asset</div>
+              {mkt && <span className="badge" style={{ background: `${accent}14`, color: accent, border: `1px solid ${accent}33`, fontSize: 10 }}>{mkt.name}</span>}
+            </div>
+            <input className="form-input" style={{ marginBottom: 12, maxWidth: 300 }} placeholder="Search..."
+              value={searchFilter} onChange={e => setSearchFilter(e.target.value)} />
+            {groupedAssets().map(([group, assets]) => (
+              <div key={group} style={{ marginBottom: 14 }}>
+                {group && <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 8 }}>{group}</div>}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8 }}>
+                  {assets.map(a => {
+                    const aKey = a.key || a.pair;
+                    const isSelected = selectedAsset != null && (a.key != null && selectedAsset.key === a.key || a.pair != null && selectedAsset.pair === a.pair);
+                    const prefix = { indices: 'idx_', forex: 'fx_', futures: 'fut_' }[marketType] || '';
+                    const bid = marketType === 'crypto' ? (a.pair || a.name || '').replace('/', '_').toLowerCase() : prefix + a.key.toLowerCase();
+                    const isActive = existingBots.includes(bid);
+                    return (
+                      <div key={aKey}
+                        className={`ms-item ${isSelected ? 'selected' : ''}`}
+                        onClick={() => { setSelectedAsset(a); setCustomPair(''); }}
+                        style={{ borderColor: isSelected ? accent : undefined, position: 'relative' }}>
+                        <div className="ms-sym" style={{ color: isSelected ? accent : undefined, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                          <AssetIcon pair={marketType === 'crypto' ? (a.pair || '') : (a.key || '')} market={marketType} size={16} />
+                          {a.key || a.pair?.split('/')[0]}
+                        </div>
+                        <div className="ms-pair">{a.name || a.pair}</div>
+                        {a.unit && <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 1 }}>{a.unit}</div>}
+                        {a.currency && <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 1 }}>{a.currency}</div>}
+                        {isActive && <div className="ms-active" style={{ color: accent }}>Active</div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            {marketType === 'crypto' && (
+              <div style={{ marginTop: 14 }}>
+                <div className="form-label">Custom Pair</div>
+                <input className="form-input" style={{ maxWidth: 200 }} placeholder="e.g. PEPE/USDT"
+                  value={customPair} onChange={e => { setCustomPair(e.target.value); if (e.target.value.trim()) setSelectedAsset(null); }} />
+              </div>
+            )}
+          </div>
+          <div className="step-nav">
+            <button className="btn btn-ghost" style={{ padding: '9px 16px' }} onClick={() => setStep(1)}>&larr; Back</button>
+            <button className="btn btn-primary" style={{ padding: '9px 20px', background: accent, color: '#fff' }}
+              onClick={() => setStep(3)} disabled={!canProceedStep2}>
+              Next: Configuration &rarr;
+            </button>
+          </div>
+        </>)}
+
+        {step === 3 && (<>
+          <div className="step-section">
+            <div className="step-label">Step 3 - Configuration</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 12 }}>
+              Asset: <span style={{ color: accent, fontWeight: 600 }}>{getAssetName()}</span>
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <div className="form-label" style={{ marginBottom: 6 }}>Timeframe</div>
+              {getTimeframes().length === 1 ? (
+                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{getTimeframes()[0]} (fixed for this market)</div>
+              ) : (
+                <div className="tf-row">
+                  {getTimeframes().map(t => (
+                    <button key={t} className={`tf-btn ${tf === t ? 'active' : ''}`}
+                      onClick={() => setTf(t)} style={{ borderColor: tf === t ? accent : undefined, color: tf === t ? accent : undefined }}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="config-grid">
+              <div>
+                <div className="form-label">Initial Capital ($)</div>
+                <input className="form-input" value={capital} onChange={e => setCapital(e.target.value)} />
+              </div>
+              <div>
+                <div className="form-label">Trading Mode</div>
+                <select className="form-select" value={mode} onChange={e => setMode(e.target.value)}>
+                  <option>Conservative</option>
+                  <option>Moderate</option>
+                  <option>Aggressive</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="step-nav">
+            <button className="btn btn-ghost" style={{ padding: '9px 16px' }} onClick={() => setStep(2)}>&larr; Back</button>
+            <button className="btn btn-primary" style={{ padding: '9px 20px', background: accent, color: '#fff' }}
+              onClick={() => setStep(4)}>
+              Next: Strategy &rarr;
+            </button>
+          </div>
+        </>)}
+
+        {step === 4 && (<>
+          <div className="step-section">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <div className="step-label" style={{ marginBottom: 0 }}>Step 4 - AI Auto-Training</div>
+              <UToggle on={autoTrain} set={setAutoTrain} color={accent} />
+            </div>
+            {autoTrain && <>
+              <div style={{ marginBottom: 14 }}>
+                <div className="form-label" style={{ marginBottom: 6 }}>Backtest Window</div>
+                <div className="tf-row">
+                  {['1Y', '2Y', '3Y', '4Y', '5Y'].map(w => (
+                    <button key={w} className={`tf-btn ${btWin === w ? 'active' : ''}`}
+                      onClick={() => setBtWin(w)}
+                      style={{ fontSize: 12, borderColor: btWin === w ? accent : undefined, color: btWin === w ? accent : undefined }}>
+                      {w}
+                    </button>
+                  ))}
+                </div>
+                {(marketType === 'forex' || marketType === 'futures') && tf !== '1d' && (
+                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 4 }}>
+                    Note: Intraday data limited to ~2 years via yfinance
+                  </div>
+                )}
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <div className="form-label" style={{ marginBottom: 6 }}>Strategies</div>
+                <div className="strats-grid">
+                  {STRAT_LIST.map(s => (
+                    <div key={s.key} className="strat-item" onClick={() => toggleStrat(s.key)}>
+                      <div className={`strat-check ${strats.has(s.key) ? 'checked' : ''}`}>
+                        {strats.has(s.key) && <span style={{ color: accent, fontSize: 10 }}>&#10003;</span>}
+                      </div>
+                      {s.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="config-grid" style={{ marginBottom: 10 }}>
+                <div>
+                  <div className="form-label">Risk/Reward Range</div>
+                  <div className="range-3" style={{ marginTop: 5 }}>
+                    {[['Min', rrMin, setRrMin], ['Max', rrMax, setRrMax], ['Step', rrStep, setRrStep]].map(([l, v, s]) => (
+                      <div key={l}>
+                        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 3 }}>{l}</div>
+                        <input className="form-input" value={v} onChange={e => s(e.target.value)} style={{ padding: '6px 8px' }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="form-label">ATR Multiplier Range</div>
+                  <div className="range-3" style={{ marginTop: 5 }}>
+                    {[['Min', atrMin, setAtrMin], ['Max', atrMax, setAtrMax], ['Step', atrStep, setAtrStep]].map(([l, v, s]) => (
+                      <div key={l}>
+                        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 3 }}>{l}</div>
+                        <input className="form-input" value={v} onChange={e => s(e.target.value)} style={{ padding: '6px 8px' }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+                <div>
+                  <div className="form-label">Min Vol Ratio</div>
+                  <input className="form-input" value={volMin} onChange={e => setVolMin(e.target.value)} style={{ width: 80, marginTop: 3 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 16 }}>
+                  <div className={`strat-check ${regime ? 'checked' : ''}`} onClick={() => setRegime(!regime)} style={{ cursor: 'pointer' }}>
+                    {regime && <span style={{ color: accent, fontSize: 10 }}>&#10003;</span>}
+                  </div>
+                  <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>Regime Filter</span>
+                </div>
+              </div>
+            </>}
+            {!autoTrain && (
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', padding: '12px 0' }}>
+                Bot will start with default parameters. You can optimize later from the bot detail page.
+              </div>
+            )}
+
+            {marketType === 'forex' && fxSessions && (
+              <div style={{ marginTop: 16 }}>
+                <div className="form-label" style={{ marginBottom: 8 }}>Trading Sessions</div>
+                <div style={{ position: 'relative', height: fxSessions.length * 26 + 24, background: 'var(--bg-card)', borderRadius: 8, padding: '8px 10px' }}>
+                  {[0, 6, 12, 18].map(h => (
+                    <div key={h} style={{ position: 'absolute', left: `calc(${(h / 24) * 100}% + 10px)`, top: 4, bottom: 16, borderLeft: '1px solid var(--border)', zIndex: 0 }}>
+                      <div style={{ position: 'absolute', bottom: -12, left: -4, fontSize: 7, color: 'var(--text-muted)' }}>{String(h).padStart(2, '0')}</div>
+                    </div>
+                  ))}
+                  {fxSessions.map((s, i) => {
+                    const left = (s.start / 24) * 100;
+                    const width = s.start < s.end ? ((s.end - s.start) / 24) * 100 : ((24 - s.start + s.end) / 24) * 100;
+                    const clampW = Math.min(width, 100 - left + 0.5);
+                    const toggleFx = () => setFxSessions(prev => prev.map(x => x.key === s.key ? { ...x, active: !x.active } : x));
+                    return (
+                      <React.Fragment key={s.key}>
+                        <div onClick={toggleFx} style={{
+                          position: 'absolute', top: i * 26 + 2, height: 18, left: `${left}%`, width: `${clampW}%`,
+                          background: s.active ? s.color + '30' : 'transparent', borderRadius: 3,
+                          border: `1px solid ${s.active ? s.color + '60' : 'var(--border)'}`,
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', paddingLeft: 5,
+                          fontSize: 8, fontWeight: 600, color: s.active ? s.color : 'var(--text-muted)', opacity: s.active ? 1 : 0.4,
+                        }}>
+                          {s.label} ({s.start}:00-{s.end}:00)
+                        </div>
+                        {s.start > s.end && (
+                          <div onClick={toggleFx} style={{
+                            position: 'absolute', top: i * 26 + 2, height: 18, left: 0, width: `${(s.end / 24) * 100}%`,
+                            background: s.active ? s.color + '30' : 'transparent', borderRadius: 3,
+                            border: `1px solid ${s.active ? s.color + '60' : 'var(--border)'}`,
+                            cursor: 'pointer', opacity: s.active ? 1 : 0.4,
+                          }} />
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+                <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 4 }}>
+                  Auto-detected for {getAssetName()}. Click to toggle. Bot only enters trades during active sessions.
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="step-nav">
+            <button className="btn btn-ghost" style={{ padding: '9px 16px' }} onClick={() => setStep(3)}>&larr; Back</button>
+            <button className="btn btn-primary" style={{ padding: '9px 20px', background: accent, color: '#fff' }}
+              onClick={() => setStep(5)}>
+              Next: Review &rarr;
+            </button>
+          </div>
+        </>)}
+
+        {step === 5 && (<>
+          <div className="step-section">
+            <div className="step-label">Step 5 - Review & Create</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+              {[
+                ['Market', mkt ? mkt.name : '?'],
+                ['Asset', getAssetName()],
+                ['Timeframe', tf],
+                ['Capital', `$${parseFloat(capital || '0').toLocaleString()}`],
+                ['Mode', mode],
+                ['Auto-Train', autoTrain ? 'Yes' : 'No'],
+              ].map(([label, value]) => (
+                <div key={label} style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '10px 12px' }}>
+                  <div style={{ fontSize: 9, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{value}</div>
+                </div>
+              ))}
+            </div>
+
+            {autoTrain && (<>
+              {optStatus === null && (
+                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                  <button className="btn btn-primary" style={{ padding: '9px 20px', background: accent, color: '#fff' }} onClick={launchOptimization}>
+                    &#9881; Run Optimization
+                  </button>
+                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 6 }}>Find the best configuration via grid search</div>
+                </div>
+              )}
+              {optStatus === 'running' && (
+                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                  <div className="training-spinner" style={{ margin: '0 auto' }} />
+                  <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 8 }}>Running optimization...</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: accent, marginTop: 4 }}>{Math.round(optProgress)}%</div>
+                  <div style={{ width: '100%', maxWidth: 300, height: 4, background: 'var(--bg-card)', borderRadius: 2, margin: '8px auto 0' }}>
+                    <div style={{ width: `${optProgress}%`, height: '100%', background: accent, borderRadius: 2, transition: 'width 0.3s' }} />
+                  </div>
+                </div>
+              )}
+              {optStatus === 'done' && optResults.length > 0 && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 8 }}>
+                    Top {optResults.length} Configurations (by Sharpe Ratio)
+                  </div>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid var(--bg-card)' }}>
+                          {['#', 'Strategy', 'Sharpe', 'Win Rate', 'Return %', 'Trades'].map(h => (
+                            <th key={h} style={{ padding: '6px 8px', textAlign: h === '#' ? 'center' : 'right', color: 'var(--text-muted)', fontWeight: 600, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                              {h === 'Strategy' ? <span style={{ float: 'left' }}>{h}</span> : h}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {optResults.map((r, i) => {
+                          const isSelected = selectedConfig === i;
+                          return (
+                            <tr key={i} onClick={() => setSelectedConfig(i)}
+                              style={{ cursor: 'pointer', background: isSelected ? `${accent}12` : 'transparent', borderLeft: isSelected ? `2px solid ${accent}` : '2px solid transparent', transition: 'background 0.15s' }}>
+                              <td style={{ padding: '7px 8px', textAlign: 'center', color: isSelected ? accent : 'var(--text-muted)', fontWeight: 600 }}>{i + 1}</td>
+                              <td style={{ padding: '7px 8px', textAlign: 'left', fontWeight: 500, color: isSelected ? accent : undefined }}>{r.strategy}</td>
+                              <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'var(--mono)', color: r.sharpe_ratio >= 1 ? 'var(--green)' : r.sharpe_ratio >= 0 ? 'var(--text-dim)' : 'var(--red)' }}>{(r.sharpe_ratio || 0).toFixed(2)}</td>
+                              <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>{((r.win_rate || 0) * 100).toFixed(1)}%</td>
+                              <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'var(--mono)', color: (r.total_return_pct || 0) >= 0 ? 'var(--green)' : 'var(--red)' }}>{(r.total_return_pct || 0).toFixed(1)}%</td>
+                              <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'var(--mono)', color: 'var(--text-dim)' }}>{r.total_trades || 0}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  {selectedConfig !== null && (
+                    <div style={{ fontSize: 10, color: accent, marginTop: 6 }}>
+                      Selected: #{selectedConfig + 1}, {optResults[selectedConfig].strategy} (Sharpe {(optResults[selectedConfig].sharpe_ratio || 0).toFixed(2)})
+                    </div>
+                  )}
+                </div>
+              )}
+            </>)}
+
+            {!autoTrain && (
+              <div style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '10px 12px', marginBottom: 12 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Bot will be created with default parameters. You can optimize later.</div>
+              </div>
+            )}
+
+            {isExisting() && (
+              <div style={{ fontSize: 11, color: 'var(--red)', padding: '8px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span>&#9888;</span> A bot for this asset already exists. Delete the existing bot first.
+              </div>
+            )}
+          </div>
+          <div className="step-nav">
+            <button className="btn btn-ghost" style={{ padding: '9px 16px' }} onClick={() => setStep(4)}>&larr; Back</button>
+            <div title={isExisting() ? 'Delete the existing bot first' : (autoTrain && optStatus === 'running') ? 'Wait for optimization to finish' : undefined}>
+              <button className="btn btn-primary"
+                style={{ padding: '9px 20px', background: accent, color: '#fff', opacity: isExisting() || (autoTrain && optStatus === 'running') ? 0.5 : 1 }}
+                onClick={handleCreate}
+                disabled={isExisting() || (autoTrain && optStatus === 'running')}>
+                &#10022; Create Bot
+              </button>
+            </div>
+          </div>
+        </>)}
+      </div>
+    );
+  }
+
+
   function App() {
     const [page, setPage] = useState('lobby');
     const [bot, setBot] = useState(null);
@@ -1871,7 +2810,7 @@
     // market accent theme on body, mirrors v3-app.jsx
     useEffect(() => {
       document.body.classList.remove('theme-indices', 'theme-forex', 'theme-futures');
-      const themeClasses = { indices: 'theme-indices', forex: 'theme-forex', futures: 'theme-futures' };
+      const themeClasses = { indices: 'theme-indices', 'idx-createbot': 'theme-indices', forex: 'theme-forex', 'fx-createbot': 'theme-forex', futures: 'theme-futures', 'fut-createbot': 'theme-futures' };
       if (themeClasses[page]) document.body.classList.add(themeClasses[page]);
     }, [page]);
 
@@ -1887,6 +2826,11 @@
           <PortfolioView key={page} filter={page === 'lobby' ? 'all' : page}
             onSelectBot={handleSelectBot} onNavMarket={nav} />
         )}
+        {page === 'market' && <MarketIntelPage />}
+        {['createbot','idx-createbot','fx-createbot','fut-createbot'].includes(page) && (() => {
+          const m = { createbot: 'crypto', 'idx-createbot': 'indices', 'fx-createbot': 'forex', 'fut-createbot': 'futures' }[page];
+          return <CreateBotDemo key={page} initialMarket={m} onDone={() => nav(m)} />;
+        })()}
         {page === 'botdetail' && bot && <BotDetail bot={bot} onBack={() => nav(bot.market || 'lobby')} />}
         {page === 'analytics' && <AnalyticsPage />}
         {page === 'risk' && <RiskPage />}
