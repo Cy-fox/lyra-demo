@@ -88,11 +88,16 @@
     .card p + p { margin-top: 8px; }
     .card code, td code, p code { font-family: var(--mono); font-size: 12px; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
 
-    /* ── Endpoint rows ── */
+    /* ── Endpoint rows (expandable) ── */
     .ep-group { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; background: var(--bg-card); backdrop-filter: blur(8px); }
-    .ep { display: flex; align-items: baseline; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
-    .ep:last-child { border-bottom: none; }
-    .ep:hover { background: var(--bg-hover); }
+    details.ep { border-bottom: 1px solid var(--border); }
+    details.ep:last-child { border-bottom: none; }
+    .ep-row { display: flex; align-items: baseline; gap: 12px; padding: 11px 16px; transition: background 0.15s; cursor: pointer; list-style: none; }
+    .ep-row::-webkit-details-marker { display: none; }
+    .ep-row:hover { background: var(--bg-hover); }
+    details.ep[open] .ep-row { background: var(--bg-hover); }
+    .ep-row::after { content: '▾'; font-size: 9px; color: var(--text-muted); flex-shrink: 0; align-self: center; transition: transform 0.2s; }
+    details.ep[open] .ep-row::after { transform: rotate(180deg); color: var(--accent); }
     .method { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px; width: 52px; text-align: center; flex-shrink: 0; }
     .m-get    { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
     .m-post   { background: var(--blue-dim);   color: var(--blue);   border: 1px solid var(--blue-border); }
@@ -100,9 +105,14 @@
     .ep-path { font-family: var(--mono); font-size: 12.5px; color: var(--text); white-space: nowrap; }
     .ep-path .param { color: var(--orange); }
     .ep-desc { font-size: 12px; color: var(--text-dim); margin-left: auto; text-align: right; }
+    .ep-body { padding: 2px 16px 14px 80px; font-size: 12.5px; color: var(--text-dim); line-height: 1.65; }
+    .ep-body code { font-family: var(--mono); font-size: 11.5px; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
     @media (max-width: 700px) {
-      .ep { flex-wrap: wrap; gap: 8px; }
+      .ep-row { flex-wrap: wrap; gap: 8px; }
       .ep-desc { margin-left: 64px; text-align: left; width: 100%; }
+      .ep-row::after { position: absolute; right: 16px; }
+      .ep-row { position: relative; }
+      .ep-body { padding-left: 16px; }
     }
 
     /* ── Code blocks ── */
@@ -189,8 +199,14 @@
 
     <h2 id="auth">Authentication</h2>
     <div class="ep-group">
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/login</span><span class="ep-desc">Password login, sets auth cookie</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/logout</span><span class="ep-desc">Clears the cookie, redirects to /login</span></div>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/login</span><span class="ep-desc">Password login, sets auth cookie</span></summary>
+        <div class="ep-body">Accepts <code>{"password": "…"}</code> as JSON or a form field. On success it sets the <code>auth_token</code> cookie (HttpOnly, 30-day expiry) and returns <code>{"success": true}</code>. Five failed attempts from the same IP lock it out for five minutes (<code>429</code>).</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/logout</span><span class="ep-desc">Clears the cookie, redirects to /login</span></summary>
+        <div class="ep-body">Invalidates the session by clearing the <code>auth_token</code> cookie and redirects the browser back to the login page. No body or parameters.</div>
+      </details>
     </div>
     <div class="card">
       <p>Send the password as JSON or a form field. On success the response sets the
@@ -208,13 +224,34 @@ curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
 
     <h2 id="system">System</h2>
     <div class="ep-group">
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/health</span><span class="ep-desc">Per-bot liveness + system status</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/status</span><span class="ep-desc">Engine status summary</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/status/<span class="param">&lt;pair&gt;</span></span><span class="ep-desc">Status for a single pair</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/settings</span><span class="ep-desc">Read global settings</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/settings</span><span class="ep-desc">Update global settings</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/alerts/system</span><span class="ep-desc">Stale-bot watchdog alerts</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/activity/recent</span><span class="ep-desc">Recent trades and log events across bots</span></div>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/health</span><span class="ep-desc">Per-bot liveness + system status</span></summary>
+        <div class="ep-body">Returns every registered bot with its thread <code>running</code> flag, current <code>status</code> and <code>last_update</code> timestamp — the same feed the watchdog uses to flag stale bots. See the example response below the group.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/status</span><span class="ep-desc">Engine status summary</span></summary>
+        <div class="ep-body">Aggregate snapshot of the engine: number of bots per market, how many are running or in position, combined equity and total P&amp;L. Cheap to poll — the dashboard header refreshes from it.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/status/<span class="param">&lt;pair&gt;</span></span><span class="ep-desc">Status for a single pair</span></summary>
+        <div class="ep-body">Same shape as <code>/api/status</code> but scoped to one instrument, e.g. <code>/api/status/BTC_USDT</code>. Returns <code>404</code> if no bot trades that pair.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/settings</span><span class="ep-desc">Read global settings</span></summary>
+        <div class="ep-body">Returns the global key-value configuration (rows of the <code>settings</code> table) as one JSON object: risk defaults, watchdog thresholds, Telegram alerting toggles.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/settings</span><span class="ep-desc">Update global settings</span></summary>
+        <div class="ep-body">Partial update: send only the keys you want to change and they are merged into the stored settings. Values are validated before being persisted; unknown keys are rejected.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/alerts/system</span><span class="ep-desc">Stale-bot watchdog alerts</span></summary>
+        <div class="ep-body">Lists bots whose <code>last_update</code> is older than the watchdog threshold — usually a dead thread or a stuck data feed. Empty list means all bots are healthy.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/activity/recent</span><span class="ep-desc">Recent trades and log events across bots</span></summary>
+        <div class="ep-body">Merged feed of the latest closed trades and log events across every bot, newest first. Powers the dashboard activity panel; supports a <code>limit</code> query parameter.</div>
+      </details>
     </div>
     <div class="card">
       <p><code>/api/health</code> reports every registered bot with its thread liveness and
@@ -229,16 +266,46 @@ curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
 
     <h2 id="bots">Bots</h2>
     <div class="ep-group">
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bots</span><span class="ep-desc">List all bots with live P&amp;L</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Full detail: config, position, trades, sessions</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/create</span><span class="ep-desc">Create a crypto bot</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/launch</span><span class="ep-desc">Optimize-then-launch pipeline</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/start</span><span class="ep-desc">Start the trading thread</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/stop</span><span class="ep-desc">Stop the trading thread</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/reset</span><span class="ep-desc">Reset capital and history</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/sessions</span><span class="ep-desc">Set active forex sessions</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/projection</span><span class="ep-desc">Equity projection cone</span></div>
-      <div class="ep"><span class="method m-delete">DELETE</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Delete bot and its history</span></div>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/bots</span><span class="ep-desc">List all bots with live P&amp;L</span></summary>
+        <div class="ep-body">Array of bot summaries: market type, current price, capital vs. initial capital, open position (if any) and win/loss counters. See the example object below the group.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Full detail: config, position, trades, sessions</span></summary>
+        <div class="ep-body">Everything about one bot: full strategy config, open position with entry/stop/TP, closed-trade history, recent analyses and (for forex) the active sessions. <code>404</code> for an unknown <code>bot_id</code>.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/bot/create</span><span class="ep-desc">Create a crypto bot</span></summary>
+        <div class="ep-body">Body: <code>{"pair": "BTC/USDT", "timeframe": "1h", "mode": "conservative", "capital": 10000}</code>. Creates the bot in <code>created</code> state — it only trades after <code>/start</code>. Returns the new <code>bot_id</code>.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/bot/launch</span><span class="ep-desc">Optimize-then-launch pipeline</span></summary>
+        <div class="ep-body">One-shot pipeline: runs the optimizer on the requested pair, applies the best out-of-sample parameters, creates the bot and starts it. Same body as <code>/api/bot/create</code> plus optional optimizer mode.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/start</span><span class="ep-desc">Start the trading thread</span></summary>
+        <div class="ep-body">Spawns the bot's trading thread; status moves from <code>created</code>/<code>stopped</code> to <code>waiting</code>. Idempotent — starting an already-running bot is a no-op.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/stop</span><span class="ep-desc">Stop the trading thread</span></summary>
+        <div class="ep-body">Signals the thread to stop after the current cycle. An open position is kept and resumes management on the next start; no orders are force-closed.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/reset</span><span class="ep-desc">Reset capital and history</span></summary>
+        <div class="ep-body">Restores <code>capital</code> to <code>initial_capital</code> and wipes the bot's trades, analyses and logs. The strategy config is kept. Destructive — the dashboard asks for confirmation first.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/sessions</span><span class="ep-desc">Set active forex sessions</span></summary>
+        <div class="ep-body">Body: <code>{"sessions": ["london", "new_york"]}</code>. Overrides the auto-detected trading sessions for a forex bot; entries are only taken inside these windows, exits are always allowed.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span>/projection</span><span class="ep-desc">Equity projection cone</span></summary>
+        <div class="ep-body">Projects the equity curve forward from the bot's realized trade statistics, returning median and percentile bands — the cone drawn on the bot detail chart. Needs a minimum trade history to be meaningful.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-delete">DELETE</span><span class="ep-path">/api/bot/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Delete bot and its history</span></summary>
+        <div class="ep-body">Stops the thread if running and deletes the bot row; trades, analyses and logs cascade via foreign keys. Irreversible.</div>
+      </details>
     </div>
     <div class="card">
       <p>Each entry in <code>/api/bots</code> carries the market type (<code>crypto</code>,
@@ -262,20 +329,62 @@ curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
 
     <h2 id="markets">Markets &amp; scanning</h2>
     <div class="ep-group">
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/markets</span><span class="ep-desc">Available market types</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/pairs</span><span class="ep-desc">Tradable crypto pairs</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/indices</span><span class="ep-desc">Index instruments (S&amp;P 500, NASDAQ, …)</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/indices/prices</span><span class="ep-desc">Live index prices</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/indices/scan</span><span class="ep-desc">Scan indices for entry setups</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/indices/backtest</span><span class="ep-desc">Backtest a strategy on an index</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/indices/bot/create</span><span class="ep-desc">Create an index bot</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/forex</span><span class="ep-desc">Forex pairs and categories</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/forex/prices</span><span class="ep-desc">Live forex quotes</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/forex/sessions/<span class="param">&lt;pair&gt;</span></span><span class="ep-desc">Auto-detected trading sessions</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/forex/bot/create</span><span class="ep-desc">Create a forex bot (session-gated)</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/futures</span><span class="ep-desc">Futures instruments (gold, copper, …)</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/futures/prices</span><span class="ep-desc">Live futures quotes</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/futures/bot/create</span><span class="ep-desc">Create a futures bot</span></div>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/markets</span><span class="ep-desc">Available market types</span></summary>
+        <div class="ep-body">Lists the supported market types — <code>crypto</code>, <code>indices</code>, <code>forex</code>, <code>futures</code> — with the bot count and data source for each. The dashboard uses it to build the market tabs.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/pairs</span><span class="ep-desc">Tradable crypto pairs</span></summary>
+        <div class="ep-body">Crypto pairs available on the exchange feed (e.g. <code>BTC/USDT</code>, <code>ETH/USDT</code>). Populates the pair selector in the bot-creation form.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/indices</span><span class="ep-desc">Index instruments (S&amp;P 500, NASDAQ, …)</span></summary>
+        <div class="ep-body">Supported index instruments with their symbols and metadata (exchange hours, tick size). Static list — prices come from <code>/api/indices/prices</code>.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/indices/prices</span><span class="ep-desc">Live index prices</span></summary>
+        <div class="ep-body">Latest quote for every index instrument in one call: price, daily change and whether the underlying market is currently open.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/indices/scan</span><span class="ep-desc">Scan indices for entry setups</span></summary>
+        <div class="ep-body">Runs the strategy across all indices and returns the ones currently showing an entry setup, ranked by signal confidence. Body optionally narrows the timeframe or instrument list.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/indices/backtest</span><span class="ep-desc">Backtest a strategy on an index</span></summary>
+        <div class="ep-body">Body: symbol, timeframe and strategy parameters. Replays historical candles and returns the metrics (return, win rate, max drawdown, trade list). Runs synchronously — expect a few seconds.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/indices/bot/create</span><span class="ep-desc">Create an index bot</span></summary>
+        <div class="ep-body">Same shape as <code>/api/bot/create</code> but for an index instrument; the bot only trades while the underlying market is open.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/forex</span><span class="ep-desc">Forex pairs and categories</span></summary>
+        <div class="ep-body">Forex pairs grouped by category (majors, minors, exotics) with pip size and typical spread per pair.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/forex/prices</span><span class="ep-desc">Live forex quotes</span></summary>
+        <div class="ep-body">Latest bid/ask for every supported forex pair, plus which trading sessions are active right now.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/forex/sessions/<span class="param">&lt;pair&gt;</span></span><span class="ep-desc">Auto-detected trading sessions</span></summary>
+        <div class="ep-body">Returns the sessions (London, New York, Tokyo, Sydney) where the pair historically trades best — the default applied when a forex bot is created. Override per bot via <code>/api/bot/&lt;bot_id&gt;/sessions</code>.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/forex/bot/create</span><span class="ep-desc">Create a forex bot (session-gated)</span></summary>
+        <div class="ep-body">Creates a forex bot with sessions auto-detected for the pair. Entries are gated to the active sessions; exits are always allowed. Body mirrors <code>/api/bot/create</code>.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/futures</span><span class="ep-desc">Futures instruments (gold, copper, …)</span></summary>
+        <div class="ep-body">Supported commodity futures with contract metadata: symbol, tick value and exchange trading hours.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/futures/prices</span><span class="ep-desc">Live futures quotes</span></summary>
+        <div class="ep-body">Latest price and daily change for every futures instrument, with the market-open flag per contract.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/futures/bot/create</span><span class="ep-desc">Create a futures bot</span></summary>
+        <div class="ep-body">Creates a bot on a futures instrument (e.g. <code>fut_gold</code>). Same body as <code>/api/bot/create</code>; trading is restricted to the contract's exchange hours.</div>
+      </details>
     </div>
     <div class="card">
       <p>Forex bots only open positions inside their configured sessions (London, New York,
@@ -285,13 +394,34 @@ curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
 
     <h2 id="optimizer">Optimizer</h2>
     <div class="ep-group">
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/optimizer/modes</span><span class="ep-desc">Available optimization modes</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/optimizer/start</span><span class="ep-desc">Start an optimization run for a bot</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/optimizer/status/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Poll run progress</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/optimizer/apply</span><span class="ep-desc">Apply the optimized parameters</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/bot/optimize</span><span class="ep-desc">Standalone optimization job</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/optimize/<span class="param">&lt;job_id&gt;</span></span><span class="ep-desc">Job result</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/bot/optimize/<span class="param">&lt;job_id&gt;</span>/stream</span><span class="ep-desc">Progress as server-sent events</span></div>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/optimizer/modes</span><span class="ep-desc">Available optimization modes</span></summary>
+        <div class="ep-body">Lists the optimization presets (e.g. quick / balanced / thorough) with the number of parameter combinations and the training-window length each one uses.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/optimizer/start</span><span class="ep-desc">Start an optimization run for a bot</span></summary>
+        <div class="ep-body">Body: <code>{"bot_id": "…", "mode": "balanced"}</code>. Kicks off a background run for an existing bot; parameters are fit on a training window and scored out-of-sample. Poll progress via <code>/api/optimizer/status/&lt;bot_id&gt;</code>.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/optimizer/status/<span class="param">&lt;bot_id&gt;</span></span><span class="ep-desc">Poll run progress</span></summary>
+        <div class="ep-body">Progress of the bot's current run: percent complete, best score so far and, once finished, the candidate parameter set awaiting <code>/api/optimizer/apply</code>.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/optimizer/apply</span><span class="ep-desc">Apply the optimized parameters</span></summary>
+        <div class="ep-body">Body: <code>{"bot_id": "…"}</code>. Writes the finished run's best parameters into the bot's config (stored in <code>optimization_json</code>). Nothing changes until you apply — runs never auto-apply.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/bot/optimize</span><span class="ep-desc">Standalone optimization job</span></summary>
+        <div class="ep-body">Optimizes a pair/timeframe without needing an existing bot — used by the launch pipeline and for research. Returns a <code>job_id</code> to fetch results or stream progress.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/bot/optimize/<span class="param">&lt;job_id&gt;</span></span><span class="ep-desc">Job result</span></summary>
+        <div class="ep-body">Final result of a standalone job: best parameters, in-sample vs. out-of-sample scores and the backtest metrics behind them. <code>404</code> if the job id is unknown or expired.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/bot/optimize/<span class="param">&lt;job_id&gt;</span>/stream</span><span class="ep-desc">Progress as server-sent events</span></summary>
+        <div class="ep-body">Server-sent events stream (<code>text/event-stream</code>) emitting one event per tested combination, so the dashboard shows a live progress bar without polling. Closes when the job finishes.</div>
+      </details>
     </div>
     <div class="card">
       <p>Optimization runs out-of-sample: parameters are fit on a training window and scored
@@ -301,12 +431,30 @@ curl -b cookies.txt http://127.0.0.1:5000/api/bots</pre>
 
     <h2 id="risk-ml">Risk &amp; ML</h2>
     <div class="ep-group">
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/risk/portfolio</span><span class="ep-desc">Portfolio-level exposure and correlation</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/risk-profiles</span><span class="ep-desc">Risk profile presets</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/portfolio/daily</span><span class="ep-desc">Daily portfolio equity series</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/ml/status</span><span class="ep-desc">Meta-labeling gate status per market</span></div>
-      <div class="ep"><span class="method m-get">GET</span><span class="ep-path">/api/ml/calibration</span><span class="ep-desc">P(win) calibration buckets</span></div>
-      <div class="ep"><span class="method m-post">POST</span><span class="ep-path">/api/ml/create_test_bots</span><span class="ep-desc">Spin up A/B bots (ML gate on vs. off)</span></div>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/risk/portfolio</span><span class="ep-desc">Portfolio-level exposure and correlation</span></summary>
+        <div class="ep-body">Portfolio view across all bots: total exposure per market, open-position correlation and combined drawdown — the check that stops several bots from stacking the same directional bet.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/risk-profiles</span><span class="ep-desc">Risk profile presets</span></summary>
+        <div class="ep-body">The <code>conservative</code> / <code>moderate</code> / <code>aggressive</code> presets with their concrete values: risk per trade, stop distance and maximum concurrent positions.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/portfolio/daily</span><span class="ep-desc">Daily portfolio equity series</span></summary>
+        <div class="ep-body">Time series of combined equity across all bots, one point per day — the data behind the portfolio chart and the weekly report.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/ml/status</span><span class="ep-desc">Meta-labeling gate status per market</span></summary>
+        <div class="ep-body">Per-market state of the ML gate: whether a trained LightGBM model is loaded, its threshold, training-set size and counts of taken vs. skipped signals.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-get">GET</span><span class="ep-path">/api/ml/calibration</span><span class="ep-desc">P(win) calibration buckets</span></summary>
+        <div class="ep-body">Buckets resolved predictions by predicted P(win) and compares each bucket with the realized hit rate — a well-calibrated model tracks the diagonal. Built from the <code>ml_predictions</code> table after the daily resolver runs.</div>
+      </details>
+      <details class="ep">
+        <summary class="ep-row"><span class="method m-post">POST</span><span class="ep-path">/api/ml/create_test_bots</span><span class="ep-desc">Spin up A/B bots (ML gate on vs. off)</span></summary>
+        <div class="ep-body">Creates a paired experiment: two identical bots on the same pair, one with the ML gate enabled and one without, so the gate's edge can be measured on live signals instead of backtests.</div>
+      </details>
     </div>
     <div class="card">
       <p>The ML layer is a meta-labeling gate: pooled per-market LightGBM models score each
